@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Window Example</title>
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            //this ID must be unique, it'll help you easily access the gui component throught EZGUI.components.myWindow
+            id: 'myWindow',
+
+            //this the component ID, EZGUI define those components: Window, Button, Checkbox, Slider, Radio...
+            //but you can create your own components or extend existing
+            component: 'Window',
+            
+            //This is the padding space from the component borders
+            padding: 4,
+
+            //component position relative to parent
+            position: { x: 10, y: 10 },
+
+
+            width: 500,
+            height: 500
+        }
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+
+
+        var guiContainer;
+
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+
+            //create the gui
+            //the second parameter is the theme name, see kenney-theme.json, the name is defined under __config__ field
+            guiContainer = EZGUI.create(guiObj, 'kenney-theme');
+
+            stage.addChild(guiContainer);
+
+        })
+
+
+
+
+
+        requestAnimationFrame(animate);
+        //sprite.setTexture(texture2);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+
+</body>
+</html>

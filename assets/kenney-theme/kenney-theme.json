@@ -1,0 +1,114 @@
+{
+    "__config__": {
+        "name": "kenney-theme",
+        "resources": [
+            "./kenney-atlas.json",
+            "./images/bg.png"
+        ]
+    },
+
+    "default": {
+        "scale": 0.5,
+        "bg": "./images/bg.png",
+        "bgPadding": 6,
+        "corner": "wnd-grey-corner.png",
+        "line": "wnd-grey-line.png",
+        "font": {
+            "size": "20px",
+            "family": "Arial",
+            "color": "black"
+        }
+    },
+    "Window": {
+        "bgPadding": 5,
+        "bg": "wnd-grey-bg.png",
+        "corner": "wnd-grey-corner.png",
+        "line": "wnd-grey-line.png"
+    },
+    "Label_": {
+        "bgPadding": 0,
+        "bg": "",
+        "corner": " ",
+        "line": " "
+    },
+    "Layout": {
+        "bgPadding": 1,
+        "bg": "",
+        "corner": " ",
+        "line": " "
+    },
+    "blueheader": {
+        "bgPadding": 6,
+        "bg": "btn-blue-bg-down.png",
+        "font": {
+            "size": "20px",
+            "family": "Arial",
+            "color": "white"
+        },
+        "corner-tl": { "default": "btn-blue-corner-tl-down.png" },
+        "corner-tr": { "default": "btn-blue-corner-tr-down.png" },
+        "corner-bl": { "default": "btn-blue-corner-bl-down.png" },
+        "corner-br": { "default": "btn-blue-corner-br-down.png" },
+        "line-t": { "default": "btn-blue-line-t-down.png" },
+        "line-r": { "default": "btn-blue-line-r-down.png" },
+        "line-b": { "default": "btn-blue-line-b-down.png" },
+        "line-l": { "default": "btn-blue-line-l-down.png" }
+    },
+    "List": {
+        "bg": "sld-grey-bg.png",
+        "bgPadding": 5,
+        "corner": "sld-grey-corner.png",
+        "line": "sld-grey-line.png"
+    },
+    "Button": {
+        "bgPadding": 6,
+        "bg": "btn-grey-bg.png",
+        "corner-tl": { "default": "btn-grey-corner-tl.png" },
+        "corner-tr": { "default": "btn-grey-corner-tr.png" },
+        "corner-bl": { "default": "btn-grey-corner-bl.png", "down": "btn-grey-corner-bl-down.png" },
+        "corner-br": { "default": "btn-grey-corner-br.png", "down": "btn-grey-corner-br-down.png" },
+        "line-t": { "default": "btn-grey-line-t.png" },
+        "line-r": { "default": "btn-grey-line-r.png" },
+        "line-b": { "default": "btn-grey-line-b.png", "down": "btn-grey-line-b-down.png" },
+        "line-l": { "default": "btn-grey-line-l.png" }
+    },
+    "bluebutton": {
+        "bgPadding": 6,
+        "bg": "btn-blue-bg.png",
+        "corner-tl": { "default": "btn-blue-corner-tl.png" },
+        "corner-tr": { "default": "btn-blue-corner-tr.png" },
+        "corner-bl": { "default": "btn-blue-corner-bl.png", "down": "btn-blue-corner-bl-down.png" },
+        "corner-br": { "default": "btn-blue-corner-br.png", "down": "btn-blue-corner-br-down.png" },
+        "line-t": { "default": "btn-blue-line-t.png" },
+        "line-r": { "default": "btn-blue-line-r.png" },
+        "line-b": { "default": "btn-blue-line-b.png", "down": "btn-blue-line-b-down.png" },
+        "line-l": { "default": "btn-blue-line-l.png" }
+    },
+
+    "Slider": {
+        "bgPadding": 0,
+        "bg": "sld-grey-bg.png",
+        "corner": "sld-grey-corner.png",
+        "line": "sld-grey-line.png"
+    },
+    "slide": {
+        "image": { "default": "down-grey-slide.png", "down": "down-grey-slide-down.png" }
+    },
+   "Checkbox": {
+      "bgPadding": 6,
+      "bg": "wnd-grey-bg.png",
+      "corner": "wnd-grey-corner.png",
+      "line": "wnd-grey-line.png",
+      "checkmark": "chk-grey-checkmark.png",
+      "font": {
+         "color": "green"
+      }
+   },
+   "Radio": {
+      "bgPadding": 6,
+      "bg": "wnd-grey-bg.png",
+      "corner": "wnd-grey-corner.png",
+      "line": "wnd-grey-line.png",
+      "checkmark": "radio-grey-check.png"
+   }
+}

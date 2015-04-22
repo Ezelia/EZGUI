@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{F8D0F5B3-E8DC-4F86-9701-8CE4877D7445}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>1.4</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="assets\kenney-theme\images\bg.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-bg-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-bg.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-bl-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-bl.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-br-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-br.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-tl-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-tl.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-tr-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-corner-tr.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-b-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-b.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-l-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-l.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-r-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-r.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-t-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-blue-line-t.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-bg-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-bg.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-bl-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-bl.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-br-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-br.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-tl-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-tl.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-tr-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-corner-tr.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-b-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-b.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-l-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-l.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-r-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-r.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-t-down.png" />
+    <Content Include="assets\kenney-theme\images\btn-grey-line-t.png" />
+    <Content Include="assets\kenney-theme\images\chk-blue-checkmark.png" />
+    <Content Include="assets\kenney-theme\images\chk-grey-checkmark.png" />
+    <Content Include="assets\kenney-theme\images\chk-grey-corner.png" />
+    <Content Include="assets\kenney-theme\images\sld-grey-bg.png" />
+    <Content Include="assets\kenney-theme\images\sld-grey-corner.png" />
+    <Content Include="assets\kenney-theme\images\sld-grey-line.png" />
+    <Content Include="assets\kenney-theme\images\wnd-grey-bg.png" />
+    <Content Include="assets\kenney-theme\images\wnd-grey-corner.png" />
+    <Content Include="assets\kenney-theme\images\wnd-grey-line.png" />
+    <Content Include="assets\kenney-theme\kenney-theme.png" />
+    <Content Include="assets\kenney-theme\theme.tps" />
+    <Content Include="dist\EZGUI.js" />
+    <Content Include="examples\01-window\5-children-programmatically.html" />
+    <Content Include="examples\01-window\4-layout.html" />
+    <Content Include="examples\01-window\3-header.html" />
+    <Content Include="examples\01-window\2-children.html" />
+    <Content Include="examples\01-window\1-simple.html" />
+    <Content Include="examples\02-button\1-simple.html" />
+    <Content Include="examples\02-button\2-skin.html" />
+    <Content Include="examples\Phaser\index.html" />
+    <Content Include="examples\Pixi\index.html" />
+    <Content Include="examples\test\index.html" />
+    <Content Include="js\pixi2.dev.js" />
+    <Content Include="js\pixi3.dev.js" />
+    <TypeScriptCompile Include="src\components\Label.ts" />
+    <TypeScriptCompile Include="src\components\Slider.ts" />
+    <TypeScriptCompile Include="src\tween\Easing.ts" />
+    <TypeScriptCompile Include="src\tween\Interpolation.ts" />
+    <TypeScriptCompile Include="src\tween\Tween.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\kenney-theme\kenney-atlas.json" />
+    <Content Include="assets\kenney-theme\kenney-theme.json" />
+    <Content Include="Readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\Compatibility.ts" />
+    <TypeScriptCompile Include="src\components\Button.ts" />
+    <TypeScriptCompile Include="src\components\Checkbox.ts" />
+    <TypeScriptCompile Include="src\components\Layout.ts" />
+    <TypeScriptCompile Include="src\components\Radio.ts" />
+    <TypeScriptCompile Include="src\components\List.ts" />
+    <TypeScriptCompile Include="src\components\Window.ts" />
+    <TypeScriptCompile Include="src\EZGUI.ts" />
+    <TypeScriptCompile Include="src\GUISprite.ts" />
+    <TypeScriptCompile Include="lib\PIXI.d.ts" />
+    <TypeScriptCompile Include="src\MultistateSprite.ts" />
+    <TypeScriptCompile Include="src\MultistateTilingSprite.ts" />
+    <TypeScriptCompile Include="src\polyfills\performance.ts" />
+    <TypeScriptCompile Include="src\Theme.ts" />
+    <TypeScriptCompile Include="src\utils.ts" />
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>EZGUI</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>58331</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:58331/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptOutFile>dist\EZGUI.js</TypeScriptOutFile>
+    <TypeScriptGeneratesDeclarations>True</TypeScriptGeneratesDeclarations>
+    <TypeScriptOutDir>dist\</TypeScriptOutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>
