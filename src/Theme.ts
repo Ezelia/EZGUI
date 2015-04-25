@@ -3,7 +3,7 @@
 declare var Phaser;
 module EZGUI {
     export class Theme {
-        static imageComponents = ['bg', 'corner', 'line', 'side', 'image'];
+        static imageComponents = ['bg', 'corner', 'line', 'side', 'image', 'checkmark'];
         static imageStates = ['default', 'hover', 'down', 'checked'];
         static imageVariants = ['', 't', 'r', 'b', 'l', 'left', 'right', 'tl', 'tr', 'bl', 'br'];
 
@@ -137,9 +137,9 @@ module EZGUI {
 
                             for (var s = 0; s < Theme.imageStates.length; s++) {
                                 var st = Theme.imageStates[s];
-                                var str = item[cc + '-' + st];
+                                var str = item[cc][st];
                                 if (str) {
-                                    item[cc + '-' + st] = this.normalizeResPath(str);
+                                    item[cc][st] = this.normalizeResPath(str);
                                 }
 
                             }
@@ -311,29 +311,33 @@ module EZGUI {
                 if (res.indexOf('.json') > 0) atlases.push(res);
                 else images.push(res);                
             }
-
-
-            for (var i = 0; i < atlases.length; i++) {
-                var atlas = atlases[i];
-                atlasToload++;
-
-
-                (function (atlasUrl) {
-                    utils.loadJSON(atlasUrl, function (atlasjson) {
-                        images.push(_this.path + atlasjson.meta.image);
-                        atlasToload--;
-
-                        atlasData[atlasUrl] = atlasjson;
-
-                        if (atlasToload <= 0) {
-                            console.log('Atlas loaded ', images);
-                            loadImages();
-                        }
-                    });
-                })(atlas)
+            if (atlases.length <= 0) {
+                loadImages();
             }
 
+            else {
 
+                for (var i = 0; i < atlases.length; i++) {
+                    var atlas = atlases[i];
+                    atlasToload++;
+
+
+                    (function (atlasUrl) {
+                        utils.loadJSON(atlasUrl, function (atlasjson) {
+                            images.push(_this.path + atlasjson.meta.image);
+                            atlasToload--;
+
+                            atlasData[atlasUrl] = atlasjson;
+
+                            if (atlasToload <= 0) {
+                                console.log('Atlas loaded ', images);
+                                loadImages();
+                            }
+                        });
+                    })(atlas)
+                }
+
+            }
 
         }
 

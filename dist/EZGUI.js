@@ -593,7 +593,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.0.1';
+    EZGUI.VERSION = '0.0.2';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -732,9 +732,9 @@ var EZGUI;
                         else {
                             for (var s = 0; s < Theme.imageStates.length; s++) {
                                 var st = Theme.imageStates[s];
-                                var str = item[cc + '-' + st];
+                                var str = item[cc][st];
                                 if (str) {
-                                    item[cc + '-' + st] = this.normalizeResPath(str);
+                                    item[cc][st] = this.normalizeResPath(str);
                                 }
                             }
                         }
@@ -854,20 +854,25 @@ var EZGUI;
                 else
                     images.push(res);
             }
-            for (var i = 0; i < atlases.length; i++) {
-                var atlas = atlases[i];
-                atlasToload++;
-                (function (atlasUrl) {
-                    EZGUI.utils.loadJSON(atlasUrl, function (atlasjson) {
-                        images.push(_this.path + atlasjson.meta.image);
-                        atlasToload--;
-                        atlasData[atlasUrl] = atlasjson;
-                        if (atlasToload <= 0) {
-                            console.log('Atlas loaded ', images);
-                            loadImages();
-                        }
-                    });
-                })(atlas);
+            if (atlases.length <= 0) {
+                loadImages();
+            }
+            else {
+                for (var i = 0; i < atlases.length; i++) {
+                    var atlas = atlases[i];
+                    atlasToload++;
+                    (function (atlasUrl) {
+                        EZGUI.utils.loadJSON(atlasUrl, function (atlasjson) {
+                            images.push(_this.path + atlasjson.meta.image);
+                            atlasToload--;
+                            atlasData[atlasUrl] = atlasjson;
+                            if (atlasToload <= 0) {
+                                console.log('Atlas loaded ', images);
+                                loadImages();
+                            }
+                        });
+                    })(atlas);
+                }
             }
         };
         Theme.prototype.getSkin = function (skinId) {
@@ -881,7 +886,7 @@ var EZGUI;
             this.fixLimits(settings, skin);
             return settings;
         };
-        Theme.imageComponents = ['bg', 'corner', 'line', 'side', 'image'];
+        Theme.imageComponents = ['bg', 'corner', 'line', 'side', 'image', 'checkmark'];
         Theme.imageStates = ['default', 'hover', 'down', 'checked'];
         Theme.imageVariants = ['', 't', 'r', 'b', 'l', 'left', 'right', 'tl', 'tr', 'bl', 'br'];
         return Theme;
@@ -1419,17 +1424,17 @@ var EZGUI;
         //}
         GUISprite.prototype.getComponentConfig = function (component, part, side, state) {
             //var ctype = this.theme[type] || this.theme['default'];
-            var ctype = this.theme.getSkin(component);
-            if (!ctype)
+            var skin = this.theme.getSkin(component);
+            if (!skin)
                 return;
-            var scale = (ctype.scale == undefined) ? 1 : ctype.scale;
+            var scale = (skin.scale == undefined) ? 1 : skin.scale;
             var rotation = 0;
             //get configuration, if explicit configuration is defined then use it otherwise use theme config
             //var hasSide = this.settings[component + '-' + side] || ctype[component + '-' + side];
-            var cfg = this._settings[part + '-' + side] || ctype[part + '-' + side] || this._settings[part] || ctype[part];
+            var cfg = this._settings[part + '-' + side] || skin[part + '-' + side] || this._settings[part] || skin[part];
             if (!cfg)
                 return;
-            if (ctype[part] && !ctype[part + '-' + side]) {
+            if (skin[part] && !skin[part + '-' + side]) {
                 switch (side) {
                     case 'tr':
                     case 'r':
@@ -1448,7 +1453,7 @@ var EZGUI;
             cfg = this.getFrameConfig(cfg, state);
             cfg.rotation = cfg.rotation != undefined ? cfg.rotation : rotation;
             cfg.scale = cfg.scale != undefined ? cfg.scale : scale;
-            var bgPadding = this._settings['bgPadding'] != undefined ? this._settings['bgPadding'] : ctype['bgPadding'];
+            var bgPadding = this._settings['bgPadding'] != undefined ? this._settings['bgPadding'] : skin['bgPadding'];
             cfg.bgPadding = bgPadding != undefined ? bgPadding : 0;
             //cfg.hoverTexture = cfg.hover ? PIXI.Texture.fromFrame(cfg.hover) : cfg.texture;
             return cfg;
@@ -1459,8 +1464,8 @@ var EZGUI;
             if (!cfg || !cfg.texture)
                 return;
             //var ctype = this.theme[type] || this.theme['default'];
-            var ctype = this.theme.getSkin(component);
-            var hasSide = this._settings[part + '-' + side] || ctype[part + '-' + side];
+            var skin = this.theme.getSkin(component);
+            var hasSide = this._settings[part + '-' + side] || skin[part + '-' + side];
             //var sprite = new MultistateSprite(cfg.texture, cfg.textures);
             var sprite = new PIXI.Sprite(cfg.texture);
             sprite.rotation = cfg.rotation;
@@ -1607,10 +1612,14 @@ var EZGUI;
             var bg = new EZGUI.Compatibility.TilingSprite(cfg.texture, settings.width - cfg.bgPadding * 2, settings.height - cfg.bgPadding * 2);
             bg.position.x = cfg.bgPadding;
             bg.position.y = cfg.bgPadding;
-            //bg.scale.x = cfg.scale;
-            //bg.scale.y = cfg.scale;
-            //bg.width *= 1/cfg.scale;
-            //bg.height *= 1/cfg.scale;
+            if (settings.bgTiling) {
+                if (settings.bgTiling == "x") {
+                    bg.tileScale.y = (settings.height - cfg.bgPadding * 2) / cfg.texture.height;
+                }
+                if (settings.bgTiling == "y") {
+                    bg.tileScale.x = (settings.width - cfg.bgPadding * 2) / cfg.texture.width;
+                }
+            }
             return bg;
         };
         GUISprite.prototype.createThemeBackground = function (settings, state, leftSide, rightSide) {
@@ -1652,16 +1661,17 @@ var EZGUI;
             var controls = [];
             var leftSide = this.createThemeSide(settings, 'left', state);
             var rightSide = this.createThemeSide(settings, 'right', state);
-            if (!leftSide && !rightSide) {
-                var bg = this.createThemeTilableBackground(settings, state);
-                if (bg)
-                    controls.push(bg);
-            }
-            else {
-                var bg = this.createThemeBackground(settings, state, leftSide);
-                if (bg)
-                    controls.push(bg);
-            }
+            var bg = this.createThemeTilableBackground(settings, state);
+            if (bg)
+                controls.push(bg);
+            //if (!leftSide && !rightSide) {
+            //    var bg = this.createThemeTilableBackground(settings, state);
+            //    if (bg) controls.push(bg);
+            //}
+            //else {
+            //    var bg = this.createThemeBackground(settings, state, leftSide);
+            //    if (bg) controls.push(bg);
+            //}
             if (leftSide) {
                 controls.push(leftSide);
             }
@@ -2314,7 +2324,7 @@ var EZGUI;
                 _super.prototype.draw.call(this);
                 var cfg = this._settings.slide;
                 cfg.component = 'Button';
-                cfg.skin = 'slide';
+                cfg.skin = 'Slide';
                 cfg.position = { x: 0, y: 0 };
                 cfg.draggable = true;
                 //{ id: 'slide1', component: 'Button', position: { x: 0, y: 0 }, width: 30, height: this.height, draggable: true };
@@ -2357,6 +2367,7 @@ var EZGUI;
                 var headerCfg = this._settings.header;
                 if (headerCfg) {
                     headerCfg.height = headerCfg.height || 0;
+                    headerCfg.skin = headerCfg.skin || 'Header';
                     this._settings['padding-top'] = headerCfg.height;
                 }
                 _super.prototype.draw.call(this);

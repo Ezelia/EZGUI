@@ -91,7 +91,7 @@
         "corner": "sld-grey-corner.png",
         "line": "sld-grey-line.png"
     },
-    "slide": {
+    "Slide": {
         "image": { "default": "down-grey-slide.png", "down": "down-grey-slide-down.png" }
     },
    "Checkbox": {

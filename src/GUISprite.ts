@@ -290,9 +290,6 @@ module EZGUI {
             //handle drag stuff
             _this.on('mousedown', function (event: any) {
 
-
-                
-
                 if (_this.draggable) {
                     if (_this.mouseInObj(event, _this.draghandle)) {
                         
@@ -686,23 +683,23 @@ module EZGUI {
         //}
         protected getComponentConfig(component, part, side, state) {
             //var ctype = this.theme[type] || this.theme['default'];
-            var ctype = this.theme.getSkin(component);
-            if (!ctype) return;
+            var skin = this.theme.getSkin(component);
+            if (!skin) return;
             
 
-            var scale = (ctype.scale == undefined) ? 1 : ctype.scale;
+            var scale = (skin.scale == undefined) ? 1 : skin.scale;
             var rotation = 0;
 
             //get configuration, if explicit configuration is defined then use it otherwise use theme config
             //var hasSide = this.settings[component + '-' + side] || ctype[component + '-' + side];
 
-            var cfg = this._settings[part + '-' + side] || ctype[part + '-' + side] || this._settings[part] || ctype[part];
+            var cfg = this._settings[part + '-' + side] || skin[part + '-' + side] || this._settings[part] || skin[part];
 
             if (!cfg) return;
 
 
 
-            if (ctype[part] && !ctype[part + '-' + side]) {
+            if (skin[part] && !skin[part + '-' + side]) {
 
                 switch (side) {
 
@@ -733,7 +730,8 @@ module EZGUI {
             cfg.scale = cfg.scale != undefined ? cfg.scale : scale;
 
 
-            var bgPadding = this._settings['bgPadding'] != undefined ? this._settings['bgPadding'] : ctype['bgPadding'];
+            var bgPadding = this._settings['bgPadding'] != undefined ? this._settings['bgPadding'] : skin['bgPadding'];
+            
 
             cfg.bgPadding = bgPadding != undefined ? bgPadding : 0;
 
@@ -751,8 +749,8 @@ module EZGUI {
             if (!cfg || !cfg.texture) return;
 
             //var ctype = this.theme[type] || this.theme['default'];
-            var ctype = this.theme.getSkin(component);
-            var hasSide = this._settings[part + '-' + side] || ctype[part + '-' + side];
+            var skin = this.theme.getSkin(component);
+            var hasSide = this._settings[part + '-' + side] || skin[part + '-' + side];
 
             //var sprite = new MultistateSprite(cfg.texture, cfg.textures);
             var sprite = new PIXI.Sprite(cfg.texture);
@@ -954,11 +952,20 @@ module EZGUI {
             bg.position.x = cfg.bgPadding;
             bg.position.y = cfg.bgPadding;
 
-            //bg.scale.x = cfg.scale;
-            //bg.scale.y = cfg.scale;
 
-            //bg.width *= 1/cfg.scale;
-            //bg.height *= 1/cfg.scale;
+            if (settings.bgTiling) {
+                if (settings.bgTiling == "x") {
+                    
+                    bg.tileScale.y = (settings.height - cfg.bgPadding * 2) / cfg.texture.height;
+                }
+
+                if (settings.bgTiling == "y") {
+                    
+                    bg.tileScale.x = (settings.width - cfg.bgPadding * 2) / cfg.texture.width;
+                }
+
+            }
+
 
             
 
@@ -1020,15 +1027,18 @@ module EZGUI {
             var rightSide = this.createThemeSide(settings, 'right', state);
 
 
-            if (!leftSide && !rightSide) {
-                var bg = this.createThemeTilableBackground(settings, state);
-                if (bg) controls.push(bg);
-            }
-            else {
+            var bg = this.createThemeTilableBackground(settings, state);
+            if (bg) controls.push(bg);
 
-                var bg = this.createThemeBackground(settings, state, leftSide);
-                if (bg) controls.push(bg);
-            }
+
+            //if (!leftSide && !rightSide) {
+            //    var bg = this.createThemeTilableBackground(settings, state);
+            //    if (bg) controls.push(bg);
+            //}
+            //else {
+            //    var bg = this.createThemeBackground(settings, state, leftSide);
+            //    if (bg) controls.push(bg);
+            //}
 
 
             

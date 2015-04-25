@@ -136,9 +136,9 @@
         var guiObj = {
             id: 'main',
             component: 'Window',
-            header: { id: 'ttl', skin: 'blueheader', position: { x: 0, y: 0 }, height: 60, text: 'Title' },
+            header: { id: 'ttl', /*skin: 'blueheader', */position: { x: 0, y: 0 }, height: 60, text: 'Title' },
             draggable: true,
-            padding: 4,
+            /*padding: 4,*/
             position: { x: 0, y: 0 },
             width: 500,
             height: 500,
@@ -151,7 +151,7 @@
                   draggable: true,
                   text: 'btn',
                   component: 'Button',
-                  skin: 'bluebutton',
+                  /*skin: 'bluebutton',*/
                   position: { x: 450, y: 100 },
                   width: 190,
                   height: 80,
@@ -184,14 +184,24 @@
                     { id: 'sbtn5', component: 'Button', position: 'center', width: 90, height: 120 }
                 ]
             },
+              //{
+              //    id: 'btn2',
+              //    component: 'Slider',
+
+              //    slide: { width: 30, height: 40 },
+              //    position: 'center',
+              //    text: 'Checkbox',
+              //    width: 200,
+              //    height: 40
+
+              //}
               {
                   id: 'btn2',
-                  component: 'Slider',
-
-                  slide: { width: 30, height: 40 },
+                  component: 'Radio',
+                  group: 1,
                   position: 'center',
-                  text: 'Checkbox',
-                  width: 200,
+                  text: 'Radio',
+                  width: 40,
                   height: 40
 
               }
@@ -203,11 +213,11 @@
         // the second parameter is interactivity...
         var interactive = true;
         var renderer = PIXI.autoDetectRenderer(820, 800); //new PIXI.CanvasRenderer(820, 800);//
-        
+        renderer.backgroundColor = 0x4a4137;
 
 
 
-        var stage = new PIXI.Stage(0x000000, interactive);
+        var stage = new PIXI.Stage();
 
 
         //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
@@ -225,9 +235,10 @@
             //sprite.setTexture(texture2);
 
 
-            EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+            EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'
+                ,'../../assets/kenney-theme/kenney-theme.json'], function () {
 
-                guiContainer = EZGUI.create(guiObj, 'kenney-theme');//new EZGUI.GUISprite(guiObj, guiTheme);
+                    guiContainer = EZGUI.create(guiObj, 'metalworks-theme');//new EZGUI.GUISprite(guiObj, guiTheme);
                 //guiContainer.visible = false;
 
 

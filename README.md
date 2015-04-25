@@ -6,7 +6,7 @@ it's focused on PIXI 3 but support PIXI 2 to garantee seamless transition, and t
 
 Important 
 =========
-The code in this repository is still in developement, and some breaking changes may occure, this is version 0.0.1 :D
+The code in this repository is still in developement, and some breaking changes may occure
 
 
 Features
@@ -33,6 +33,8 @@ implemented components
 TODO 
 ----
  * bitmap fonts support
+ * tabs component
+ * scrollbar component
  * texts/texts alignements 
  * relative width/height 
  * Documentation for theme definition

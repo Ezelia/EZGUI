@@ -66,6 +66,9 @@
     <Content Include="assets\kenney-theme\images\wnd-grey-line.png" />
     <Content Include="assets\kenney-theme\kenney-theme.png" />
     <Content Include="assets\kenney-theme\theme.tps" />
+    <Content Include="assets\metalworks-theme\images\bg.png" />
+    <Content Include="assets\metalworks-theme\images\corner.png" />
+    <Content Include="assets\metalworks-theme\images\line.png" />
     <Content Include="dist\EZGUI.js" />
     <Content Include="examples\01-window\5-children-programmatically.html" />
     <Content Include="examples\01-window\4-layout.html" />
@@ -106,6 +109,9 @@
     <TypeScriptCompile Include="src\polyfills\performance.ts" />
     <TypeScriptCompile Include="src\Theme.ts" />
     <TypeScriptCompile Include="src\utils.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\metalworks-theme\metalworks-theme.json" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

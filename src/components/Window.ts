@@ -15,6 +15,7 @@ module EZGUI.Component {
             
             if (headerCfg) {
                 headerCfg.height = headerCfg.height || 0;
+                headerCfg.skin = headerCfg.skin || 'Header';
                 this._settings['padding-top'] = headerCfg.height;
                 
             }

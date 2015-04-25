@@ -79,7 +79,7 @@ module EZGUI.Component {
 
             var cfg: any = this._settings.slide;
             cfg.component = 'Button';
-            cfg.skin = 'slide';
+            cfg.skin = 'Slide';
             cfg.position = { x: 0, y: 0 };
             cfg.draggable = true;
 
