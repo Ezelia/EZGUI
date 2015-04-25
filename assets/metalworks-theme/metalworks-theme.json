@@ -1,0 +1,88 @@
+{
+    "__config__": {
+        "name": "metalworks-theme",
+        "resources": [
+            "./images/header-bg.png",
+            "./images/bg.png",
+            "./images/bg-down.png",
+            "./images/btn-bg.png",
+            "./images/btn-bg-down.png",
+            "./images/btn-corner.png",
+            "./images/btn-line.png",
+            "./images/darkcnt-corner.png",
+            "./images/darkcnt-line.png",
+            "./images/corner.png",
+            "./images/line.png",
+            "./images/chk-checkmark.png",
+            "./images/radio-checkmark.png"
+        ]
+    },
+
+    "default": {
+        "scale": 1,
+        "padding": 2,
+        "bg": { "default": "./images/bg.png", "down": "./images/bg-down.png" },
+        "bgPadding": 1,
+        "corner": "./images/corner.png",
+        "line": "./images/line.png",
+        "font": {
+            "size": "20px",
+            "family": "Arial",
+            "color": "black"
+        }
+    },
+    "Header": {
+        "bg": "./images/header-bg.png",
+        "bgTiling": "x",
+        "bgPadding": 0,
+        "corner": "",
+        "line": "",
+        "font": {
+            "color": "white"
+        }
+    },
+
+    "Button": {
+        "bg": { "default": "./images/btn-bg.png", "down": "./images/btn-bg-down.png" },
+        "bgTiling": "x",
+        "bgPadding": 2,
+        "corner": "./images/btn-corner.png",
+        "line": "./images/btn-line.png",
+        "font": {
+            "size": "20px",
+            "family": "Arial",
+            "color": "black"
+        }
+    },
+    "List": {
+        "bg": "./images/darkcnt-line.png",
+        "corner": "./images/darkcnt-corner.png",
+        "line": "./images/darkcnt-line.png"
+
+    },
+    "Slider": {
+        "bg": "./images/darkcnt-line.png",
+        "corner": "./images/darkcnt-corner.png",
+        "line": "./images/darkcnt-line.png"
+    },
+    "Slide": {
+        "bg": { "default": "./images/btn-bg.png", "down": "./images/btn-bg-down.png" },
+        "bgTiling": "x",
+        "bgPadding": 2,
+        "corner": "./images/btn-corner.png",
+        "line": "./images/btn-line.png"
+    },
+   "Checkbox": {
+        "bg": "./images/darkcnt-line.png",
+        "corner": "./images/darkcnt-corner.png",
+        "line": "./images/darkcnt-line.png",
+      "checkmark": "./images/chk-checkmark.png"
+   },
+   "Radio": {
+        "bg": "./images/darkcnt-line.png",
+        "corner": "./images/darkcnt-corner.png",
+        "line": "./images/darkcnt-line.png",
+      "checkmark": "./images/radio-checkmark.png"
+   }
+    
+}
