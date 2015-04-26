@@ -1,15 +1,15 @@
 {
     "__config__": {
-        "name": "kenney-theme",
+        "name": "kenney",
         "resources": [
-            "./kenney-atlas.json",
-            "./images/bg.png"
+            "./kenney-atlas.json"
         ]
     },
 
     "default": {
         "scale": 0.5,
-        "bg": "./images/bg.png",
+        "bg": "wnd-grey-bg.png",
+        "padding" : 2,
         "bgPadding": 6,
         "corner": "wnd-grey-corner.png",
         "line": "wnd-grey-line.png",
@@ -19,7 +19,7 @@
             "color": "black"
         }
     },
-    "Window": {
+    "Dialog": {
         "bgPadding": 5,
         "bg": "wnd-grey-bg.png",
         "corner": "wnd-grey-corner.png",

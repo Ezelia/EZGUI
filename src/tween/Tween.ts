@@ -122,7 +122,7 @@ module EZGUI {
 
         }
 
-        public start(time) {
+        public start(time?) {
 
             Tween.add(this);
 

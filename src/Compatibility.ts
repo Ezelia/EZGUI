@@ -81,36 +81,38 @@ if (PIXI.EventTarget) {
     PIXI.EventTarget.mixin(EZGUI.Compatibility.GUIDisplayObjectContainer.prototype);
 }
 else {
-    var proto:any = EZGUI.Compatibility.GUIDisplayObjectContainer.prototype;
+    if (EZGUI.Compatibility.isPhaser) {
+        var proto: any = EZGUI.Compatibility.GUIDisplayObjectContainer.prototype;
 
-    proto.on = function (event, fct) {
-        this._listeners = this._listeners || {};
-        this._listeners[event] = this._listeners[event] || [];
-        this._listeners[event].push(fct);
-    }
-    proto.off = function (event, fct?) {               
-        this._listeners = this._listeners || {};
-        if (!fct) {
-            this._listeners[event] = [];
+        proto.on = function (event, fct) {
+            this._listeners = this._listeners || {};
+            this._listeners[event] = this._listeners[event] || [];
+            this._listeners[event].push(fct);
         }
-        else {
-            if (event in this._listeners === false || typeof this._listeners[event] != 'array') return;
-            this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
-        }
-    }
-    proto.emit = function(event, ...args: any[]) {
-        this._listeners = this._listeners || {};
-        if (event in this._listeners !== false) {
-            for (var i = 0; i < this._listeners[event].length; i++) {
-                var fct = this._listeners[event][i];
-                fct.apply(this, args);
-
-                if (fct.__nbcalls__) {
-                    fct.__nbcalls__--;
-                    if (fct.__nbcalls__ <= 0) this.unbind(event, fct);
-                }
+        proto.off = function (event, fct?) {
+            this._listeners = this._listeners || {};
+            if (!fct) {
+                this._listeners[event] = [];
+            }
+            else {
+                if (event in this._listeners === false || typeof this._listeners[event] != 'array') return;
+                this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
             }
         }
+        proto.emit = function (event, ...args: any[]) {
+            this._listeners = this._listeners || {};
+            if (event in this._listeners !== false) {
+                for (var i = 0; i < this._listeners[event].length; i++) {
+                    var fct = this._listeners[event][i];
+                    fct.apply(this, args);
 
+                    if (fct.__nbcalls__) {
+                        fct.__nbcalls__--;
+                        if (fct.__nbcalls__ <= 0) this.unbind(event, fct);
+                    }
+                }
+            }
+
+        }
     }
 }

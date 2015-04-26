@@ -84,6 +84,7 @@
     <Content Include="js\pixi3.dev.js" />
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
+    <TypeScriptCompile Include="src\GUIObject.ts" />
     <TypeScriptCompile Include="src\tween\Easing.ts" />
     <TypeScriptCompile Include="src\tween\Interpolation.ts" />
     <TypeScriptCompile Include="src\tween\Tween.ts" />

@@ -9,10 +9,11 @@ Important
 The code in this repository is still in developement, and some breaking changes may occure
 
 
-Features
+Features.
 --------
  * Flexible configuration : EZGUI use a flexible JSON configuration format for theme an gui definitions
  * Themes : a default theme is provided but you can create your own custom theme.
+ * Tweening 
  * Extendable : you can easily create your own components
  
 

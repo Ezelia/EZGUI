@@ -36,7 +36,7 @@
             if (this._settings.layout && this._settings.layout[0] == null) {
                 this.dragConstraint = 'y';
                 this.horizontalSlide = false;
-                this.slotSize = (this._settings.width / this._settings.layout[1]);
+                this.slotSize = (this._settings.height / this._settings.layout[1]);
             }
 
             
@@ -45,6 +45,9 @@
             ssize = this.slotSize * this.container.children.length;
             this.dragXInterval[0] = - ssize + this._settings.width / 2;
             this.dragXInterval[1] = this._settings.width / 2;            
+
+            this.dragYInterval[0] = - ssize + this._settings.height / 2;
+            this.dragYInterval[1] = this._settings.height / 2;            
 
 
             super.handleEvents();
@@ -161,6 +164,9 @@
                 this.dragXInterval[0] = - ssize + this._settings.width / 2;
                 this.dragXInterval[1] = this._settings.width / 2;   
 
+                this.dragYInterval[0] = - ssize + this._settings.height / 2;
+                this.dragYInterval[1] = this._settings.height / 2;            
+
             }
 
             return result;
@@ -172,6 +178,10 @@
                 var ssize = this.slotSize * this.container.children.length;
                 this.dragXInterval[0] = - ssize + this._settings.width / 2;
                 this.dragXInterval[1] = this._settings.width / 2;   
+
+                this.dragYInterval[0] = - ssize + this._settings.height / 2;
+                this.dragYInterval[1] = this._settings.height / 2;            
+
 
                 this.draggable.position.x = 0;
                 this.draggable.position.y = 0;
@@ -201,8 +211,8 @@
             }
             if (_this.dragConstraint != 'x') {
                 var nextPos = _this.draggable.position.y + value;
-                nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                nextPos = Math.max(nextPos, _this.dragYInterval[0]);
+                nextPos = Math.min(nextPos, _this.dragYInterval[1]);
 
 
                 if (_this.tween) _this.tween.stop();
@@ -246,8 +256,8 @@
 
                 delay = delay || Math.abs(value - _this.draggable.position.y) * 5;
 
-                nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                nextPos = Math.max(nextPos, _this.dragYInterval[0]);
+                nextPos = Math.min(nextPos, _this.dragYInterval[1]);
 
 
                 if (_this.tween) _this.tween.stop();

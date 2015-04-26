@@ -136,7 +136,7 @@
         var guiObj = {
             id: 'main',
             component: 'Window',
-            header: { id: 'ttl', /*skin: 'blueheader', */position: { x: 0, y: 0 }, height: 60, text: 'Title' },
+            header: { id: 'ttl', /*skin: 'blueheader', */position: { x: 0, y: 0 }, height: 40, text: 'Header' },
             draggable: true,
             /*padding: 4,*/
             position: { x: 0, y: 0 },
@@ -148,11 +148,10 @@
             children: [
               {
                   id: 'btn1',
-                  draggable: true,
                   text: 'btn',
                   component: 'Button',
                   /*skin: 'bluebutton',*/
-                  position: { x: 450, y: 100 },
+                  position: { x: 150, y: 10 },
                   width: 190,
                   height: 80,
                   //left: './img/bt-left.png',
@@ -169,19 +168,15 @@
                 height: 150,
                 layout: [4, null],
                 children: [
-                    { id: 'sbtn1', component: 'Radio', group: 2, position: 'center', width: 90, height: 120 },
-                    null,
-                    { id: 'sbtn2', component: 'Radio', group: 1, position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn3', component: 'Radio', group: 1, position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 120 },
-                    { id: 'sbtn5', component: 'Button', position: 'center', width: 90, height: 120 }
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn4', component: 'Button', position: 'center', width: 90, height: 90 },
+                    { id: 'sbtn5', component: 'Button', position: 'center', width: 90, height: 90 }
                 ]
             },
               //{
@@ -235,11 +230,11 @@
             //sprite.setTexture(texture2);
 
 
-            EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'
-                ,'../../assets/kenney-theme/kenney-theme.json'], function () {
+            EZGUI.Theme.load([
+                '../../assets/metalworks-theme/metalworks-theme.json',
+                '../../assets/kenney-theme/kenney-theme.json'], function () {
 
-                    guiContainer = EZGUI.create(guiObj, 'metalworks-theme');//new EZGUI.GUISprite(guiObj, guiTheme);
-                //guiContainer.visible = false;
+                    guiContainer = EZGUI.create(guiObj, 'metalworks');
 
 
                 stage.addChild(guiContainer);

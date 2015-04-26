@@ -119,7 +119,7 @@ declare module EZGUI {
         private _onStopCallback;
         constructor(object: any);
         to(properties: any, duration: any): Tween;
-        start(time: any): Tween;
+        start(time?: any): Tween;
         stop(): Tween;
         stopChainedTweens(): void;
         delay(amount: any): Tween;
@@ -190,7 +190,29 @@ declare module EZGUI {
     }
 }
 declare module EZGUI {
-    class GUISprite extends EZGUI.Compatibility.GUIDisplayObjectContainer {
+    class GUIObject extends EZGUI.Compatibility.GUIDisplayObjectContainer {
+        guiID: string;
+        userData: any;
+        container: PIXI.DisplayObjectContainer;
+        guiParent: GUISprite;
+        constructor();
+        protected setupEvents(): void;
+        originalAddChildAt(child: any, index: any): PIXI.DisplayObject;
+        originalAddChild(child: any): PIXI.DisplayObject;
+        addChild(child: any): PIXI.DisplayObject;
+        removeChild(child: any): PIXI.DisplayObject;
+        mouseInObj(event: any, guiSprite: any): boolean;
+        canTrigger(event: any, guiSprite: any): boolean;
+        on(event: any, fn: any, context?: any): void;
+        off(event: any, fn?: any, context?: any): void;
+        preUpdate(): void;
+        update(): void;
+        postUpdate(): void;
+        destroy(): void;
+    }
+}
+declare module EZGUI {
+    class GUISprite extends GUIObject {
         _settings: any;
         themeId: any;
         guiID: string;
@@ -201,30 +223,16 @@ declare module EZGUI {
         dragXInterval: number[];
         dragYInterval: number[];
         theme: Theme;
-        container: PIXI.DisplayObjectContainer;
         protected textObj: any;
-        guiParent: GUISprite;
         text: string;
         constructor(_settings: any, themeId: any);
-        protected setupEvents(): void;
         setDraggable(val?: boolean): void;
         protected handleEvents(): void;
         protected draw(): void;
         protected drawText(): void;
-        originalAddChildAt(child: any, index: any): PIXI.DisplayObject;
-        originalAddChild(child: any): PIXI.DisplayObject;
-        addChild(child: any): PIXI.DisplayObject;
-        removeChild(child: any): PIXI.DisplayObject;
         createChild(childSettings: any, order?: any): any;
-        mouseInObj(event: any, guiSprite: any): boolean;
-        canTrigger(event: any, guiSprite: any): boolean;
         setState(state?: string): void;
-        on(event: any, fn: any, context?: any): void;
-        off(event: any, fn?: any, context?: any): void;
-        preUpdate(): void;
-        update(): void;
-        postUpdate(): void;
-        destroy(): void;
+        animateTo(x: any, y: any, time?: number, easing?: (k: any) => any, callback?: any): void;
         protected getFrameConfig(config: any, state: any): any;
         protected getComponentConfig(component: any, part: any, side: any, state: any): any;
         protected createThemeCorner(settings: any, part: any, side: any, state: any): PIXI.Sprite;
@@ -256,6 +264,7 @@ declare module EZGUI.Component {
         constructor(_settings: any, themeId: any);
         protected handleEvents(): void;
         protected draw(): void;
+        protected drawText(): void;
     }
 }
 declare module EZGUI.Component {

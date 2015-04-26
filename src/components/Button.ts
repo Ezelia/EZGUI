@@ -55,8 +55,8 @@ module EZGUI.Component {
             guiObj.on('mouseout', function () {
                 //console.log('out', _this.guiID);
                 //EZGUI.dragging = null;
-                //isDown = false;
-                //guiObj.setState('default');
+                isDown = false;
+                guiObj.setState('default');
             });
         }
 

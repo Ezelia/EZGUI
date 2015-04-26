@@ -70,13 +70,6 @@ module EZGUI.Component {
         protected draw() {
             super.draw();
 
-            if (this.textObj) {
-                this.textObj.position.x = this._settings.width;
-                this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height/2.5;
-                
-                //console.log(this.textObj.height, this.settings.height);
-            }
-
 
             this._checkmark = this.createThemeImage(this._settings, 'default', 'checkmark');
 
@@ -87,6 +80,19 @@ module EZGUI.Component {
                 this._checkmark.height = this._settings.height;
             }
         }
+
+        protected drawText() {
+            super.drawText();
+
+
+            if (this.textObj) {
+                this.textObj.position.x = this._settings.width;
+                this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
+                
+                //console.log(this.textObj.height, this.settings.height);
+            }
+        }
+
 
     }
 

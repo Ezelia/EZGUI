@@ -77,41 +77,43 @@ if (PIXI.EventTarget) {
     PIXI.EventTarget.mixin(EZGUI.Compatibility.GUIDisplayObjectContainer.prototype);
 }
 else {
-    var proto = EZGUI.Compatibility.GUIDisplayObjectContainer.prototype;
-    proto.on = function (event, fct) {
-        this._listeners = this._listeners || {};
-        this._listeners[event] = this._listeners[event] || [];
-        this._listeners[event].push(fct);
-    };
-    proto.off = function (event, fct) {
-        this._listeners = this._listeners || {};
-        if (!fct) {
-            this._listeners[event] = [];
-        }
-        else {
-            if (event in this._listeners === false || typeof this._listeners[event] != 'array')
-                return;
-            this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
-        }
-    };
-    proto.emit = function (event) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        this._listeners = this._listeners || {};
-        if (event in this._listeners !== false) {
-            for (var i = 0; i < this._listeners[event].length; i++) {
-                var fct = this._listeners[event][i];
-                fct.apply(this, args);
-                if (fct.__nbcalls__) {
-                    fct.__nbcalls__--;
-                    if (fct.__nbcalls__ <= 0)
-                        this.unbind(event, fct);
+    if (EZGUI.Compatibility.isPhaser) {
+        var proto = EZGUI.Compatibility.GUIDisplayObjectContainer.prototype;
+        proto.on = function (event, fct) {
+            this._listeners = this._listeners || {};
+            this._listeners[event] = this._listeners[event] || [];
+            this._listeners[event].push(fct);
+        };
+        proto.off = function (event, fct) {
+            this._listeners = this._listeners || {};
+            if (!fct) {
+                this._listeners[event] = [];
+            }
+            else {
+                if (event in this._listeners === false || typeof this._listeners[event] != 'array')
+                    return;
+                this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
+            }
+        };
+        proto.emit = function (event) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            this._listeners = this._listeners || {};
+            if (event in this._listeners !== false) {
+                for (var i = 0; i < this._listeners[event].length; i++) {
+                    var fct = this._listeners[event][i];
+                    fct.apply(this, args);
+                    if (fct.__nbcalls__) {
+                        fct.__nbcalls__--;
+                        if (fct.__nbcalls__ <= 0)
+                            this.unbind(event, fct);
+                    }
                 }
             }
-        }
-    };
+        };
+    }
 }
 var EZGUI;
 (function (EZGUI) {
@@ -278,7 +280,7 @@ var EZGUI;
         },
         Bounce: {
             In: function (k) {
-                return 1 - TWEEN.Easing.Bounce.Out(1 - k);
+                return 1 - EZGUI.Easing.Bounce.Out(1 - k);
             },
             Out: function (k) {
                 if (k < (1 / 2.75)) {
@@ -296,8 +298,8 @@ var EZGUI;
             },
             InOut: function (k) {
                 if (k < 0.5)
-                    return TWEEN.Easing.Bounce.In(k * 2) * 0.5;
-                return TWEEN.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+                    return EZGUI.Easing.Bounce.In(k * 2) * 0.5;
+                return EZGUI.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
             }
         }
     };
@@ -306,7 +308,7 @@ var EZGUI;
 (function (EZGUI) {
     EZGUI.Interpolation = {
         Linear: function (v, k) {
-            var m = v.length - 1, f = m * k, i = Math.floor(f), fn = TWEEN.Interpolation.Utils.Linear;
+            var m = v.length - 1, f = m * k, i = Math.floor(f), fn = EZGUI.Interpolation.Utils.Linear;
             if (k < 0)
                 return fn(v[0], v[1], f);
             if (k > 1)
@@ -314,14 +316,14 @@ var EZGUI;
             return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
         },
         Bezier: function (v, k) {
-            var b = 0, n = v.length - 1, pw = Math.pow, bn = TWEEN.Interpolation.Utils.Bernstein, i;
+            var b = 0, n = v.length - 1, pw = Math.pow, bn = EZGUI.Interpolation.Utils.Bernstein, i;
             for (i = 0; i <= n; i++) {
                 b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
             }
             return b;
         },
         CatmullRom: function (v, k) {
-            var m = v.length - 1, f = m * k, i = Math.floor(f), fn = TWEEN.Interpolation.Utils.CatmullRom;
+            var m = v.length - 1, f = m * k, i = Math.floor(f), fn = EZGUI.Interpolation.Utils.CatmullRom;
             if (v[0] === v[m]) {
                 if (k < 0)
                     i = Math.floor(f = m * (1 + k));
@@ -340,7 +342,7 @@ var EZGUI;
                 return (p1 - p0) * t + p0;
             },
             Bernstein: function (n, i) {
-                var fc = TWEEN.Interpolation.Utils.Factorial;
+                var fc = EZGUI.Interpolation.Utils.Factorial;
                 return fc(n) / fc(i) / fc(n - i);
             },
             Factorial: (function () {
@@ -939,41 +941,14 @@ var EZGUI;
 /// <reference path="compatibility.ts" />
 var EZGUI;
 (function (EZGUI) {
-    var GUISprite = (function (_super) {
-        __extends(GUISprite, _super);
-        function GUISprite(_settings, themeId) {
+    var GUIObject = (function (_super) {
+        __extends(GUIObject, _super);
+        function GUIObject() {
             _super.call(this);
-            this._settings = _settings;
-            this.themeId = themeId;
-            this.dragXInterval = [-Infinity, +Infinity];
-            this.dragYInterval = [-Infinity, +Infinity];
-            this.userData = _settings.userData;
-            if (themeId instanceof EZGUI.Theme)
-                this.theme = themeId;
-            else
-                this.theme = EZGUI.themes[themeId];
-            if (!this.theme || !this.theme.ready) {
-                console.error('[EZGUI ERROR]', 'Theme is not ready, nothing to display');
-                this.theme = new EZGUI.Theme({});
-            }
-            _settings = this.theme.applySkin(_settings);
-            this.draw();
-            this.setupEvents();
-            this.handleEvents();
+            this.container = new EZGUI.Compatibility.GUIContainer();
+            this.addChild(this.container);
         }
-        Object.defineProperty(GUISprite.prototype, "text", {
-            get: function () {
-                if (this.textObj)
-                    return this.textObj.text;
-            },
-            set: function (val) {
-                if (this.textObj)
-                    this.textObj.text = val;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        GUISprite.prototype.setupEvents = function () {
+        GUIObject.prototype.setupEvents = function () {
             var _this = this;
             //var _this:any = this;
             _this.interactive = true;
@@ -1106,6 +1081,149 @@ var EZGUI;
                 };
             }
         };
+        GUIObject.prototype.originalAddChildAt = function (child, index) {
+            return _super.prototype.addChildAt.call(this, child, index);
+        };
+        GUIObject.prototype.originalAddChild = function (child) {
+            return this.originalAddChildAt(child, this.children.length);
+        };
+        GUIObject.prototype.addChild = function (child) {
+            if (child instanceof EZGUI.GUISprite) {
+                //return this.container.addChild(child);
+                child.guiParent = this;
+                if (child.phaserGroup)
+                    return this.container.addChild(child.phaserGroup);
+                else
+                    return this.container.addChild(child);
+            }
+            else {
+                return _super.prototype.addChild.call(this, child);
+            }
+        };
+        GUIObject.prototype.removeChild = function (child) {
+            if (child instanceof EZGUI.GUISprite) {
+                child.guiParent = null;
+                if (child.phaserGroup)
+                    return this.container.removeChild(child.phaserGroup);
+                else
+                    return this.container.removeChild(child);
+            }
+            else {
+                return _super.prototype.removeChild.call(this, child);
+            }
+        };
+        GUIObject.prototype.mouseInObj = function (event, guiSprite) {
+            var data = event.data || event;
+            var clientpos = EZGUI.utils.getClientXY(event);
+            var origEvt = event;
+            if (data.originalEvent && data.originalEvent.changedTouches && data.originalEvent.changedTouches.length > 0) {
+                origEvt = data.originalEvent.changedTouches[0];
+            }
+            else if (data.originalEvent && data.originalEvent.touches && data.originalEvent.touches.length > 0) {
+                origEvt = data.originalEvent.touches[0];
+            }
+            else {
+                if (data.originalEvent)
+                    origEvt = data.originalEvent;
+            }
+            var bcr = origEvt.target.getBoundingClientRect();
+            var px = clientpos.x - bcr.left;
+            var py = clientpos.y - bcr.top;
+            var absPos = EZGUI.utils.getAbsPos(guiSprite);
+            if (px < absPos.x || px > absPos.x + guiSprite.width || py < absPos.y || py > absPos.y + guiSprite.height)
+                return false;
+            return true;
+        };
+        GUIObject.prototype.canTrigger = function (event, guiSprite) {
+            var data = event.data || event;
+            var clientpos = EZGUI.utils.getClientXY(event);
+            var origEvt = event;
+            if (data.originalEvent && data.originalEvent.changedTouches && data.originalEvent.changedTouches.length > 0) {
+                origEvt = data.originalEvent.changedTouches[0];
+            }
+            else if (data.originalEvent && data.originalEvent.touches && data.originalEvent.touches.length > 0) {
+                origEvt = data.originalEvent.touches[0];
+            }
+            else {
+                if (data.originalEvent)
+                    origEvt = data.originalEvent;
+            }
+            var bcr = origEvt.target.getBoundingClientRect();
+            var px = clientpos.x - bcr.left;
+            var py = clientpos.y - bcr.top;
+            //var absPos = utils.getAbsPos(guiSprite);
+            //if (px < absPos.x || px > absPos.x + guiSprite.width || py < absPos.y || py > absPos.y + guiSprite.height) return false;
+            //check if click is in visible zone
+            var masked = EZGUI.utils.isMasked(px, py, guiSprite);
+            return !masked;
+        };
+        GUIObject.prototype.on = function (event, fn, context) {
+            return _super.prototype.on.call(this, 'ezgui:' + event, fn, context);
+            //super.on('gui:' + event, cb);
+        };
+        GUIObject.prototype.off = function (event, fn, context) {
+            if (EZGUI.Compatibility.PIXIVersion == 2) {
+                if (fn == null && context == null) {
+                    this._listeners['ezgui:' + event] = [];
+                    return;
+                }
+            }
+            return _super.prototype.off.call(this, 'ezgui:' + event, fn, context);
+            //super.on('gui:' + event, cb);
+        };
+        GUIObject.prototype.preUpdate = function () {
+        };
+        GUIObject.prototype.update = function () {
+        };
+        GUIObject.prototype.postUpdate = function () {
+        };
+        GUIObject.prototype.destroy = function () {
+        };
+        return GUIObject;
+    })(EZGUI.Compatibility.GUIDisplayObjectContainer);
+    EZGUI.GUIObject = GUIObject;
+    EZGUI.registerComponents(EZGUI.GUISprite, 'default');
+})(EZGUI || (EZGUI = {}));
+/// <reference path="guiobject.ts" />
+var EZGUI;
+(function (EZGUI) {
+    var GUISprite = (function (_super) {
+        __extends(GUISprite, _super);
+        function GUISprite(_settings, themeId) {
+            _super.call(this);
+            this._settings = _settings;
+            this.themeId = themeId;
+            this.dragXInterval = [-Infinity, +Infinity];
+            this.dragYInterval = [-Infinity, +Infinity];
+            //this.container = new Compatibility.GUIContainer();
+            //this.addChild(this.container);
+            this.userData = _settings.userData;
+            if (themeId instanceof EZGUI.Theme)
+                this.theme = themeId;
+            else
+                this.theme = EZGUI.themes[themeId];
+            if (!this.theme || !this.theme.ready) {
+                console.error('[EZGUI ERROR]', 'Theme is not ready, nothing to display');
+                this.theme = new EZGUI.Theme({});
+            }
+            _settings = this.theme.applySkin(_settings);
+            this.draw();
+            this.drawText();
+            this.setupEvents();
+            this.handleEvents();
+        }
+        Object.defineProperty(GUISprite.prototype, "text", {
+            get: function () {
+                if (this.textObj)
+                    return this.textObj.text;
+            },
+            set: function (val) {
+                if (this.textObj)
+                    this.textObj.text = val;
+            },
+            enumerable: true,
+            configurable: true
+        });
         GUISprite.prototype.setDraggable = function (val) {
             if (val === void 0) { val = true; }
             if (val)
@@ -1209,19 +1327,11 @@ var EZGUI;
                         sprite.addState(stateId, texture);
                     }
                 }
-                //var stateId = 'default';
-                //var container = new PIXI.DisplayObjectContainer();
-                //var controls = this.createVisuals(settings, stateId);
-                //for (var i = 0; i < controls.length; i++) {
-                //    container.addChild(controls[i]);
-                //}
-                //this.addChild(container);
-                //PIXI.Sprite.call( this, texture);
                 var padding = settings.padding || 0;
                 this.position.x = settings.position.x;
                 this.position.y = settings.position.y;
-                this.container = new EZGUI.Compatibility.GUIContainer();
-                this.addChild(this.container);
+                //this.container = new Compatibility.GUIContainer();
+                //this.addChild(this.container);
                 if (settings.children) {
                     for (var i = 0; i < settings.children.length; i++) {
                         var btnObj = JSON.parse(JSON.stringify(settings.children[i]));
@@ -1236,7 +1346,6 @@ var EZGUI;
                     }
                 }
             }
-            this.drawText();
         };
         GUISprite.prototype.drawText = function () {
             if (this._settings && this._settings.text) {
@@ -1248,38 +1357,7 @@ var EZGUI;
                 this.textObj.anchor.x = 0;
                 this.textObj.anchor.y = 0;
                 //text.height = this.height;
-                this.container.addChild(this.textObj);
-            }
-        };
-        GUISprite.prototype.originalAddChildAt = function (child, index) {
-            return _super.prototype.addChildAt.call(this, child, index);
-        };
-        GUISprite.prototype.originalAddChild = function (child) {
-            return this.originalAddChildAt(child, this.children.length);
-        };
-        GUISprite.prototype.addChild = function (child) {
-            if (child instanceof GUISprite) {
-                //return this.container.addChild(child);
-                child.guiParent = this;
-                if (child.phaserGroup)
-                    return this.container.addChild(child.phaserGroup);
-                else
-                    return this.container.addChild(child);
-            }
-            else {
-                return _super.prototype.addChild.call(this, child);
-            }
-        };
-        GUISprite.prototype.removeChild = function (child) {
-            if (child instanceof GUISprite) {
-                child.guiParent = null;
-                if (child.phaserGroup)
-                    return this.container.removeChild(child.phaserGroup);
-                else
-                    return this.container.removeChild(child);
-            }
-            else {
-                return _super.prototype.removeChild.call(this, child);
+                this.addChild(this.textObj);
             }
         };
         GUISprite.prototype.createChild = function (childSettings, order) {
@@ -1298,51 +1376,6 @@ var EZGUI;
             var child = EZGUI.create(childSettings, this.theme);
             return child;
         };
-        GUISprite.prototype.mouseInObj = function (event, guiSprite) {
-            var data = event.data || event;
-            var clientpos = EZGUI.utils.getClientXY(event);
-            var origEvt = event;
-            if (data.originalEvent && data.originalEvent.changedTouches && data.originalEvent.changedTouches.length > 0) {
-                origEvt = data.originalEvent.changedTouches[0];
-            }
-            else if (data.originalEvent && data.originalEvent.touches && data.originalEvent.touches.length > 0) {
-                origEvt = data.originalEvent.touches[0];
-            }
-            else {
-                if (data.originalEvent)
-                    origEvt = data.originalEvent;
-            }
-            var bcr = origEvt.target.getBoundingClientRect();
-            var px = clientpos.x - bcr.left;
-            var py = clientpos.y - bcr.top;
-            var absPos = EZGUI.utils.getAbsPos(guiSprite);
-            if (px < absPos.x || px > absPos.x + guiSprite.width || py < absPos.y || py > absPos.y + guiSprite.height)
-                return false;
-            return true;
-        };
-        GUISprite.prototype.canTrigger = function (event, guiSprite) {
-            var data = event.data || event;
-            var clientpos = EZGUI.utils.getClientXY(event);
-            var origEvt = event;
-            if (data.originalEvent && data.originalEvent.changedTouches && data.originalEvent.changedTouches.length > 0) {
-                origEvt = data.originalEvent.changedTouches[0];
-            }
-            else if (data.originalEvent && data.originalEvent.touches && data.originalEvent.touches.length > 0) {
-                origEvt = data.originalEvent.touches[0];
-            }
-            else {
-                if (data.originalEvent)
-                    origEvt = data.originalEvent;
-            }
-            var bcr = origEvt.target.getBoundingClientRect();
-            var px = clientpos.x - bcr.left;
-            var py = clientpos.y - bcr.top;
-            //var absPos = utils.getAbsPos(guiSprite);
-            //if (px < absPos.x || px > absPos.x + guiSprite.width || py < absPos.y || py > absPos.y + guiSprite.height) return false;
-            //check if click is in visible zone
-            var masked = EZGUI.utils.isMasked(px, py, guiSprite);
-            return !masked;
-        };
         GUISprite.prototype.setState = function (state) {
             if (state === void 0) { state = 'default'; }
             for (var i = 0; i < this.children.length; i++) {
@@ -1352,46 +1385,18 @@ var EZGUI;
                 }
             }
         };
-        GUISprite.prototype.on = function (event, fn, context) {
-            return _super.prototype.on.call(this, 'ezgui:' + event, fn, context);
-            //super.on('gui:' + event, cb);
-        };
-        GUISprite.prototype.off = function (event, fn, context) {
-            if (EZGUI.Compatibility.PIXIVersion == 2) {
-                if (fn == null && context == null) {
-                    this._listeners['ezgui:' + event] = [];
-                    return;
-                }
+        GUISprite.prototype.animateTo = function (x, y, time, easing, callback) {
+            if (time === void 0) { time = 1000; }
+            if (easing === void 0) { easing = EZGUI.Easing.Linear.None; }
+            easing = easing || EZGUI.Easing.Linear.None;
+            if (typeof callback == 'function') {
+                var tween = new EZGUI.Tween(this.position).to({ x: x, y: y }, time).easing(easing).onComplete(callback);
             }
-            return _super.prototype.off.call(this, 'ezgui:' + event, fn, context);
-            //super.on('gui:' + event, cb);
+            else {
+                var tween = new EZGUI.Tween(this.position).to({ x: x, y: y }, time).easing(easing);
+            }
+            tween.start();
         };
-        GUISprite.prototype.preUpdate = function () {
-        };
-        GUISprite.prototype.update = function () {
-        };
-        GUISprite.prototype.postUpdate = function () {
-        };
-        GUISprite.prototype.destroy = function () {
-        };
-        //protected getFrameConfig(config) {
-        //    var cfg = JSON.parse(JSON.stringify(config));//if (cfg.texture instanceof PIXI.Texture) return cfg;
-        //    if (typeof cfg == 'string') {
-        //        cfg = { default: cfg };
-        //    }          
-        //    //add state testures
-        //    //if (!cfg['default']) cfg['default'] = cfg.img;
-        //    if (!cfg.out) cfg.out = cfg.default;
-        //    if (!cfg.click) cfg.click = cfg.hover;
-        //    var texture = PIXI.Texture.fromFrame(cfg.default);
-        //    var textures = {};
-        //    for (var t in cfg) {
-        //        textures[t] = cfg[t] ? PIXI.Texture.fromFrame(cfg[t]) : texture;
-        //    }
-        //    cfg.texture = texture;
-        //    cfg.textures = textures;
-        //    return cfg;
-        //}
         GUISprite.prototype.getFrameConfig = function (config, state) {
             var cfg = JSON.parse(JSON.stringify(config)); //if (cfg.texture instanceof PIXI.Texture) return cfg;
             if (typeof cfg == 'string') {
@@ -1404,24 +1409,6 @@ var EZGUI;
             cfg.texture = texture;
             return cfg;
         };
-        //protected getTilingFrameConfig(config) {
-        //    var cfg = JSON.parse(JSON.stringify(config));//if (cfg.texture instanceof PIXI.Texture) return cfg;
-        //    if (typeof cfg == 'string') {
-        //        cfg = { default: cfg };
-        //    }          
-        //    //add state testures
-        //    //if (!cfg['default']) cfg['default'] = cfg.img;
-        //    if (!cfg.out) cfg.out = cfg.default;
-        //    if (!cfg.click) cfg.click = cfg.hover;
-        //    var texture = PIXI.Texture.fromFrame(cfg.default);
-        //    var textures = {};
-        //    for (var t in cfg) {
-        //        textures[t] = cfg[t] ? PIXI.Texture.fromFrame(cfg[t]) : texture;
-        //    }
-        //    cfg.texture = texture;
-        //    cfg.textures = textures;
-        //    return cfg;
-        //}
         GUISprite.prototype.getComponentConfig = function (component, part, side, state) {
             //var ctype = this.theme[type] || this.theme['default'];
             var skin = this.theme.getSkin(component);
@@ -1711,7 +1698,7 @@ var EZGUI;
             return controls;
         };
         return GUISprite;
-    })(EZGUI.Compatibility.GUIDisplayObjectContainer);
+    })(EZGUI.GUIObject);
     EZGUI.GUISprite = GUISprite;
     EZGUI.registerComponents(GUISprite, 'default');
 })(EZGUI || (EZGUI = {}));
@@ -1760,8 +1747,8 @@ var EZGUI;
                 guiObj.on('mouseout', function () {
                     //console.log('out', _this.guiID);
                     //EZGUI.dragging = null;
-                    //isDown = false;
-                    //guiObj.setState('default');
+                    isDown = false;
+                    guiObj.setState('default');
                 });
             };
             Button.prototype.draw = function () {
@@ -1829,16 +1816,19 @@ var EZGUI;
             };
             Checkbox.prototype.draw = function () {
                 _super.prototype.draw.call(this);
-                if (this.textObj) {
-                    this.textObj.position.x = this._settings.width;
-                    this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
-                }
                 this._checkmark = this.createThemeImage(this._settings, 'default', 'checkmark');
                 if (this._checkmark != null) {
                     this.addChild(this._checkmark);
                     this._checkmark.visible = false;
                     this._checkmark.width = this._settings.width;
                     this._checkmark.height = this._settings.height;
+                }
+            };
+            Checkbox.prototype.drawText = function () {
+                _super.prototype.drawText.call(this);
+                if (this.textObj) {
+                    this.textObj.position.x = this._settings.width;
+                    this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
                 }
             };
             return Checkbox;
@@ -2049,12 +2039,14 @@ var EZGUI;
                 if (this._settings.layout && this._settings.layout[0] == null) {
                     this.dragConstraint = 'y';
                     this.horizontalSlide = false;
-                    this.slotSize = (this._settings.width / this._settings.layout[1]);
+                    this.slotSize = (this._settings.height / this._settings.layout[1]);
                 }
                 //console.log(' >>>> ', this.draggable.width, this._settings.width);
                 ssize = this.slotSize * this.container.children.length;
                 this.dragXInterval[0] = -ssize + this._settings.width / 2;
                 this.dragXInterval[1] = this._settings.width / 2;
+                this.dragYInterval[0] = -ssize + this._settings.height / 2;
+                this.dragYInterval[1] = this._settings.height / 2;
                 _super.prototype.handleEvents.call(this);
                 guiObj.on('mousedown', function (event) {
                     if (_this.decelerationItv) {
@@ -2137,6 +2129,8 @@ var EZGUI;
                     var ssize = this.slotSize * this.container.children.length;
                     this.dragXInterval[0] = -ssize + this._settings.width / 2;
                     this.dragXInterval[1] = this._settings.width / 2;
+                    this.dragYInterval[0] = -ssize + this._settings.height / 2;
+                    this.dragYInterval[1] = this._settings.height / 2;
                 }
                 return result;
             };
@@ -2146,6 +2140,8 @@ var EZGUI;
                     var ssize = this.slotSize * this.container.children.length;
                     this.dragXInterval[0] = -ssize + this._settings.width / 2;
                     this.dragXInterval[1] = this._settings.width / 2;
+                    this.dragYInterval[0] = -ssize + this._settings.height / 2;
+                    this.dragYInterval[1] = this._settings.height / 2;
                     this.draggable.position.x = 0;
                     this.draggable.position.y = 0;
                 }
@@ -2165,8 +2161,8 @@ var EZGUI;
                 }
                 if (_this.dragConstraint != 'x') {
                     var nextPos = _this.draggable.position.y + value;
-                    nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                    nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                    nextPos = Math.max(nextPos, _this.dragYInterval[0]);
+                    nextPos = Math.min(nextPos, _this.dragYInterval[1]);
                     if (_this.tween)
                         _this.tween.stop();
                     _this.tween = new EZGUI.Tween(_this.container.position).to({ y: nextPos }, delay).easing(EZGUI.Easing.Cubic.Out);
@@ -2188,8 +2184,8 @@ var EZGUI;
                 if (_this.dragConstraint != 'x') {
                     var nextPos = value;
                     delay = delay || Math.abs(value - _this.draggable.position.y) * 5;
-                    nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                    nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                    nextPos = Math.max(nextPos, _this.dragYInterval[0]);
+                    nextPos = Math.min(nextPos, _this.dragYInterval[1]);
                     if (_this.tween)
                         _this.tween.stop();
                     _this.tween = new EZGUI.Tween(_this.container.position).to({ y: nextPos }, delay).easing(EZGUI.Easing.Cubic.Out);

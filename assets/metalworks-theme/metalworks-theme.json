@@ -1,6 +1,6 @@
 {
     "__config__": {
-        "name": "metalworks-theme",
+        "name": "metalworks",
         "resources": [
             "./images/header-bg.png",
             "./images/bg.png",
