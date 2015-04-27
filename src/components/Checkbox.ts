@@ -4,9 +4,9 @@
 
 module EZGUI.Component {
     export class Checkbox extends Button {
-        private _checked: boolean;
+        protected _checked: boolean;
         
-        private _checkmark: any;
+        protected _checkmark: any;
         
         get checked(): boolean {
             return this._checked;
@@ -24,6 +24,29 @@ module EZGUI.Component {
             this._checked = chk;
         }
           
+
+        get text(): string {
+            if (this.textObj) return this.textObj.text;
+        }
+        set text(val: string) {
+            if (this.textObj) {
+                this.textObj.text = val;
+
+                if (this._settings.anchor) {
+                    this.textObj.position.x = 0;
+                    this.textObj.position.y = 0;
+                    this.textObj.anchor.x = this._settings.anchor.x;
+                    this.textObj.anchor.y = this._settings.anchor.y;
+                }
+                else {
+                    this.textObj.position.x = this._settings.width;
+                    this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
+                    this.textObj.anchor.x = 0;
+                    this.textObj.anchor.y = 0;
+                }
+
+            }
+        }   
 
         constructor(public _settings, public themeId) {
             super(_settings, themeId);
@@ -78,6 +101,11 @@ module EZGUI.Component {
                 this._checkmark.visible = false;
                 this._checkmark.width = this._settings.width;
                 this._checkmark.height = this._settings.height;
+
+                if (this._settings.anchor) {
+                    this._checkmark.anchor.x = this._settings.anchor.x;
+                    this._checkmark.anchor.y = this._settings.anchor.y;
+                }
             }
         }
 

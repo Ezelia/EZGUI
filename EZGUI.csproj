@@ -77,6 +77,8 @@
     <Content Include="examples\01-window\1-simple.html" />
     <Content Include="examples\02-button\1-simple.html" />
     <Content Include="examples\02-button\2-skin.html" />
+    <Content Include="examples\game\gui.js" />
+    <Content Include="examples\game\index.html" />
     <Content Include="examples\Phaser\index.html" />
     <Content Include="examples\Pixi\index.html" />
     <Content Include="examples\test\index.html" />

@@ -21,27 +21,35 @@
 
         protected handleEvents() {
             
-            var guiObj: any = this;
-            var _this = this;
+            var _this: any = this;
+            
 
             var ssize;
             this.draggable = this.container;
-            if (this._settings.layout && this._settings.layout[1] == null) {
+            if (_this._settings.dragY === false || ( this._settings.layout && this._settings.layout[1] == null)) {
                 this.dragConstraint = 'x';
                 this.horizontalSlide = true;
                 this.slotSize = (this._settings.width / this._settings.layout[0]);
                 
             }
 
-            if (this._settings.layout && this._settings.layout[0] == null) {
+            if (_this._settings.dragX === false || (this._settings.layout && this._settings.layout[0] == null)) {
                 this.dragConstraint = 'y';
                 this.horizontalSlide = false;
                 this.slotSize = (this._settings.height / this._settings.layout[1]);
             }
 
+            if (this._settings.layout && this._settings.layout[0] != null && this._settings.layout[1] != null) {
+                if (_this._settings.dragY === false) {
+                    this.slotSize = this.slotSize / this._settings.layout[1];
+                }
+                if (_this._settings.dragX === false) {
+                    this.slotSize = this.slotSize / this._settings.layout[0];
+                }
+            }
             
             //console.log(' >>>> ', this.draggable.width, this._settings.width);
-
+            
             ssize = this.slotSize * this.container.children.length;
             this.dragXInterval[0] = - ssize + this._settings.width / 2;
             this.dragXInterval[1] = this._settings.width / 2;            
@@ -53,7 +61,7 @@
             super.handleEvents();
 
 
-            guiObj.on('mousedown', function (event: any) {
+            _this.on('mousedown', function (event: any) {
                 if (_this.decelerationItv) {
                     clearInterval(_this.decelerationItv);
                     _this.decelerationItv = null
@@ -70,7 +78,7 @@
                 }
             });
 
-            guiObj.on('mouseup', function (event: any) {
+            _this.on('mouseup', function (event: any) {
                 if (_this.decelerationItv) return;
 
 
@@ -83,11 +91,8 @@
 
 
             });
+            
 
-
-
-            //FIXME : Pixi 2 do not trigger mousedown on children events
-            //TODO : check mousedown position and propagate the event to the child
         }
 
         private decelerateScroll(endPos) {
@@ -171,6 +176,7 @@
 
             return result;
         }
+
         public removeChild(child) {
             var result = super.removeChild(child);
             if (child instanceof GUISprite) {

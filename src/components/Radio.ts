@@ -2,47 +2,73 @@
 
 
 module EZGUI.Component {
-    var radioGroup:any = {};
+    
     export class Radio extends Checkbox {
         
         public group = null;
+
+        static groups: any = {};
+        static selectedFrom: any = {};
+
+
+        get checked(): boolean {
+            return this._checked;
+        }
+        set checked(chk: boolean) {
+            
+            if (chk) {
+                this.clearGroup();
+                this.setState('checked');
+                if (this._checkmark) this._checkmark.visible = true;
+
+
+
+
+            }
+            else {
+                this.setState('default');
+                if (this._checkmark) this._checkmark.visible = false;
+            }
+
+            this._checked = chk;
+            Radio.selectedFrom[this.group] = this;
+
+        }
 
         constructor(public _settings, public themeId) {
             super(_settings, themeId);
             this.group = _settings.group;
 
-            if (!radioGroup[this.group]) radioGroup[this.group] = [];
+            if (!Radio.groups[this.group]) Radio.groups[this.group] = [];
 
-            radioGroup[this.group].push(this);
+            Radio.groups[this.group].push(this);
+
+            if (this._settings.checked === true) 
+                this.checked = true;
+            
         }
 
         private clearGroup() {
-            if (!radioGroup[this.group]) return;
+            if (!Radio.groups[this.group]) return;
 
-            for (var i = 0; i < radioGroup[this.group].length; i++) {
-                radioGroup[this.group][i].checked = false;
+            for (var i = 0; i < Radio.groups[this.group].length; i++) {
+                Radio.groups[this.group][i].checked = false;
             }
         }
 
         protected handleEvents() {
             super.handleEvents();
-            var guiObj: any = this;
-            var _this = this;
+            var _this: any = this;
 
-            var _this = this;
-            var guiObj: any = this;
 
             //clear default action
-            guiObj.off('click');
+            _this.off('click');
 
 
-            guiObj.on('click', function () {
-                if (_this.group == null) return;
-                _this.clearGroup();
+            _this.on('click', function (event) {
                 _this.checked = true;
-
-
-            })
+                _this.emit('ezgui:checked', event, _this);
+            });
         }
         protected draw() {
             super.draw();

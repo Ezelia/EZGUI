@@ -532,6 +532,7 @@ declare module PIXI {
         removeStageReference(): void;
         setChildIndex(child: DisplayObject, index: number): void;
         swapChildren(child: DisplayObject, child2: DisplayObject): void;
+        public emit(event, fn?): void;
 
     }
 

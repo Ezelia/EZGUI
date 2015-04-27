@@ -14,13 +14,15 @@ module EZGUI.Compatibility {
     }
 
 
-    export class GUIContainer extends PIXI.DisplayObjectContainer {}
+    export class GUIContainer extends PIXI.DisplayObjectContainer {
+
+    }
 
     if (PIXIVersion == 3) {
-        Compatibility['GUIContainer'] = PIXI['Container'];
+        Compatibility['GUIContainer'] = <any>PIXI['Container'];
     }
     else {
-        Compatibility['GUIContainer'] = PIXI['DisplayObjectContainer'];
+        Compatibility['GUIContainer'] = <any>PIXI['DisplayObjectContainer'];
     }
 
 

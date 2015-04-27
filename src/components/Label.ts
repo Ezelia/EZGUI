@@ -39,7 +39,7 @@ module EZGUI.Component {
 
                 this.addChild(this.container);
 
-                this.drawText();
+                //this.drawText();
             }
 
         }

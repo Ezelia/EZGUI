@@ -86,7 +86,8 @@ module EZGUI {
 
                 var pos = utils.getRealPos(event);
                 if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
-                    _this.emit('ezgui:click', event);
+                    _this.emit('ezgui:click', event, _this);
+                    event.stopped = true;
                 }
 
             };
@@ -334,6 +335,31 @@ module EZGUI {
             //super.on('gui:' + event, cb);
         }
 
+        public bindChildren(event, fn) {
+            for (var i = 0; i < this.container.children.length; i++) {
+                var child = this.container.children[i];
+                child.on(event, fn);
+            }
+        }
+        public bindChildrenOfType(_type, event, fn) {
+            for (var i = 0; i < this.container.children.length; i++) {
+                var child = this.container.children[i];
+                if (child instanceof _type) child.on(event, fn);
+            }
+        }
+
+        public unbindChildren(event, fn?) {
+            for (var i = 0; i < this.container.children.length; i++) {
+                var child = this.container.children[i];
+                child.off(event, fn);
+            }
+        }
+        public unbindChildrenOfType(_type, event, fn?) {
+            for (var i = 0; i < this.container.children.length; i++) {
+                var child = this.container.children[i];
+                if (child instanceof _type) child.off(event, fn);
+            }
+        }
 
         public preUpdate() { }
         public update() { }

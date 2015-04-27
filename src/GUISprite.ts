@@ -21,14 +21,30 @@ module EZGUI {
         //public container: PIXI.DisplayObjectContainer;
 
         protected textObj: any;
-
+        protected rootSprite: any;
         
 
         get text(): string {
             if (this.textObj) return this.textObj.text;
         }
         set text(val: string) {
-            if (this.textObj) this.textObj.text = val;
+            if (this.textObj) {
+                this.textObj.text = val;
+
+                if (this._settings.anchor) {
+                    this.textObj.position.x = 0;
+                    this.textObj.position.y = 0;
+                    this.textObj.anchor.x = this._settings.anchor.x;
+                    this.textObj.anchor.y = this._settings.anchor.y;
+                }
+                else {
+                    this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
+                    this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
+                    this.textObj.anchor.x = 0;
+                    this.textObj.anchor.y = 0;
+                }
+
+            }
         }        
   
 
@@ -194,7 +210,7 @@ module EZGUI {
 
                 if (this.guiID) EZGUI.components[this.guiID] = this;
 
-                var sprite;
+                
                 for (var s = 0; s < Theme.imageStates.length; s++) {
                     var stateId = Theme.imageStates[s];
                     var container = new Compatibility.GUIContainer();
@@ -206,12 +222,12 @@ module EZGUI {
 
                     var texture = EZGUI.Compatibility.createRenderTexture(settings.width, settings.height);
                     texture.render(container);
-                    if (!sprite) {
-                        sprite = new MultistateSprite(texture);
-                        this.addChild(sprite);
+                    if (!this.rootSprite) {
+                        this.rootSprite = new MultistateSprite(texture);
+                        this.addChild(this.rootSprite);
                     }
                     else {
-                        sprite.addState(stateId, texture);
+                        this.rootSprite.addState(stateId, texture);
                     }
                 }
 
@@ -240,16 +256,28 @@ module EZGUI {
                         if (!child) continue;
 
 
-                        if (child.phaserGroup) this.container.addChild(child.phaserGroup);
-                        else this.container.addChild(child);
+                        //if (child.phaserGroup) this.container.addChild(child.phaserGroup);
+                        //else this.container.addChild(child);
+
+                        this.addChild(child);
 
                         child.guiParent = this;
 
                     }
                 }
 
+                if (this._settings.anchor) {
+                    this.rootSprite.anchor.x = this._settings.anchor.x;
+                    this.rootSprite.anchor.y = this._settings.anchor.y;
 
+                    this.container.position.x -= this.rootSprite.width * this._settings.anchor.x;
+                    this.container.position.y -= this.rootSprite.height * this._settings.anchor.y;
 
+                    this.position.x += this.rootSprite.width * this._settings.anchor.x;
+                    this.position.y += this.rootSprite.height * this._settings.anchor.y;
+                }
+                //move container to top
+                this.addChild(this.container);
 
 
             }
@@ -257,21 +285,35 @@ module EZGUI {
         }
         
 
+
         protected drawText() {
 
-            if (this._settings && this._settings.text) {
+            if (this._settings && this._settings.text && this.rootSprite) {
                 //var settings = this.theme.applySkin(this._settings);
                 var settings = this._settings;
 
                 
                 this.textObj = new PIXI.Text(this._settings.text, { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color });
 
-                this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
-                this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
-                this.textObj.anchor.x = 0;
-                this.textObj.anchor.y = 0;
                 //text.height = this.height;
-                this.addChild(this.textObj);
+                
+                this.textObj.position.x = 0;//(this._settings.width - this.textObj.width) / 2;
+                this.textObj.position.y = 0;//(this._settings.height - this.textObj.height) / 2;
+
+                if (this._settings.anchor) {
+                    this.textObj.position.x = 0;//(this._settings.width - this.textObj.width) / 2;
+                    this.textObj.position.y = 0;//(this._settings.height - this.textObj.height) / 2;
+                    this.textObj.anchor.x = this._settings.anchor.x;
+                    this.textObj.anchor.y = this._settings.anchor.y;
+                }
+                else {
+                    this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
+                    this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
+                    this.textObj.anchor.x = 0;
+                    this.textObj.anchor.y = 0;
+                }
+
+                this.rootSprite.addChild(this.textObj);
             }
         }
 
@@ -284,6 +326,7 @@ module EZGUI {
 
             if (childSettings.position == 'center') {
                 childSettings.position = { x: 0, y: 0 };
+                //childSettings.anchor = { x: 0.5, y: 0.5 };
                 childSettings.position.x =  (this._settings.width  - childSettings.width) / 2;
                 childSettings.position.y =  (this._settings.height  - childSettings.height) / 2;
             }
@@ -309,7 +352,7 @@ module EZGUI {
             }
         }
 
-        public animateTo(x, y, time = 1000, easing = EZGUI.Easing.Linear.None, callback?) {
+        public animatePosTo(x, y, time = 1000, easing = EZGUI.Easing.Linear.None, callback?) {
             easing = easing || EZGUI.Easing.Linear.None;
 
             if (typeof callback == 'function') {
@@ -325,8 +368,26 @@ module EZGUI {
             }
 
             tween.start();
+            return tween;
         }
+        public animateSizeTo(w, h, time = 1000, easing = EZGUI.Easing.Linear.None, callback?) {
+            easing = easing || EZGUI.Easing.Linear.None;
 
+            if (typeof callback == 'function') {
+                var tween = new EZGUI.Tween(this)
+                    .to({ width: w, height: h }, time)
+                    .easing(easing)
+                    .onComplete(callback);
+            }
+            else {
+                var tween = new EZGUI.Tween(this)
+                    .to({ width: w, height: h }, time)
+                    .easing(easing);
+            }
+
+            tween.start();
+            return tween;
+        }
 
 
 
@@ -349,6 +410,7 @@ module EZGUI {
         protected getComponentConfig(component, part, side, state) {
             //var ctype = this.theme[type] || this.theme['default'];
             var skin = this.theme.getSkin(component);
+
             if (!skin) return;
             
 
@@ -414,7 +476,8 @@ module EZGUI {
             if (!cfg || !cfg.texture) return;
 
             //var ctype = this.theme[type] || this.theme['default'];
-            var skin = this.theme.getSkin(component);
+            //var skin = this.theme.getSkin(component);
+            var skin = settings;
             var hasSide = this._settings[part + '-' + side] || skin[part + '-' + side];
 
             //var sprite = new MultistateSprite(cfg.texture, cfg.textures);
@@ -503,7 +566,8 @@ module EZGUI {
             
 
             //var ctype = this.theme[type] || this.theme['default'];
-            var ctype = this.theme.getSkin(component);
+            //var ctype = this.theme.getSkin(component);
+            var ctype = settings;
             var hasSide = this._settings[part + '-' + side] || ctype[part + '-' + side];
 
             var cwidth, cheight;
@@ -664,7 +728,7 @@ module EZGUI {
         protected createThemeImage(settings, state, imagefield = 'image') {
             var component = settings.skin || settings.component || 'default';
             //var ctype = this.theme[type] || this.theme['default'];
-            var ctype = this.theme.getSkin(component);
+            var ctype = settings;//this.theme.getSkin(component);
             if (ctype[imagefield]) {
 
                 var cfg: any = this.getFrameConfig(ctype[imagefield], state);

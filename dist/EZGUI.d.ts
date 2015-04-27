@@ -205,6 +205,10 @@ declare module EZGUI {
         canTrigger(event: any, guiSprite: any): boolean;
         on(event: any, fn: any, context?: any): void;
         off(event: any, fn?: any, context?: any): void;
+        bindChildren(event: any, fn: any): void;
+        bindChildrenOfType(_type: any, event: any, fn: any): void;
+        unbindChildren(event: any, fn?: any): void;
+        unbindChildrenOfType(_type: any, event: any, fn?: any): void;
         preUpdate(): void;
         update(): void;
         postUpdate(): void;
@@ -224,6 +228,7 @@ declare module EZGUI {
         dragYInterval: number[];
         theme: Theme;
         protected textObj: any;
+        protected rootSprite: any;
         text: string;
         constructor(_settings: any, themeId: any);
         setDraggable(val?: boolean): void;
@@ -232,7 +237,8 @@ declare module EZGUI {
         protected drawText(): void;
         createChild(childSettings: any, order?: any): any;
         setState(state?: string): void;
-        animateTo(x: any, y: any, time?: number, easing?: (k: any) => any, callback?: any): void;
+        animatePosTo(x: any, y: any, time?: number, easing?: (k: any) => any, callback?: any): Tween;
+        animateSizeTo(w: any, h: any, time?: number, easing?: (k: any) => any, callback?: any): Tween;
         protected getFrameConfig(config: any, state: any): any;
         protected getComponentConfig(component: any, part: any, side: any, state: any): any;
         protected createThemeCorner(settings: any, part: any, side: any, state: any): PIXI.Sprite;
@@ -258,9 +264,10 @@ declare module EZGUI.Component {
     class Checkbox extends Button {
         _settings: any;
         themeId: any;
-        private _checked;
-        private _checkmark;
+        protected _checked: boolean;
+        protected _checkmark: any;
         checked: boolean;
+        text: string;
         constructor(_settings: any, themeId: any);
         protected handleEvents(): void;
         protected draw(): void;
@@ -286,8 +293,6 @@ declare module EZGUI.Component {
         protected handleEvents(): void;
         protected draw(): void;
         createChild(childSettings: any, order?: any): any;
-        addChild(child: any): PIXI.DisplayObject;
-        addChildAt(child: any, index: any): PIXI.DisplayObject;
     }
 }
 declare module EZGUI.Component {
@@ -313,6 +318,9 @@ declare module EZGUI.Component {
         _settings: any;
         themeId: any;
         group: any;
+        static groups: any;
+        static selectedFrom: any;
+        checked: boolean;
         constructor(_settings: any, themeId: any);
         private clearGroup();
         protected handleEvents(): void;

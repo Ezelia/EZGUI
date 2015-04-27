@@ -55,8 +55,13 @@ module EZGUI.Component {
             guiObj.on('mouseout', function () {
                 //console.log('out', _this.guiID);
                 //EZGUI.dragging = null;
-                isDown = false;
-                guiObj.setState('default');
+
+
+                //temporary workaround for phaser
+                if (!EZGUI.Compatibility.isPhaser) {
+                    isDown = false;
+                    guiObj.setState('default');
+                }
             });
         }
 
@@ -64,6 +69,10 @@ module EZGUI.Component {
             super.draw();
 
 
+            
+                //this.anchor.x = settings.anchor.x;
+                //this.anchor.y = settings.anchor.y;
+            
         }
     }
 
