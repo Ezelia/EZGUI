@@ -18,8 +18,8 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="assets\fonts\CarterOne-72.png" />
     <Content Include="assets\fonts\desyrel.png" />
+    <Content Include="assets\fonts\Skranji-Bold-40.png" />
     <Content Include="assets\kenney-theme\images\bg.png" />
     <Content Include="assets\kenney-theme\images\btn-blue-bg-down.png" />
     <Content Include="assets\kenney-theme\images\btn-blue-bg.png" />
@@ -121,8 +121,10 @@
     <Content Include="assets\metalworks-theme\metalworks-theme.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\fonts\CarterOne-72.fnt" />
     <Content Include="assets\fonts\desyrel.fnt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\fonts\Skranji-Bold-40.fnt" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
