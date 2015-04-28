@@ -39,6 +39,11 @@ module EZGUI {
                         this.textObj.anchor.x = this._settings.anchor.x;
                         this.textObj.anchor.y = this._settings.anchor.y;
                     }
+                    else {
+                        //fake anchor for bitmap font
+                        this.textObj.position.x -= this.textObj.width / 2;
+                        this.textObj.position.y -= this.textObj.height / 2;
+                    }
                 }
                 else {
                     this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
@@ -322,6 +327,11 @@ module EZGUI {
                     if (this.textObj.anchor) {
                         this.textObj.anchor.x = this._settings.anchor.x;
                         this.textObj.anchor.y = this._settings.anchor.y;
+                    }
+                    else {
+                        //fake anchor for bitmap font
+                        this.textObj.position.x -= this.textObj.width / 2;
+                        this.textObj.position.y -= this.textObj.height / 2;
                     }
                 }
                 else {
