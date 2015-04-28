@@ -14,6 +14,7 @@ Features.
  * Flexible configuration : EZGUI use a flexible JSON configuration format for theme an gui definitions
  * Themes : a default theme is provided but you can create your own custom theme.
  * Tweening 
+ * Bitmap fonts
  * Extendable : you can easily create your own components
  
 
@@ -27,13 +28,11 @@ implemented components
  * Radio
  * Slider
  * List 
- 
 
 
 
 TODO 
 ----
- * bitmap fonts support
  * tabs component
  * scrollbar component
  * texts/texts alignements 
@@ -44,5 +43,8 @@ TODO
 
 
 
+Known issues 
+------------
+Bitmap font tint don't work in some PIXI v2 versions and Phaser.
 
  

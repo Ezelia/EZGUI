@@ -18,6 +18,8 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="assets\fonts\CarterOne-72.png" />
+    <Content Include="assets\fonts\desyrel.png" />
     <Content Include="assets\kenney-theme\images\bg.png" />
     <Content Include="assets\kenney-theme\images\btn-blue-bg-down.png" />
     <Content Include="assets\kenney-theme\images\btn-blue-bg.png" />
@@ -77,6 +79,7 @@
     <Content Include="examples\01-window\1-simple.html" />
     <Content Include="examples\02-button\1-simple.html" />
     <Content Include="examples\02-button\2-skin.html" />
+    <Content Include="examples\fonts\01.html" />
     <Content Include="examples\game\gui.js" />
     <Content Include="examples\game\index.html" />
     <Content Include="examples\Phaser\index.html" />
@@ -90,6 +93,7 @@
     <TypeScriptCompile Include="src\tween\Easing.ts" />
     <TypeScriptCompile Include="src\tween\Interpolation.ts" />
     <TypeScriptCompile Include="src\tween\Tween.ts" />
+    <TypeScriptCompile Include="src\utils\ColorParser.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\kenney-theme\kenney-atlas.json" />
@@ -111,12 +115,15 @@
     <TypeScriptCompile Include="src\MultistateTilingSprite.ts" />
     <TypeScriptCompile Include="src\polyfills\performance.ts" />
     <TypeScriptCompile Include="src\Theme.ts" />
-    <TypeScriptCompile Include="src\utils.ts" />
+    <TypeScriptCompile Include="src\utils\utils.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\metalworks-theme\metalworks-theme.json" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="assets\fonts\CarterOne-72.fnt" />
+    <Content Include="assets\fonts\desyrel.fnt" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>

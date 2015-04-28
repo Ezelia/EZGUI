@@ -2,6 +2,7 @@
 declare module EZGUI.Compatibility {
     var PIXIVersion: number;
     var isPhaser: boolean;
+    var BitmapText: any;
     class TilingSprite {
         constructor(texture: PIXI.Texture, width: number, height: number);
     }
@@ -177,6 +178,7 @@ declare module EZGUI {
         onReady(cb: any): void;
         private preload();
         private loadResources(resources, cb);
+        private parseFont(resource, texture);
         getSkin(skinId: any): any;
         applySkin(settings: any): any;
     }
@@ -361,6 +363,10 @@ declare module EZGUI {
         setState(state?: string): void;
     }
 }
+declare module EZGUI.utils.ColorParser {
+    function parseToPixiColor(str: any): any;
+    function parseToRGB(str: any): any;
+}
 declare module EZGUI.utils {
     /**
      * check if the the point defined by x and y outside a visible gui element
@@ -379,4 +385,5 @@ declare module EZGUI.utils {
     function distance(x: any, y: any, x0: any, y0: any): number;
     function extendJSON(target: any, source: any): void;
     function loadJSON(url: any, cb: any): void;
+    function loadXML(url: any, cb: any): void;
 }

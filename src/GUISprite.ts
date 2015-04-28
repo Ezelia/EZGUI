@@ -34,14 +34,20 @@ module EZGUI {
                 if (this._settings.anchor) {
                     this.textObj.position.x = 0;
                     this.textObj.position.y = 0;
-                    this.textObj.anchor.x = this._settings.anchor.x;
-                    this.textObj.anchor.y = this._settings.anchor.y;
+
+                    if (this.textObj.anchor) {
+                        this.textObj.anchor.x = this._settings.anchor.x;
+                        this.textObj.anchor.y = this._settings.anchor.y;
+                    }
                 }
                 else {
                     this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
                     this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
-                    this.textObj.anchor.x = 0;
-                    this.textObj.anchor.y = 0;
+
+                    if (this.textObj.anchor) {
+                        this.textObj.anchor.x = 0;
+                        this.textObj.anchor.y = 0;
+                    }
                 }
 
             }
@@ -293,7 +299,16 @@ module EZGUI {
                 var settings = this._settings;
 
                 
-                this.textObj = new PIXI.Text(this._settings.text, { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color });
+                if (Compatibility.BitmapText.fonts && Compatibility.BitmapText.fonts[settings.font.family]) {
+                    this.textObj = new Compatibility.BitmapText(this._settings.text, { font: settings.font.size + ' ' + settings.font.family });
+                    var pixiColor = utils.ColorParser.parseToPixiColor(settings.font.color);
+                    if (pixiColor >= 0)
+                        this.textObj.tint = pixiColor;
+                }
+                else {
+
+                    this.textObj = new PIXI.Text(this._settings.text, { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color });
+                }
 
                 //text.height = this.height;
                 
@@ -301,16 +316,22 @@ module EZGUI {
                 this.textObj.position.y = 0;//(this._settings.height - this.textObj.height) / 2;
 
                 if (this._settings.anchor) {
-                    this.textObj.position.x = 0;//(this._settings.width - this.textObj.width) / 2;
-                    this.textObj.position.y = 0;//(this._settings.height - this.textObj.height) / 2;
-                    this.textObj.anchor.x = this._settings.anchor.x;
-                    this.textObj.anchor.y = this._settings.anchor.y;
+                    this.textObj.position.x = 0;
+                    this.textObj.position.y = 0;
+
+                    if (this.textObj.anchor) {
+                        this.textObj.anchor.x = this._settings.anchor.x;
+                        this.textObj.anchor.y = this._settings.anchor.y;
+                    }
                 }
                 else {
                     this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
                     this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
-                    this.textObj.anchor.x = 0;
-                    this.textObj.anchor.y = 0;
+
+                    if (this.textObj.anchor) {
+                        this.textObj.anchor.x = 0;
+                        this.textObj.anchor.y = 0;
+                    }
                 }
 
                 this.rootSprite.addChild(this.textObj);

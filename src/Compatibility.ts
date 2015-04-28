@@ -4,9 +4,12 @@
 module EZGUI.Compatibility {
     export var PIXIVersion =
         (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0) ? 3 : 2;
-
-
     export var isPhaser = (typeof Phaser != 'undefined');
+
+    export var BitmapText = PIXIVersion >= 3 ? (<any>PIXI).extras.BitmapText : PIXI.BitmapText;
+
+
+
 
     export class TilingSprite {
         constructor(texture: PIXI.Texture, width: number, height: number) {

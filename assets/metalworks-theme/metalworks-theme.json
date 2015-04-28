@@ -14,7 +14,9 @@
             "./images/corner.png",
             "./images/line.png",
             "./images/chk-checkmark.png",
-            "./images/radio-checkmark.png"
+            "./images/radio-checkmark.png",
+            "../fonts/desyrel.fnt",
+            "../fonts/Skranji-Bold-40.fnt"
         ]
     },
 

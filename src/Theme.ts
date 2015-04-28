@@ -244,9 +244,11 @@ module EZGUI {
             var _this = this;
             var images = [];
             var atlases = [];
+            var fonts = [];
             var atlasData = {};
+            var fontData = {};
 
-            var atlasToload = 0;
+            var resToLoad = 0;
 
             var cacheAtlas = function () {
                 for (var i in atlasData) {
@@ -273,6 +275,11 @@ module EZGUI {
                     }
 
 
+                }
+
+                for (var i in fontData) {
+                    var font: any = fontData[i];
+                    _this.parseFont(font, PIXI.Texture.fromFrame(font.textureId));
                 }
 
                 cb();
@@ -308,40 +315,155 @@ module EZGUI {
             for (var i = 0; i < resources.length; i++) {
                 var res = resources[i];
 
-                if (res.indexOf('.json') > 0) atlases.push(res);
-                else images.push(res);                
-            }
-            if (atlases.length <= 0) {
-                loadImages();
+                if (res.indexOf('.json') > 0)
+                {
+                    atlases.push(res);
+                    continue;
+                }
+                if (res.indexOf('.xml') > 0 || res.indexOf('.fnt') > 0)
+                {
+                    fonts.push(res)
+                    continue;
+                }
+
+                images.push(res);                
             }
 
-            else {
+            if (atlases.length > 0) {
 
                 for (var i = 0; i < atlases.length; i++) {
-                    var atlas = atlases[i];
-                    atlasToload++;
+                    var font = atlases[i];
+                    resToLoad++;
 
 
                     (function (atlasUrl) {
                         utils.loadJSON(atlasUrl, function (atlasjson) {
                             images.push(_this.path + atlasjson.meta.image);
-                            atlasToload--;
+                            resToLoad--;
 
                             atlasData[atlasUrl] = atlasjson;
 
-                            if (atlasToload <= 0) {
+                            if (resToLoad <= 0) {
                                 console.log('Atlas loaded ', images);
                                 loadImages();
                             }
                         });
-                    })(atlas)
+                    })(font)
                 }
 
             }
 
+
+            if (fonts.length > 0) {
+
+                for (var i = 0; i < fonts.length; i++) {
+                    var font = fonts[i];
+                    resToLoad++;
+
+
+                    (function (atlasUrl) {
+                        utils.loadXML(atlasUrl, function (xmlfont) {
+                            var img = xmlfont.getElementsByTagName('page')[0].getAttribute('file');
+                            
+
+                            var path = atlasUrl.substring(0, atlasUrl.lastIndexOf('\\') + atlasUrl.lastIndexOf('/') + 2);
+                            var src = path + img;
+
+
+                            console.log('Fake font load = ', src);
+                            
+
+                            images.push(src);
+
+                            resToLoad--;
+
+                            fontData[atlasUrl] = {
+                                data: xmlfont, textureId: src
+                            }
+
+                            if (resToLoad <= 0) {
+                                console.log('Fonts loaded ', images);
+                                loadImages();
+                            }
+                        });
+                    })(font)
+                }
+
+            }
+
+
+            if (atlases.length <= 0 && fonts.length <= 0) {
+                loadImages();
+            }
+
+
+            
+
         }
 
+        private parseFont(resource, texture) {
 
+
+            var data: any = {};
+            var info = resource.data.getElementsByTagName('info')[0];
+            var common = resource.data.getElementsByTagName('common')[0];
+
+            data.font = info.getAttribute('face');
+            data.size = parseInt(info.getAttribute('size'), 10);
+            data.lineHeight = parseInt(common.getAttribute('lineHeight'), 10);
+            data.chars = {};
+
+
+            var Rectangle: any;
+            var BitmapText: any;
+            if (Compatibility.PIXIVersion == 3) {
+                Rectangle = (<any>PIXI).math.Rectangle;
+                BitmapText = (<any>PIXI).extras.BitmapText;
+            }
+            else {
+                Rectangle = PIXI.Rectangle;
+                BitmapText = PIXI.BitmapText;
+            }
+
+            //parse letters
+            var letters = resource.data.getElementsByTagName('char');
+
+            for (var i = 0; i < letters.length; i++) {
+                var charCode = parseInt(letters[i].getAttribute('id'), 10);
+
+                var textureRect = new Rectangle(
+                    parseInt(letters[i].getAttribute('x'), 10) + texture.frame.x,
+                    parseInt(letters[i].getAttribute('y'), 10) + texture.frame.y,
+                    parseInt(letters[i].getAttribute('width'), 10),
+                    parseInt(letters[i].getAttribute('height'), 10)
+                    );
+
+                data.chars[charCode] = {
+                    xOffset: parseInt(letters[i].getAttribute('xoffset'), 10),
+                    yOffset: parseInt(letters[i].getAttribute('yoffset'), 10),
+                    xAdvance: parseInt(letters[i].getAttribute('xadvance'), 10),
+                    kerning: {},
+                    texture: new PIXI.Texture(texture.baseTexture, textureRect)
+
+                };
+            }
+
+            //parse kernings
+            var kernings = resource.data.getElementsByTagName('kerning');
+            for (i = 0; i < kernings.length; i++) {
+                var first = parseInt(kernings[i].getAttribute('first'), 10);
+                var second = parseInt(kernings[i].getAttribute('second'), 10);
+                var amount = parseInt(kernings[i].getAttribute('amount'), 10);
+
+                data.chars[second].kerning[first] = amount;
+            }
+
+            //resource.bitmapFont = data;
+
+            // I'm leaving this as a temporary fix so we can test the bitmap fonts in v3
+            // but it's very likely to change
+            BitmapText.fonts[data.font] = data;
+        }
         public getSkin(skinId) {
             var skin = this._theme[skinId] || this._theme['default'];
             return skin;

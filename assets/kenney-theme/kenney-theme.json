@@ -2,7 +2,9 @@
     "__config__": {
         "name": "kenney",
         "resources": [
-            "./kenney-atlas.json"
+            "./kenney-atlas.json",
+            "../fonts/desyrel.fnt",
+            "../fonts/Skranji-Bold-40.fnt"
         ]
     },
 

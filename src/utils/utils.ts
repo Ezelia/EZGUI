@@ -111,4 +111,37 @@
         xmlhttp.send();
     }
 
+    export function loadXML(url, cb) {
+        var xmlhttp = new XMLHttpRequest();
+
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var xmlDoc;
+                if (window['DOMParser']) {
+                    var parser = new DOMParser();
+                    xmlDoc = parser.parseFromString(xmlhttp.responseText, "text/xml");
+                }
+                else // Internet Explorer
+                {
+                    xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                    xmlDoc.async = false;
+                    xmlDoc.loadXML(xmlhttp.responseText);
+                }
+
+
+                
+
+
+                cb(xmlDoc);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+
+
+
+    }
+
+
 }

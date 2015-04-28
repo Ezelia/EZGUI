@@ -35,9 +35,10 @@ module EZGUI.Component {
                 this.position.x = settings.position.x;
                 this.position.y = settings.position.y;
 
-                this.container = new Compatibility.GUIContainer();
+                this.rootSprite = new Compatibility.GUIContainer();
 
-                this.addChild(this.container);
+                
+                this.addChild(this.rootSprite);
 
                 //this.drawText();
             }
