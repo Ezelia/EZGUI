@@ -39,6 +39,7 @@ var EZGUI;
                 if (typeof Phaser != 'undefined') {
                     this.phaserGroup = Phaser.GAMES[0].add.sprite(0, 0); //new Phaser.Group(Phaser.GAMES[0]);
                     this.phaserGroup.addChild(this);
+                    this.phaserGroup.guiSprite = this;
                 }
             }
             return GUIDisplayObjectContainer;
@@ -596,7 +597,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.1.0';
+    EZGUI.VERSION = '0.1.0 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -661,6 +662,22 @@ var EZGUI;
                 this.initThemeConfig(themeConfig);
             }
         }
+        Theme.prototype.override = function (themeConfig) {
+            var _theme = JSON.parse(JSON.stringify(themeConfig));
+            for (var t in _theme) {
+                if (t == 'default')
+                    continue;
+                var skin = _theme[t];
+                EZGUI.utils.extendJSON(skin, this._default);
+            }
+            this.parseComponents(_theme);
+            for (var t in _theme) {
+                if (t == 'default')
+                    continue;
+                var skin = _theme[t];
+                this._theme[t] = skin;
+            }
+        };
         Theme.prototype.fixLimits = function (target, source) {
             if (typeof source == 'object') {
                 if (target.width != undefined && source.maxWidth)
@@ -691,7 +708,7 @@ var EZGUI;
                 EZGUI.utils.extendJSON(skin, this._default);
             }
             this.path = this.url.substring(0, this.url.lastIndexOf('/') + 1);
-            this.parseComponents();
+            this.parseComponents(this._theme);
             this.preload();
         };
         Theme.prototype.parseResources = function () {
@@ -715,11 +732,11 @@ var EZGUI;
             }
             return resources;
         };
-        Theme.prototype.parseComponents = function () {
-            for (var i in this._theme) {
+        Theme.prototype.parseComponents = function (theme) {
+            for (var i in theme) {
                 if (i == '__config__')
                     continue;
-                var item = this._theme[i];
+                var item = theme[i];
                 for (var c = 0; c < Theme.imageComponents.length; c++) {
                     var cc = Theme.imageComponents[c];
                     for (var v = 0; v < Theme.imageVariants.length; v++) {
@@ -1028,6 +1045,16 @@ var EZGUI;
             this.container = new EZGUI.Compatibility.GUIContainer();
             this.addChild(this.container);
         }
+        Object.defineProperty(GUIObject.prototype, "Id", {
+            get: function () {
+                return this.guiID;
+            },
+            set: function (val) {
+                this.guiID = val;
+            },
+            enumerable: true,
+            configurable: true
+        });
         GUIObject.prototype.setupEvents = function () {
             var _this = this;
             //var _this:any = this;
@@ -1042,7 +1069,7 @@ var EZGUI;
                 //console.log('hover ', guiObj.guiID);
                 _this._over = true;
                 //guiObj.setState('hover');
-                _this.emit('ezgui:mouseover', event);
+                _this.emit('ezgui:mouseover', event, _this);
             };
             _this.mouseout = function (event) {
                 //console.log('mouseout ', _this.guiID);
@@ -1050,7 +1077,7 @@ var EZGUI;
                 var data = event.data || event;
                 _this._over = false;
                 //guiObj.setState('out');
-                _this.emit('ezgui:mouseout', event);
+                _this.emit('ezgui:mouseout', event, _this);
             };
             //handle drag stuff
             _this.mousedown = _this.touchstart = function (event) {
@@ -1063,14 +1090,15 @@ var EZGUI;
                 EZGUI.startDrag.y = pos.y;
                 EZGUI.startDrag.t = Date.now();
                 var data = event.data || event;
-                _this.emit('ezgui:mousedown', event);
+                _this.emit('ezgui:mousedown', event, _this);
+                //event.stopped = true;
             };
             _this.mouseup = _this.mouseupoutside = _this.touchend = _this.touchendoutside = function (event) {
                 if (!_this.canTrigger(event, _this)) {
                     return;
                 }
                 var data = event.data || event;
-                _this.emit('ezgui:mouseup', event);
+                _this.emit('ezgui:mouseup', event, _this);
                 var pos = EZGUI.utils.getRealPos(event);
                 if (EZGUI.utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
                     _this.emit('ezgui:click', event, _this);
@@ -1091,7 +1119,7 @@ var EZGUI;
                     return;
                 }
                 var data = event.data || event;
-                _this.emit('ezgui:mousemove', event);
+                _this.emit('ezgui:mousemove', event, _this);
             };
             _this.click = _this.tap = function (event) {
                 //console.log('click', _this.guiID);
@@ -1104,11 +1132,11 @@ var EZGUI;
                 _this.phaserGroup.events.onInputOver.add(function (target, event) {
                     _this._over = true;
                     //console.log('ezgui:mouseover', event);
-                    _this.emit('ezgui:mouseover', event);
+                    _this.emit('ezgui:mouseover', event, _this);
                 }, this);
                 _this.phaserGroup.events.onInputOut.add(function (target, event) {
                     _this._over = false;
-                    _this.emit('ezgui:mouseout', event);
+                    _this.emit('ezgui:mouseout', event, _this);
                     //console.log('ezgui:mouseout', event);
                 }, this);
                 _this.phaserGroup.events.onInputDown.add(function (target, event) {
@@ -1119,9 +1147,9 @@ var EZGUI;
                     EZGUI.startDrag.x = pos.x;
                     EZGUI.startDrag.y = pos.y;
                     EZGUI.startDrag.t = Date.now();
-                    _this.emit('ezgui:mousedown', event);
+                    _this.emit('ezgui:mousedown', event, _this);
                     if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
-                        _this.guiParent.emit('ezgui:mousedown', event);
+                        _this.guiParent.emit('ezgui:mousedown', event, _this);
                     }
                     //    
                     //console.log('ezgui:mousedown', event);
@@ -1131,13 +1159,13 @@ var EZGUI;
                     //    return;
                     //}
                     //_this.emit('ezgui:mouseup', event);
-                    _this.emit('ezgui:mouseup', event);
+                    _this.emit('ezgui:mouseup', event, _this);
                     var pos = EZGUI.utils.getRealPos(event);
                     if (EZGUI.utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
-                        _this.emit('ezgui:click', event);
+                        _this.emit('ezgui:click', event, _this);
                     }
                     if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
-                        _this.guiParent.emit('ezgui:mouseup', event);
+                        _this.guiParent.emit('ezgui:mouseup', event, _this);
                     }
                 }, this);
                 //Phaser.GAMES[0].input.moveCallback = function (pointer, x, y) {
@@ -1147,18 +1175,18 @@ var EZGUI;
                     if (_this._over) {
                         if (_this.canTrigger(event, _this)) {
                             _this._over = true;
-                            _this.emit('ezgui:mouseover', event);
+                            _this.emit('ezgui:mouseover', event, _this);
                         }
                         else {
                             _this._over = false;
-                            _this.emit('ezgui:mouseout', event);
+                            _this.emit('ezgui:mouseout', event, _this);
                         }
                     }
                     if (!_this.canTrigger(event, _this)) {
                         return;
                     }
                     var data = event.data || event;
-                    _this.emit('ezgui:mousemove', event);
+                    _this.emit('ezgui:mousemove', event, _this);
                 };
             }
         };
@@ -1255,12 +1283,16 @@ var EZGUI;
         GUIObject.prototype.bindChildren = function (event, fn) {
             for (var i = 0; i < this.container.children.length; i++) {
                 var child = this.container.children[i];
+                if (child.guiSprite)
+                    child = child.guiSprite;
                 child.on(event, fn);
             }
         };
         GUIObject.prototype.bindChildrenOfType = function (_type, event, fn) {
             for (var i = 0; i < this.container.children.length; i++) {
                 var child = this.container.children[i];
+                if (child.guiSprite)
+                    child = child.guiSprite;
                 if (child instanceof _type)
                     child.on(event, fn);
             }
@@ -1268,12 +1300,16 @@ var EZGUI;
         GUIObject.prototype.unbindChildren = function (event, fn) {
             for (var i = 0; i < this.container.children.length; i++) {
                 var child = this.container.children[i];
+                if (child.guiSprite)
+                    child = child.guiSprite;
                 child.off(event, fn);
             }
         };
         GUIObject.prototype.unbindChildrenOfType = function (_type, event, fn) {
             for (var i = 0; i < this.container.children.length; i++) {
                 var child = this.container.children[i];
+                if (child.guiSprite)
+                    child = child.guiSprite;
                 if (child instanceof _type)
                     child.off(event, fn);
             }
@@ -1319,6 +1355,13 @@ var EZGUI;
             this.setupEvents();
             this.handleEvents();
         }
+        Object.defineProperty(GUISprite.prototype, "settings", {
+            get: function () {
+                return this._settings;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(GUISprite.prototype, "text", {
             get: function () {
                 if (this.textObj)
@@ -1326,7 +1369,12 @@ var EZGUI;
             },
             set: function (val) {
                 if (this.textObj) {
-                    this.textObj.text = val;
+                    if (EZGUI.Compatibility.PIXIVersion == 3) {
+                        this.textObj.text = val;
+                    }
+                    else {
+                        this.textObj.setText(val);
+                    }
                     if (this._settings.anchor) {
                         this.textObj.position.x = 0;
                         this.textObj.position.y = 0;
@@ -1482,7 +1530,22 @@ var EZGUI;
                 }
                 //move container to top
                 this.addChild(this.container);
+                this.sortChildren();
             }
+        };
+        GUISprite.prototype.sortChildren = function () {
+            if (!this.container)
+                return;
+            var comparator = function (a, b) {
+                if (a.guiSprite)
+                    a = a.guiSprite;
+                if (b.guiSprite)
+                    b = b.guiSprite;
+                a._settings.z = a._settings.z || 0;
+                b._settings.z = b._settings.z || 0;
+                return a._settings.z - b._settings.z;
+            };
+            this.container.children.sort(comparator);
         };
         GUISprite.prototype.drawText = function () {
             if (this._settings && this._settings.text && this.rootSprite) {
@@ -1695,6 +1758,10 @@ var EZGUI;
                 return;
             var tlCornerCfg = this.getComponentConfig(component, 'corner', 'tl', state);
             var blCornerCfg = this.getComponentConfig(component, 'corner', 'bl', state);
+            if (!tlCornerCfg || !tlCornerCfg.texture)
+                return;
+            if (!blCornerCfg || !blCornerCfg.texture)
+                return;
             //var ctype = this.theme[type] || this.theme['default'];
             //var ctype = this.theme.getSkin(component);
             var ctype = settings;
@@ -2226,10 +2293,10 @@ var EZGUI;
                 }
                 //console.log(' >>>> ', this.draggable.width, this._settings.width);
                 ssize = this.slotSize * this.container.children.length;
-                this.dragXInterval[0] = -ssize + this._settings.width / 2;
-                this.dragXInterval[1] = this._settings.width / 2;
-                this.dragYInterval[0] = -ssize + this._settings.height / 2;
-                this.dragYInterval[1] = this._settings.height / 2;
+                this.dragXInterval[0] = -ssize + this._settings.width * 0.9;
+                this.dragXInterval[1] = this._settings.width * 0.1;
+                this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
+                this.dragYInterval[1] = this._settings.height * 0.1;
                 _super.prototype.handleEvents.call(this);
                 _this.on('mousedown', function (event) {
                     if (_this.decelerationItv) {
@@ -2241,6 +2308,8 @@ var EZGUI;
                         if (!(child instanceof EZGUI.GUISprite))
                             continue;
                         if (!child.mouseInObj(event, child))
+                            continue;
+                        if (!child.canTrigger(event, child))
                             continue;
                         child.emit('ezgui:mousedown', event);
                     }
@@ -2308,10 +2377,10 @@ var EZGUI;
                 var result = _super.prototype.addChildAt.call(this, child, index);
                 if (result instanceof EZGUI.GUISprite) {
                     var ssize = this.slotSize * this.container.children.length;
-                    this.dragXInterval[0] = -ssize + this._settings.width / 2;
-                    this.dragXInterval[1] = this._settings.width / 2;
-                    this.dragYInterval[0] = -ssize + this._settings.height / 2;
-                    this.dragYInterval[1] = this._settings.height / 2;
+                    this.dragXInterval[0] = -ssize + this._settings.width * 0.9;
+                    this.dragXInterval[1] = this._settings.width * 0.1;
+                    this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
+                    this.dragYInterval[1] = this._settings.height * 0.1;
                 }
                 return result;
             };
@@ -2319,10 +2388,10 @@ var EZGUI;
                 var result = _super.prototype.removeChild.call(this, child);
                 if (child instanceof EZGUI.GUISprite) {
                     var ssize = this.slotSize * this.container.children.length;
-                    this.dragXInterval[0] = -ssize + this._settings.width / 2;
-                    this.dragXInterval[1] = this._settings.width / 2;
-                    this.dragYInterval[0] = -ssize + this._settings.height / 2;
-                    this.dragYInterval[1] = this._settings.height / 2;
+                    this.dragXInterval[0] = -ssize + this._settings.width * 0.9;
+                    this.dragXInterval[1] = this._settings.width * 0.1;
+                    this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
+                    this.dragYInterval[1] = this._settings.height * 0.1;
                     this.draggable.position.x = 0;
                     this.draggable.position.y = 0;
                 }

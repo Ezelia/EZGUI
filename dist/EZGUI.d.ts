@@ -169,10 +169,11 @@ declare module EZGUI {
         private url;
         private path;
         constructor(themeConfig: any);
+        override(themeConfig: any): void;
         private fixLimits(target, source);
         private initThemeConfig(themeConfig);
         private parseResources();
-        private parseComponents();
+        private parseComponents(theme);
         private normalizeResPath(str);
         static load(themes: any[], cb?: any): void;
         onReady(cb: any): void;
@@ -194,6 +195,7 @@ declare module EZGUI {
 declare module EZGUI {
     class GUIObject extends EZGUI.Compatibility.GUIDisplayObjectContainer {
         guiID: string;
+        Id: string;
         userData: any;
         container: PIXI.DisplayObjectContainer;
         guiParent: GUISprite;
@@ -231,11 +233,13 @@ declare module EZGUI {
         theme: Theme;
         protected textObj: any;
         protected rootSprite: any;
+        settings: string;
         text: string;
         constructor(_settings: any, themeId: any);
         setDraggable(val?: boolean): void;
         protected handleEvents(): void;
         protected draw(): void;
+        protected sortChildren(): void;
         protected drawText(): void;
         createChild(childSettings: any, order?: any): any;
         setState(state?: string): void;

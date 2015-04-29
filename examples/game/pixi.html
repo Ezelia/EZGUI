@@ -14,10 +14,19 @@
 
     <script src="../../js/pixi3.dev.js"></script>
     <script src="../../dist/EZGUI.js"></script>
-	<script src="./gui.js"></script>
+	<script src="./game-gui.js"></script>
 </head>
 <body>
     <script>
+        var themeOverride = {
+            levelBtn: {
+                image: '../../assets/img/level-box.png',                
+                font: { size: '45px', family: 'Skranji', color: 'white' },
+                anchor: {x:0.5, y:0.5}
+            },
+        }
+
+
 		var gameWidth = 600;
 		var gameHeight = 500;
 		
@@ -41,30 +50,45 @@
 			    console.log('checked ', me.guiID);
 			});
 			
+
+			EZGUI.components.levelsList.bindChildren('mousedown', function (event, me) {
+			    console.log('mousedown ', me);
+			    var ow = me.width;
+			    var oh = me.height;
+			    me.animateSizeTo(ow * 1.3, oh * 1.3, 100, EZGUI.Easing.Back.Out, function () {
+			        me.animateSizeTo(ow, oh, 100);
+			    });
+			});
 			EZGUI.components.levelsList.bindChildren('click', function (event, me) {
-				levelSelectScreen.visible = false;
-				fakeGameScreen.visible = true;
-				EZGUI.components.gameLabel.text = 'Selected ' + me.userData;
+
+                //wait for animation to finish
+			    setTimeout(function () {
+			        levelSelectScreen.visible = false;
+			        fakeGameScreen.visible = true;
+			        EZGUI.components.gameLabel.text = 'Selected ' + me.userData;
+			    }, 150);
 			    //console.log('clicked', event, me.guiID);
 			});
+
+
 			
 			
 			EZGUI.components.gameBtn1.on('click', function() {
-				var dlg1 = EZGUI.components.dialog1;
-				dlg1.position.x = (gameWidth - dlg1.width)/2;
-				dlg1.position.y = -20 - dlg1.height;
-				var targetY = (gameHeight - dlg1.height)/2;
-				dlg1.visible = true;
-				dlg1.animatePosTo(dlg1.position.x, targetY, 800, EZGUI.Easing.Back.Out);
+			    var dlg = EZGUI.components.dialog1;
+			    dlg.position.x = (gameWidth - dlg.width) / 2;
+			    dlg.position.y = -20 - dlg.height;
+			    var targetY = (gameHeight - dlg.height) / 2;
+			    dlg.visible = true;
+			    dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.Out);
 			});			
 			
 
 			var hideBtn = EZGUI.components.dialog1HideBtn;
 			hideBtn.on('click', function () {
 				var targetY = gameHeight + 20;
-				var dlg1 = EZGUI.components.dialog1;
-				dlg1.animatePosTo(dlg1.position.x, targetY, 800, EZGUI.Easing.Back.InOut, function () {
-					dlg1.visible = false;
+				var dlg = EZGUI.components.dialog1;
+				dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.In, function () {
+				    dlg.visible = false;
 				});			
 			});
 
@@ -75,6 +99,41 @@
 			        hideBtn.animateSizeTo(ow, oh, 200);
 			    });
 			});
+
+
+
+			EZGUI.components.gameBtn2.on('click', function () {
+			    var dlg = EZGUI.components.dialog2;
+			    dlg.position.x = (gameWidth - dlg.width) / 2;
+			    dlg.position.y = -20 - dlg.height;
+			    var targetY = (gameHeight - dlg.height) / 2;
+			    dlg.visible = true;
+			    dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.Out);
+			});
+
+			var hideBtn2 = EZGUI.components.dialog2HideBtn;
+			hideBtn2.on('click', function () {
+			    var targetY = gameHeight + 20;
+			    var dlg = EZGUI.components.dialog2;
+			    dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.In, function () {
+			        dlg.visible = false;
+			    });
+			});
+
+			hideBtn2.on('mousedown', function () {
+			    var ow = hideBtn2.width;
+			    var oh = hideBtn2.height;
+			    hideBtn2.animateSizeTo(ow * 1.2, oh * 1.2, 200, EZGUI.Easing.Back.Out, function () {
+			        hideBtn2.animateSizeTo(ow, oh, 200);
+			    });
+			});
+
+
+			EZGUI.components.gameBtn3.on('click', function () {
+			    fakeGameScreen.visible = false;
+			    mainScreen.visible = true;
+			});
+
 		}
 		
 		
@@ -84,7 +143,8 @@
         var guiContainer = new PIXI.Container();
 		
 		EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'], function () {
-
+		    EZGUI.themes['metalworks'].override(themeOverride);
+		    
 			mainScreen = EZGUI.create(mainScreenJSON, 'metalworks');
 			
 			
@@ -145,7 +205,10 @@
             '../../assets/img/bomb3.png',
             '../../assets/img/bomb3-selected.png',
             '../../assets/img/orange-btn.png',
-            '../../assets/img/panel-650x400.png'
+            '../../assets/img/panel-650x400.png',
+            '../../assets/img/level-box.png',
+            '../../assets/img/lvlcomplete.png',
+            '../../assets/img/star2.png'
         ];
 
         if (PIXI.loader) { //Pixi 3  

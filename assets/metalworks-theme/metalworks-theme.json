@@ -62,6 +62,18 @@
         "line": "./images/darkcnt-line.png"
 
     },
+    "hListItem": {
+        "bg": { "default": "./images/btn-bg.png", "down": "./images/btn-bg-down.png" },
+        "bgTiling": "x",
+        "bgPadding": 2,
+        "corner": "",
+        "line": "./images/btn-line.png",
+        "font": {
+            "size": "20px",
+            "family": "Arial",
+            "color": "black"
+        }
+    },
     "Slider": {
         "bg": "./images/darkcnt-line.png",
         "corner": "./images/darkcnt-corner.png",

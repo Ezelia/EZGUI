@@ -10,6 +10,13 @@ module EZGUI {
     export class GUIObject extends EZGUI.Compatibility.GUIDisplayObjectContainer {
 
         public guiID: string;
+        get Id(): string {
+            return this.guiID;
+        }
+        set Id(val: string) {
+            this.guiID = val;
+        }
+
         public userData: any;
 
         public container: PIXI.DisplayObjectContainer;
@@ -47,7 +54,7 @@ module EZGUI {
 
                 _this._over = true;
                 //guiObj.setState('hover');
-                _this.emit('ezgui:mouseover', event);
+                _this.emit('ezgui:mouseover', event, _this);
             }
             _this.mouseout = function (event) {
                 //console.log('mouseout ', _this.guiID);
@@ -56,7 +63,7 @@ module EZGUI {
 
                 _this._over = false;
                 //guiObj.setState('out');
-                _this.emit('ezgui:mouseout', event);
+                _this.emit('ezgui:mouseout', event, _this);
 
             }
 
@@ -73,7 +80,8 @@ module EZGUI {
                 EZGUI.startDrag.t = Date.now();
 
                 var data = event.data || event;
-                _this.emit('ezgui:mousedown', event);
+                _this.emit('ezgui:mousedown', event, _this);
+                //event.stopped = true;
             }
 
 
@@ -82,7 +90,7 @@ module EZGUI {
                     return;
                 }
                 var data = event.data || event;
-                _this.emit('ezgui:mouseup', event);
+                _this.emit('ezgui:mouseup', event, _this);
 
                 var pos = utils.getRealPos(event);
                 if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
@@ -111,7 +119,7 @@ module EZGUI {
                     return;
                 }
                 var data = event.data || event;
-                _this.emit('ezgui:mousemove', event);
+                _this.emit('ezgui:mousemove', event, _this);
             }
 
 
@@ -132,14 +140,14 @@ module EZGUI {
 
                     _this._over = true;
                     //console.log('ezgui:mouseover', event);
-                    _this.emit('ezgui:mouseover', event);
+                    _this.emit('ezgui:mouseover', event, _this);
 
                 }, this);
 
                 _this.phaserGroup.events.onInputOut.add(function (target, event) {
 
                     _this._over = false;
-                    _this.emit('ezgui:mouseout', event);
+                    _this.emit('ezgui:mouseout', event, _this);
                     //console.log('ezgui:mouseout', event);
                 }, this);
 
@@ -153,10 +161,10 @@ module EZGUI {
                     EZGUI.startDrag.y = pos.y;
                     EZGUI.startDrag.t = Date.now();
 
-                    _this.emit('ezgui:mousedown', event);
+                    _this.emit('ezgui:mousedown', event, _this);
 
                     if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
-                        _this.guiParent.emit('ezgui:mousedown', event);
+                        _this.guiParent.emit('ezgui:mousedown', event, _this);
                     }
                     //    
 
@@ -169,16 +177,16 @@ module EZGUI {
                     //}
 
                     //_this.emit('ezgui:mouseup', event);
-                    _this.emit('ezgui:mouseup', event);
+                    _this.emit('ezgui:mouseup', event, _this);
 
                     var pos = utils.getRealPos(event);
                     if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
-                        _this.emit('ezgui:click', event);
+                        _this.emit('ezgui:click', event, _this);
                         //console.log('ezgui:click', event);
                     }
 
                     if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
-                        _this.guiParent.emit('ezgui:mouseup', event);
+                        _this.guiParent.emit('ezgui:mouseup', event, _this);
                     }
 
 
@@ -192,12 +200,12 @@ module EZGUI {
                         if (_this.canTrigger(event, _this)) {
 
                             _this._over = true;
-                            _this.emit('ezgui:mouseover', event);
+                            _this.emit('ezgui:mouseover', event, _this);
                         }
                         else {
 
                             _this._over = false;
-                            _this.emit('ezgui:mouseout', event);
+                            _this.emit('ezgui:mouseout', event, _this);
                         }
                     }
 
@@ -206,7 +214,7 @@ module EZGUI {
                         return;
                     }
                     var data = event.data || event;
-                    _this.emit('ezgui:mousemove', event);
+                    _this.emit('ezgui:mousemove', event, _this);
                 }
 
             }
@@ -337,26 +345,33 @@ module EZGUI {
 
         public bindChildren(event, fn) {
             for (var i = 0; i < this.container.children.length; i++) {
-                var child = this.container.children[i];
+                var child:any = this.container.children[i];
+                if (child.guiSprite) child = child.guiSprite;
                 child.on(event, fn);
             }
         }
         public bindChildrenOfType(_type, event, fn) {
             for (var i = 0; i < this.container.children.length; i++) {
-                var child = this.container.children[i];
+                var child: any = this.container.children[i];
+                if (child.guiSprite) child = child.guiSprite;
+
                 if (child instanceof _type) child.on(event, fn);
             }
         }
 
         public unbindChildren(event, fn?) {
             for (var i = 0; i < this.container.children.length; i++) {
-                var child = this.container.children[i];
+                var child: any = this.container.children[i];
+                if (child.guiSprite) child = child.guiSprite;
+
                 child.off(event, fn);
             }
         }
         public unbindChildrenOfType(_type, event, fn?) {
             for (var i = 0; i < this.container.children.length; i++) {
-                var child = this.container.children[i];
+                var child :any= this.container.children[i];
+                if (child.guiSprite) child = child.guiSprite;
+
                 if (child instanceof _type) child.off(event, fn);
             }
         }

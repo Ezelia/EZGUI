@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Game screens sample</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+    </style>
+
+
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+	<script src="./app-gui.js"></script>
+</head>
+<body>
+    <script>
+        var gameWidth = 400;
+        var gameHeight = 640;
+		
+		var mainScreen;
+		var secondScreen;
+		var thirdScreen;
+		
+        function setupGUI() {
+            EZGUI.components.btNext1.on('click', function () {
+                
+
+                secondScreen.position.x = gameWidth;
+                secondScreen.visible = true;
+
+
+                mainScreen.animatePosTo(-gameWidth, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    mainScreen.visible = false;
+                });
+
+                secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    //dlg1.visible = false;
+                });
+
+            });
+            EZGUI.components.btPrev2.on('click', function () {
+
+                mainScreen.position.x = -gameWidth;
+                mainScreen.visible = true;
+
+                secondScreen.animatePosTo(gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    secondScreen.visible = false;
+                });
+
+
+                mainScreen.animatePosTo(0, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    
+                });
+                
+            });
+
+            EZGUI.components.btNext2.on('click', function () {
+
+
+                thirdScreen.position.x = gameWidth;
+                thirdScreen.visible = true;
+
+
+                secondScreen.animatePosTo(-gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    secondScreen.visible = false;
+                });
+
+                thirdScreen.animatePosTo(0, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    //dlg1.visible = false;
+                });
+
+            });
+
+
+            EZGUI.components.btPrev3.on('click', function () {
+
+                secondScreen.position.x = -gameWidth;
+                secondScreen.visible = true;
+
+                thirdScreen.animatePosTo(gameWidth, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+                    thirdScreen.visible = false;
+                });
+
+
+                secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+
+                });
+
+            });
+
+		}
+		
+		
+        var renderer = PIXI.autoDetectRenderer(gameWidth, gameHeight); //new PIXI.CanvasRenderer(820, 800);//
+        renderer.backgroundColor = 0xffffff
+
+        var guiContainer = new PIXI.Container();
+        
+		
+		EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'], function () {
+
+		    mainScreen = EZGUI.create(mainScreenJSON, 'metalworks');
+
+		    secondScreen = EZGUI.create(secondScreenJSON, 'metalworks');
+		    secondScreen.visible = false;
+
+		    thirdScreen = EZGUI.create(thirdScreenJSON, 'metalworks');
+		    thirdScreen.visible = false;
+
+			
+		    guiContainer.addChild(mainScreen);
+		    guiContainer.addChild(secondScreen);
+		    guiContainer.addChild(thirdScreen);
+
+			
+			
+			setupGUI();
+		});
+
+        // add the renderer view element to the DOM
+        document.body.appendChild(renderer.view);
+        
+        
+        
+		
+		
+        function onAssetsLoaded() {
+
+
+
+            requestAnimationFrame(animate);
+            //sprite.setTexture(texture2);
+
+            function animate() {
+
+                requestAnimationFrame(animate);
+                renderer.render(guiContainer);
+            }
+        }
+
+
+        var resources = [
+            '../../assets/img/bomb1.png',
+            '../../assets/img/bomb1-selected.png',
+            '../../assets/img/bomb2.png',
+            '../../assets/img/bomb2-selected.png',
+            '../../assets/img/bomb3.png',
+            '../../assets/img/bomb3-selected.png',
+            '../../assets/img/orange-btn.png',
+            '../../assets/img/panel-650x400.png'
+        ];
+
+        if (PIXI.loader) { //Pixi 3  
+            PIXI.loader.add(resources);
+            PIXI.loader.load(onAssetsLoaded);
+        }
+        else { //Pixi 2  
+
+            var loader = new PIXI.AssetLoader(resources, false);
+            loader.onComplete = onAssetsLoaded;
+            loader.load();
+        }
+        //onAssetsLoaded();
+
+
+        
+    </script>
+
+</body>
+</html>

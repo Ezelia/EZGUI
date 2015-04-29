@@ -35,6 +35,29 @@ module EZGUI {
 
 
         }
+        public override(themeConfig) {
+            var _theme = JSON.parse(JSON.stringify(themeConfig));
+            for (var t in _theme) {
+                if (t == 'default') continue;
+
+                var skin = _theme[t];
+
+                utils.extendJSON(skin, this._default);
+            }
+
+            this.parseComponents(_theme);
+
+            
+            for (var t in _theme) {
+                if (t == 'default') continue;
+
+                var skin = _theme[t];
+
+                this._theme[t] = skin;
+                
+            }
+        }
+
 
         private fixLimits (target, source) {
             if (typeof source == 'object') {
@@ -73,10 +96,11 @@ module EZGUI {
             this.path = this.url.substring(0, this.url.lastIndexOf('/') + 1);
 
             
-            this.parseComponents();
+            this.parseComponents(this._theme);
             this.preload();
             
         }
+
 
         
         private parseResources() {
@@ -110,12 +134,12 @@ module EZGUI {
             return resources;
         }
 
-        private parseComponents() {
+        private parseComponents(theme) {
             
-            for (var i in this._theme) {
+            for (var i in theme) {
                 if (i == '__config__') continue;
 
-                var item = this._theme[i];
+                var item = theme[i];
 
                 for (var c = 0; c < Theme.imageComponents.length; c++) {
                     var cc = Theme.imageComponents[c];

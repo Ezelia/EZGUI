@@ -24,12 +24,21 @@ module EZGUI {
         protected rootSprite: any;
         
 
+        get settings(): string {
+            return this._settings;
+        }
+
         get text(): string {
             if (this.textObj) return this.textObj.text;
         }
         set text(val: string) {
             if (this.textObj) {
-                this.textObj.text = val;
+                if (Compatibility.PIXIVersion == 3) {
+                    this.textObj.text = val;
+                }
+                else {
+                    this.textObj.setText(val);
+                }
 
                 if (this._settings.anchor) {
                     this.textObj.position.x = 0;
@@ -290,12 +299,24 @@ module EZGUI {
                 //move container to top
                 this.addChild(this.container);
 
-
+                this.sortChildren();
             }
             
         }
         
+        protected sortChildren() {
+            if (!this.container) return;
+            var comparator: any = function (a, b) {
+                if (a.guiSprite) a = a.guiSprite;
+                if (b.guiSprite) b = b.guiSprite;
+                a._settings.z = a._settings.z || 0;
+                b._settings.z = b._settings.z || 0;
 
+                return a._settings.z - b._settings.z;
+            }
+
+            this.container.children.sort(comparator);
+        }
 
         protected drawText() {
 
@@ -593,7 +614,8 @@ module EZGUI {
             var tlCornerCfg = this.getComponentConfig(component, 'corner', 'tl', state);
             var blCornerCfg = this.getComponentConfig(component, 'corner', 'bl', state);
 
-
+            if (!tlCornerCfg || !tlCornerCfg.texture) return;
+            if (!blCornerCfg || !blCornerCfg.texture) return;
             
 
             //var ctype = this.theme[type] || this.theme['default'];

@@ -3,6 +3,8 @@
 EZGUI is a gui system for PIXI and Phaser.
 it's focused on PIXI 3 but support PIXI 2 to garantee seamless transition, and to remain compatible with Phaser 2.x
 
+![alt text](http://ezgui.ezelia.com/img/ezgui-game-optimized1.gif) ![alt text](http://ezgui.ezelia.com/img/ezgui-app-optimized1.gif) 
+
 
 Important 
 =========
@@ -33,8 +35,9 @@ implemented components
 
 TODO 
 ----
- * tabs component
- * scrollbar component
+ * Two states button component
+ * Tabs component
+ * Scrollbar component
  * texts/texts alignements 
  * relative width/height 
  * Documentation for theme definition
