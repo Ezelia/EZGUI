@@ -11,8 +11,25 @@ Important
 The code in this repository is still in developement, and some breaking changes may occure
 
 
+Online demos
+============
+ * [simple window](http://ezgui.ezelia.com/examples/01-window/1-simple.html)
+ * [window with children](http://ezgui.ezelia.com/examples/01-window/2-children.html)
+ * [window with header](http://ezgui.ezelia.com/examples/01-window/3-header.html)
+ * [window layout](http://ezgui.ezelia.com/examples/01-window/4-layout.html)
+ * [simple button](http://ezgui.ezelia.com/examples/02-button/1-simple.html)
+ * [button with skin](http://ezgui.ezelia.com/examples/02-button/2-skin.html)
+ * [Fonts](http://ezgui.ezelia.com/examples/fonts/01.html)
+ * [Phaser complex](http://ezgui.ezelia.com/examples/Phaser/)
+ * [Pixi complex](http://ezgui.ezelia.com/examples/Pixi/)
+ * [Phaser Game screens](http://ezgui.ezelia.com/examples/game/phaser.html)
+ * [Pixi Game screens](http://ezgui.ezelia.com/examples/game/pixi.html)
+ * [Phaser App screens](http://ezgui.ezelia.com/examples/app/phaser.html)
+ * [Pixi App screens](http://ezgui.ezelia.com/examples/app/pixi.html)
+
+
 Features.
---------
+=========
  * Flexible configuration : EZGUI use a flexible JSON configuration format for theme an gui definitions
  * Themes : a default theme is provided but you can create your own custom theme.
  * Tweening 
@@ -21,7 +38,7 @@ Features.
  
 
 implemented components
-----------------------
+======================
  * Window 
  * Layout 
  * Button
@@ -34,7 +51,7 @@ implemented components
 
 
 TODO 
-----
+====
  * Two states button component
  * Tabs component
  * Scrollbar component
@@ -47,14 +64,14 @@ TODO
 
 
 Known issues 
-------------
+============
 Bitmap font tint don't work in some PIXI v2 versions and Phaser.
 
  
 
 
 License
--------
+=======
 
 ```
 The MIT License (MIT)
