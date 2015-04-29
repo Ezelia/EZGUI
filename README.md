@@ -3,7 +3,7 @@
 EZGUI is a gui system for PIXI and Phaser.
 it's focused on PIXI 3 but support PIXI 2 to garantee seamless transition, and to remain compatible with Phaser 2.x
 
-![alt text](http://ezgui.ezelia.com/img/ezgui-game-optimized1.gif) ![alt text](http://ezgui.ezelia.com/img/ezgui-app-optimized1.gif) 
+![Game GUI sample](http://ezgui.ezelia.com/img/ezgui-game-optimized2.gif) ![App GUI sample](http://ezgui.ezelia.com/img/ezgui-app-optimized2.gif) 
 
 
 Important 
