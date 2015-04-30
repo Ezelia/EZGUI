@@ -116,28 +116,10 @@
         
 		var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create });
 
-
-		var resources = [
-            '../../assets/img/bomb1.png',
-            '../../assets/img/bomb1-selected.png',
-            '../../assets/img/bomb2.png',
-            '../../assets/img/bomb2-selected.png',
-            '../../assets/img/bomb3.png',
-            '../../assets/img/bomb3-selected.png',
-            '../../assets/img/orange-btn.png',
-            '../../assets/img/panel-650x400.png'
-		];
-
 		function preload() {
-		    for (var i = 0; i < resources.length; i++) {
-		        game.load.image(resources[i], resources[i]);
-		    }
 		}
 
 		function create() {
-
-
-
 		}
 
 

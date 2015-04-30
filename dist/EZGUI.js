@@ -2293,8 +2293,8 @@ var EZGUI;
                 }
                 //console.log(' >>>> ', this.draggable.width, this._settings.width);
                 ssize = this.slotSize * this.container.children.length;
-                this.dragXInterval[0] = -ssize + this._settings.width * 0.9;
-                this.dragXInterval[1] = this._settings.width * 0.1;
+                this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
+                this.dragXInterval[1] = this._settings.width * 0.2;
                 this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
                 this.dragYInterval[1] = this._settings.height * 0.1;
                 _super.prototype.handleEvents.call(this);
@@ -2377,8 +2377,8 @@ var EZGUI;
                 var result = _super.prototype.addChildAt.call(this, child, index);
                 if (result instanceof EZGUI.GUISprite) {
                     var ssize = this.slotSize * this.container.children.length;
-                    this.dragXInterval[0] = -ssize + this._settings.width * 0.9;
-                    this.dragXInterval[1] = this._settings.width * 0.1;
+                    this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
+                    this.dragXInterval[1] = this._settings.width * 0.2;
                     this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
                     this.dragYInterval[1] = this._settings.height * 0.1;
                 }
@@ -2388,8 +2388,8 @@ var EZGUI;
                 var result = _super.prototype.removeChild.call(this, child);
                 if (child instanceof EZGUI.GUISprite) {
                     var ssize = this.slotSize * this.container.children.length;
-                    this.dragXInterval[0] = -ssize + this._settings.width * 0.9;
-                    this.dragXInterval[1] = this._settings.width * 0.1;
+                    this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
+                    this.dragXInterval[1] = this._settings.width * 0.2;
                     this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
                     this.dragYInterval[1] = this._settings.height * 0.1;
                     this.draggable.position.x = 0;

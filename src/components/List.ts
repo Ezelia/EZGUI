@@ -51,8 +51,8 @@
             //console.log(' >>>> ', this.draggable.width, this._settings.width);
             
             ssize = this.slotSize * this.container.children.length;
-            this.dragXInterval[0] = - ssize + this._settings.width * 0.9;
-            this.dragXInterval[1] = this._settings.width *0.1;            
+            this.dragXInterval[0] = - ssize + this._settings.width * 0.5;
+            this.dragXInterval[1] = this._settings.width *0.2;            
 
             this.dragYInterval[0] = - ssize + this._settings.height * 0.9;
             this.dragYInterval[1] = this._settings.height *0.1;            
@@ -168,8 +168,8 @@
             if (result instanceof GUISprite) {
 
                 var ssize = this.slotSize * this.container.children.length;
-                this.dragXInterval[0] = - ssize + this._settings.width * 0.9;
-                this.dragXInterval[1] = this._settings.width * 0.1;
+                this.dragXInterval[0] = - ssize + this._settings.width * 0.5;
+                this.dragXInterval[1] = this._settings.width * 0.2;
 
                 this.dragYInterval[0] = - ssize + this._settings.height * 0.9;
                 this.dragYInterval[1] = this._settings.height * 0.1;           
@@ -184,8 +184,8 @@
             if (child instanceof GUISprite) {
 
                 var ssize = this.slotSize * this.container.children.length;
-                this.dragXInterval[0] = - ssize + this._settings.width * 0.9;
-                this.dragXInterval[1] = this._settings.width * 0.1;
+                this.dragXInterval[0] = - ssize + this._settings.width * 0.5;
+                this.dragXInterval[1] = this._settings.width * 0.2;
 
                 this.dragYInterval[0] = - ssize + this._settings.height * 0.9;
                 this.dragYInterval[1] = this._settings.height * 0.1;             

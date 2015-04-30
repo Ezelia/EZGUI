@@ -143,28 +143,8 @@
         }
 
 
-        var resources = [
-            '../../assets/img/bomb1.png',
-            '../../assets/img/bomb1-selected.png',
-            '../../assets/img/bomb2.png',
-            '../../assets/img/bomb2-selected.png',
-            '../../assets/img/bomb3.png',
-            '../../assets/img/bomb3-selected.png',
-            '../../assets/img/orange-btn.png',
-            '../../assets/img/panel-650x400.png'
-        ];
 
-        if (PIXI.loader) { //Pixi 3  
-            PIXI.loader.add(resources);
-            PIXI.loader.load(onAssetsLoaded);
-        }
-        else { //Pixi 2  
-
-            var loader = new PIXI.AssetLoader(resources, false);
-            loader.onComplete = onAssetsLoaded;
-            loader.load();
-        }
-        //onAssetsLoaded();
+        onAssetsLoaded();
 
 
         
