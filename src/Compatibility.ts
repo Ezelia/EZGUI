@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="polyfills/ie.ts" />
+
 
 //declare var __extends;
 module EZGUI.Compatibility {

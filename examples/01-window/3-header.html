@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Window Example</title>
-    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../js/pixi2.dev.js"></script>
     <script src="../../dist/EZGUI.js"></script>
 </head>
 <body>
@@ -17,7 +17,7 @@
             component: 'Window',
             
             //create a header and use blueheader skin
-            header: { skin: 'blueheader', position: { x: 0, y: 0 }, height: 60, text: 'Drag from header' },
+            header: { id:'titlebar', skin: 'blueheader', position: { x: 0, y: 0 }, height: 60, text: 'Drag from header' },
 
             //when a header is defined, and the window is draggable, 
             //the drag handler is set to the header

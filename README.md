@@ -66,7 +66,7 @@ TODO
 Known issues 
 ============
 Bitmap font tint don't work in some PIXI v2 versions and Phaser.
-Reported to be broken on IE ... investigating on it, any help/contribution to fix this is welcome
+
  
 
 

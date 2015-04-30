@@ -21,8 +21,11 @@ module EZGUI {
 
     var _components = {};
     export function registerComponents(cpt, id?) {
+        
         id = id || cpt.name;
         _components[id] = cpt;
+
+        
     }
 
 
@@ -31,6 +34,8 @@ module EZGUI {
 
         var t = settings.component || 'default';
         
+        
+
         var cptConstructor = _components[settings.component] || _components['default'];
 
         var component;
