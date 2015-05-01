@@ -2544,7 +2544,7 @@ var EZGUI;
                         return this.slide.position.x / (this.width - this.slide.width);
                     }
                     else {
-                        return this.slide.position.y / (this.height - this.slide.height);
+                        return 1 + this.slide.position.y / (this.slide.height - this.height);
                     }
                 },
                 set: function (val) {
@@ -2554,7 +2554,7 @@ var EZGUI;
                         this.slide.position.x = val * (this.width - this.slide.width);
                     }
                     else {
-                        this.slide.position.y = val * (this.height - this.slide.height);
+                        this.slide.position.y = (val - 1) * (this.slide.height - this.height);
                     }
                 },
                 enumerable: true,
@@ -2620,6 +2620,7 @@ var EZGUI;
                 this.slide = EZGUI.create(cfg, this.theme);
                 this.slide.dragXInterval = [0, this.width - this.slide.width];
                 this.slide.dragYInterval = [0, this.height - this.slide.height];
+                this.value = 0;
                 this.container.addChild(this.slide);
             };
             return Slider;
