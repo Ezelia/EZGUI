@@ -1980,17 +1980,11 @@ var EZGUI;
                 if (_settings.text)
                     this.text = _settings.text;
             }
-            Button.prototype.setupEvents = function () {
-                _super.prototype.setupEvents.call(this);
-                var guiObj = this;
-                var _this = this;
-            };
             Button.prototype.handleEvents = function () {
                 _super.prototype.handleEvents.call(this);
                 var guiObj = this;
                 var _this = this;
                 var isDown = false;
-                //Pixi2 workaround 
                 guiObj.on('mousemove', function () {
                 });
                 guiObj.on('mousedown', function () {
@@ -2018,11 +2012,6 @@ var EZGUI;
                     }
                 });
             };
-            Button.prototype.draw = function () {
-                _super.prototype.draw.call(this);
-                //this.anchor.x = settings.anchor.x;
-                //this.anchor.y = settings.anchor.y;
-            };
             return Button;
         })(EZGUI.GUISprite);
         Component.Button = Button;
@@ -2042,6 +2031,7 @@ var EZGUI;
                 this.themeId = themeId;
             }
             Object.defineProperty(Checkbox.prototype, "checked", {
+                //Getter & setter for check state
                 get: function () {
                     return this._checked;
                 },
@@ -2062,6 +2052,7 @@ var EZGUI;
                 configurable: true
             });
             Object.defineProperty(Checkbox.prototype, "text", {
+                //Getter & setter for text vakue which need to be placed on the right
                 get: function () {
                     if (this.textObj)
                         return this.textObj.text;
@@ -2150,8 +2141,10 @@ var EZGUI;
                     this.text = _settings.text;
             }
             Label.prototype.setupEvents = function () {
+                //clear events
             };
             Label.prototype.handleEvents = function () {
+                //clear event handlers
             };
             Label.prototype.draw = function () {
                 var settings = this._settings;
@@ -2573,6 +2566,7 @@ var EZGUI;
                 var _this = this;
             };
             Slider.prototype.drawText = function () {
+                //prevent text drawing
             };
             Slider.prototype.handleEvents = function () {
                 _super.prototype.handleEvents.call(this);

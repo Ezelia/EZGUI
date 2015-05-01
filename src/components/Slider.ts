@@ -40,7 +40,10 @@ module EZGUI.Component {
         }
 
         protected drawText() {
+            //prevent text drawing
         }
+
+
         protected handleEvents() {
             super.handleEvents();
             var guiObj: any = this;

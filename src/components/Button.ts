@@ -15,16 +15,6 @@ module EZGUI.Component {
             if (_settings.text) this.text = _settings.text;
 
         }
-        protected setupEvents() {
-            super.setupEvents();            
-
-            var guiObj: any = this;
-            var _this = this;
-
-
-
-        }
-
 
         protected handleEvents() {
             super.handleEvents();
@@ -32,7 +22,7 @@ module EZGUI.Component {
             var _this = this;
             var isDown = false;
 
-            //Pixi2 workaround 
+            
 
 
             guiObj.on('mousemove', function () {
@@ -65,15 +55,7 @@ module EZGUI.Component {
             });
         }
 
-        protected draw() {
-            super.draw();
 
-
-            
-                //this.anchor.x = settings.anchor.x;
-                //this.anchor.y = settings.anchor.y;
-            
-        }
     }
 
     EZGUI.registerComponents(Button);

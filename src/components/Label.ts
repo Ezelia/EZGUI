@@ -15,13 +15,15 @@ module EZGUI.Component {
             if (_settings.text) this.text = _settings.text;
 
         }
-        protected setupEvents() {
 
+
+        protected setupEvents() {
+            //clear events
         }
 
 
         protected handleEvents() {
-
+            //clear event handlers
         }
 
         protected draw() {

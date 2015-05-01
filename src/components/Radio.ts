@@ -21,9 +21,6 @@ module EZGUI.Component {
                 this.setState('checked');
                 if (this._checkmark) this._checkmark.visible = true;
 
-
-
-
             }
             else {
                 this.setState('default');
@@ -34,6 +31,8 @@ module EZGUI.Component {
             Radio.selectedFrom[this.group] = this;
 
         }
+
+
 
         constructor(public _settings, public themeId) {
             super(_settings, themeId);

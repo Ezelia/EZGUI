@@ -261,9 +261,7 @@ declare module EZGUI.Component {
         _settings: any;
         themeId: any;
         constructor(_settings: any, themeId: any);
-        protected setupEvents(): void;
         protected handleEvents(): void;
-        protected draw(): void;
     }
 }
 declare module EZGUI.Component {

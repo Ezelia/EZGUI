@@ -87,6 +87,7 @@
     <Content Include="examples\game\phaser.html" />
     <Content Include="examples\game\pixi.html" />
     <Content Include="examples\Phaser\index.html" />
+    <Content Include="examples\Pixi\metalworks.html" />
     <Content Include="examples\Pixi\index.html" />
     <Content Include="examples\test\index.html" />
     <Content Include="js\pixi2.dev.js" />
@@ -94,6 +95,7 @@
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
     <TypeScriptCompile Include="src\GUIObject.ts" />
+    <TypeScriptCompile Include="src\polyfills\IE.ts" />
     <TypeScriptCompile Include="src\tween\Easing.ts" />
     <TypeScriptCompile Include="src\tween\Interpolation.ts" />
     <TypeScriptCompile Include="src\tween\Tween.ts" />

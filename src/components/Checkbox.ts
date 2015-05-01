@@ -8,6 +8,8 @@ module EZGUI.Component {
         
         protected _checkmark: any;
         
+
+        //Getter & setter for check state
         get checked(): boolean {
             return this._checked;
         }
@@ -24,7 +26,7 @@ module EZGUI.Component {
             this._checked = chk;
         }
           
-
+        //Getter & setter for text vakue which need to be placed on the right
         get text(): string {
             if (this.textObj) return this.textObj.text;
         }
@@ -47,6 +49,8 @@ module EZGUI.Component {
 
             }
         }   
+
+
 
         constructor(public _settings, public themeId) {
             super(_settings, themeId);
