@@ -136,7 +136,6 @@ declare module EZGUI {
         update(time: any): boolean;
     }
 }
-declare var TWEEN: any;
 declare module EZGUI {
     var VERSION: string;
     var tilingRenderer: any;

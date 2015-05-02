@@ -92,6 +92,7 @@
     <Content Include="examples\test\index.html" />
     <Content Include="js\pixi2.dev.js" />
     <Content Include="js\pixi3.dev.js" />
+    <TypeScriptCompile Include="lib\TweenJS.d.ts" />
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
     <TypeScriptCompile Include="src\GUIObject.ts" />

@@ -613,7 +613,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.1.0 beta';
+    EZGUI.VERSION = '0.1.2 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -1941,6 +1941,8 @@ var EZGUI;
             return null;
         };
         GUISprite.prototype.createVisuals = function (settings, state) {
+            if (settings.transparent === true)
+                return [];
             //priority to image
             var img = this.createThemeImage(settings, state);
             if (img != null)

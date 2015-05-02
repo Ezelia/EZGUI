@@ -3,9 +3,9 @@
 /// <reference path="compatibility.ts" />
 
 /// <reference path="theme.ts" />
-declare var TWEEN;
+
 module EZGUI {
-    export var VERSION = '0.1.0 beta';
+    export var VERSION = '0.1.2 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     export var tilingRenderer;
     

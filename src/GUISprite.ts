@@ -848,7 +848,7 @@ module EZGUI {
         }
 
         protected createVisuals(settings, state) {
-
+            if (settings.transparent === true) return [];
             //priority to image
             var img = this.createThemeImage(settings, state);
 
