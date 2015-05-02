@@ -54,8 +54,8 @@
             this.dragXInterval[0] = - ssize + this._settings.width * 0.5;
             this.dragXInterval[1] = this._settings.width *0.2;            
 
-            this.dragYInterval[0] = - ssize + this._settings.height * 0.9;
-            this.dragYInterval[1] = this._settings.height *0.1;            
+            this.dragYInterval[0] = - ssize + this._settings.height * 0.5;
+            this.dragYInterval[1] = this._settings.height *0.2;            
 
 
             super.handleEvents();
@@ -130,6 +130,7 @@
             if (_this.decelerationItv) clearInterval(_this.decelerationItv);
 
             _this.decelerationItv = setInterval(function () {
+                //console.log('.');
                 var delta = amplitude / timeConstant;
 
                 if (_this.dragConstraint != 'y') {

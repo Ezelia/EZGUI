@@ -142,7 +142,7 @@ var levelSelectScreenJSON = {
 	{
 		id: 'levelsList',
 		component: 'List',
-		dragY:false,
+		dragX:false,
 		padding: 3,
 		position: {x:0, y:0},
 		width: 590,

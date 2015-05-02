@@ -20,82 +20,22 @@
     <script>
         var gameWidth = 400;
         var gameHeight = 640;
-		
+
+		var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create });
+
+		function preload() {
+            //... your preload
+		}
+
+		function create() {
+            //... your create
+		}
+
+
+
 		var mainScreen;
 		var secondScreen;
 		var thirdScreen;
-		
-        function setupGUI() {
-            EZGUI.components.btNext1.on('click', function () {
-                
-
-                secondScreen.position.x = gameWidth;
-                secondScreen.visible = true;
-
-
-                mainScreen.animatePosTo(-gameWidth, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    mainScreen.visible = false;
-                });
-
-                secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    //dlg1.visible = false;
-                });
-
-            });
-            EZGUI.components.btPrev2.on('click', function () {
-
-                mainScreen.position.x = -gameWidth;
-                mainScreen.visible = true;
-
-                secondScreen.animatePosTo(gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    secondScreen.visible = false;
-                });
-
-
-                mainScreen.animatePosTo(0, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    
-                });
-                
-            });
-
-            EZGUI.components.btNext2.on('click', function () {
-
-
-                thirdScreen.position.x = gameWidth;
-                thirdScreen.visible = true;
-
-
-                secondScreen.animatePosTo(-gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    secondScreen.visible = false;
-                });
-
-                thirdScreen.animatePosTo(0, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    //dlg1.visible = false;
-                });
-
-            });
-
-
-            EZGUI.components.btPrev3.on('click', function () {
-
-                secondScreen.position.x = -gameWidth;
-                secondScreen.visible = true;
-
-                thirdScreen.animatePosTo(gameWidth, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    thirdScreen.visible = false;
-                });
-
-
-                secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-
-                });
-
-            });
-
-		}
-		
-        
-		
 		EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'], function () {
 
 		    mainScreen = EZGUI.create(mainScreenJSON, 'metalworks');
@@ -113,14 +53,71 @@
 			setupGUI();
 		});
 
-        
-		var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create });
 
-		function preload() {
+		function setupGUI() {
+		    EZGUI.components.btNext1.on('click', function () {
+
+		        secondScreen.position.x = gameWidth;
+		        secondScreen.visible = true;
+
+		        mainScreen.animatePosTo(-gameWidth, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            mainScreen.visible = false;
+		        });
+
+		        secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		        });
+
+		    });
+		    EZGUI.components.btPrev2.on('click', function () {
+
+		        mainScreen.position.x = -gameWidth;
+		        mainScreen.visible = true;
+
+		        secondScreen.animatePosTo(gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            secondScreen.visible = false;
+		        });
+
+
+		        mainScreen.animatePosTo(0, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+
+		        });
+
+		    });
+
+		    EZGUI.components.btNext2.on('click', function () {
+
+		        thirdScreen.position.x = gameWidth;
+		        thirdScreen.visible = true;
+
+		        secondScreen.animatePosTo(-gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            secondScreen.visible = false;
+		        });
+
+		        thirdScreen.animatePosTo(0, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            //dlg1.visible = false;
+		        });
+
+		    });
+
+
+		    EZGUI.components.btPrev3.on('click', function () {
+
+		        secondScreen.position.x = -gameWidth;
+		        secondScreen.visible = true;
+
+		        thirdScreen.animatePosTo(gameWidth, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            thirdScreen.visible = false;
+		        });
+
+
+		        secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		        });
+
+		    });
+
 		}
 
-		function create() {
-		}
+
 
 
         

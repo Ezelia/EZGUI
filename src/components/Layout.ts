@@ -99,7 +99,7 @@ module EZGUI.Component {
                 }
                 else {
 
-                    x = i % lx;
+                    
 
                     var adjust = Math.floor(i / (lx * ly));
                     if (this._settings.dragY === false) {
@@ -108,11 +108,11 @@ module EZGUI.Component {
                         dy -= adjust  * this._settings.height;
                     } else if (this._settings.dragX === false) {
 
-                        dx -= adjust * this._settings.width;
-                        dy += adjust * this._settings.height;
+                        //dx -= adjust * this._settings.width;
+                        //dy += adjust * this._settings.height;
                     }
                     
-
+                    x = i % lx;
                     y = Math.floor(i / lx);
                 }
 
@@ -126,12 +126,40 @@ module EZGUI.Component {
             }
 
 
-            if (childSettings.position == 'center') {
-                childSettings.position = { x: 0, y: 0 };
-                childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
-                childSettings.position.y = dy + (this._settings.height / ly) / 2 - childSettings.height / 2;
 
+            var pos = childSettings.position;
+            var parts = pos.split(' ');
+            var pos1 = parts[0];
+            var pos2 = parts[1];
+            if (typeof pos == 'string') {
+                childSettings.position = { x: dx, y: dy };
+
+                switch (pos1) {
+                    case 'center':
+                        childSettings.position.y = dy + (this._settings.height / ly) / 2 - childSettings.height / 2;
+                        if (pos2 === undefined) childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                        break;
+                    case 'bottom':
+                        childSettings.position.y = dy + (this._settings.height / ly) - childSettings.height - this._settings.padding;
+                        break;
+
+                }
+
+                switch (pos2) {
+                    case 'center':                        
+                        childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                        break;
+                    case 'right':
+                        childSettings.position.x = dx + (this._settings.width / lx) - childSettings.width - this._settings.padding;
+                        break;
+                }
             }
+            //if (childSettings.position == 'center') {
+            //    childSettings.position = { x: 0, y: 0 };
+            //    childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+            //    childSettings.position.y = dy + (this._settings.height / ly) / 2 - childSettings.height / 2;
+
+            //}
             else {
                 childSettings.position.x = dx + childSettings.position.x;
                 childSettings.position.y = dy + childSettings.position.y;
@@ -166,80 +194,80 @@ module EZGUI.Component {
         //    }
         //}
 
-        //public addChildAt(child, index) {
-        //    if (child instanceof GUISprite) {
-        //        var i = index;
+        public addChildAt(child, index) {
+            if (child instanceof GUISprite) {
+                var i = index;
 
-        //        var padTop = this._settings['padding-top'] || this._settings.padding || 0;
-        //        var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
+                var padTop = this._settings['padding-top'] || this._settings.padding || 0;
+                var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
 
-        //        var swidth = this._settings.width - padLeft;
-        //        var sheight = this._settings.height - padTop;
+                var swidth = this._settings.width - padLeft;
+                var sheight = this._settings.height - padTop;
 
 
-        //        var dx = padLeft;
-        //        var dy = padTop;
-        //        var lx = 1;
-        //        var ly = 1;       
+                var dx = padLeft;
+                var dy = padTop;
+                var lx = 1;
+                var ly = 1;       
                          
-        //        if (this._settings.layout != undefined) {
+                if (this._settings.layout != undefined) {
 
-        //            lx = this._settings.layout[0];
-        //            ly = this._settings.layout[1];
+                    lx = this._settings.layout[0];
+                    ly = this._settings.layout[1];
 
-        //            var x, y;
-        //            //horizontal layout 
-        //            if (ly == null) {
-        //                x = i;
-        //                y = 0;
-        //            } else if (lx == null) {
-        //                x = 0;
-        //                y = i;
-        //            }
-        //            else {
-        //                x = i % lx;
+                    var x, y;
+                    //horizontal layout 
+                    if (ly == null) {
+                        x = i;
+                        y = 0;
+                    } else if (lx == null) {
+                        x = 0;
+                        y = i;
+                    }
+                    else {
+                        x = i % lx;
 
-        //                var adjust = Math.floor(i / (lx * ly));
-        //                if (this._settings.dragY === false) {
+                        var adjust = Math.floor(i / (lx * ly));
+                        if (this._settings.dragY === false) {
 
-        //                    dx += adjust * this._settings.width;
-        //                    dy -= adjust * this._settings.height;
-        //                } else if (this._settings.dragX === false) {
+                            dx += adjust * this._settings.width;
+                            dy -= adjust * this._settings.height;
+                        } else if (this._settings.dragX === false) {
 
-        //                    dx -= adjust * this._settings.width;
-        //                    dy += adjust * this._settings.height;
-        //                }
+                            dx -= adjust * this._settings.width;
+                            dy += adjust * this._settings.height;
+                        }
 
 
-        //                y = Math.floor(i / lx);
-        //            }
+                        y = Math.floor(i / lx);
+                    }
 
-        //            ly = ly || 1;
-        //            lx = lx || 1;
+                    ly = ly || 1;
+                    lx = lx || 1;
 
-        //            //vertical layout ? i : i%lx;
+                    //vertical layout ? i : i%lx;
                         
 
-        //            dx += x * (swidth / lx);
-        //            dy += y * (sheight / ly);
+                    dx += x * (swidth / lx);
+                    dy += y * (sheight / ly);
 
 
-        //            child.position.x = dx + (this._settings.width / lx) / 2 - child.width / 2;
-        //            child.position.y = dy + (this._settings.height / ly) / 2 - child.height / 2;
+                    child.position.x = dx + (this._settings.width / lx) / 2 - child.width / 2;
+                    child.position.y = dy + (this._settings.height / ly) / 2 - child.height / 2;
 
-        //        }
+                }
 
-        //        child.guiParent = this;
-        //        if (child.phaserGroup) return this.container.addChild(child.phaserGroup);
-        //        else return this.container.addChild(child);
+                child.guiParent = this;
+                if (child.phaserGroup) return this.container.addChild(child.phaserGroup);
+                else return this.container.addChild(child);
                                 
-        //        //return super.addChild(child);
-        //    }
-        //    else {
-        //        return super.addChildAt(child, index);
-        //    }
+                //return super.addChild(child);
+            }
+            else {
+                return super.addChildAt(child, index);
+            }
             
-        //}
+        }
 
 
 

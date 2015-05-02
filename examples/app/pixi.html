@@ -18,89 +18,30 @@
 </head>
 <body>
     <script>
-        var gameWidth = 400;
-        var gameHeight = 640;
-		
-		var mainScreen;
-		var secondScreen;
-		var thirdScreen;
-		
-        function setupGUI() {
-            EZGUI.components.btNext1.on('click', function () {
-                
+        var appWidth = 400;
+        var appHeight = 640;
+				
 
-                secondScreen.position.x = gameWidth;
-                secondScreen.visible = true;
-
-
-                mainScreen.animatePosTo(-gameWidth, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    mainScreen.visible = false;
-                });
-
-                secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    //dlg1.visible = false;
-                });
-
-            });
-            EZGUI.components.btPrev2.on('click', function () {
-
-                mainScreen.position.x = -gameWidth;
-                mainScreen.visible = true;
-
-                secondScreen.animatePosTo(gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    secondScreen.visible = false;
-                });
-
-
-                mainScreen.animatePosTo(0, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    
-                });
-                
-            });
-
-            EZGUI.components.btNext2.on('click', function () {
-
-
-                thirdScreen.position.x = gameWidth;
-                thirdScreen.visible = true;
-
-
-                secondScreen.animatePosTo(-gameWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    secondScreen.visible = false;
-                });
-
-                thirdScreen.animatePosTo(0, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    //dlg1.visible = false;
-                });
-
-            });
-
-
-            EZGUI.components.btPrev3.on('click', function () {
-
-                secondScreen.position.x = -gameWidth;
-                secondScreen.visible = true;
-
-                thirdScreen.animatePosTo(gameWidth, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-                    thirdScreen.visible = false;
-                });
-
-
-                secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
-
-                });
-
-            });
-
-		}
-		
-		
-        var renderer = PIXI.autoDetectRenderer(gameWidth, gameHeight); //new PIXI.CanvasRenderer(820, 800);//
+				
+        var renderer = PIXI.autoDetectRenderer(appWidth, appHeight);
         renderer.backgroundColor = 0xffffff
 
         var guiContainer = new PIXI.Container();
         
-		
+        // add the renderer view element to the DOM
+        document.body.appendChild(renderer.view);
+
+        requestAnimationFrame(animate);
+        function animate() {
+
+            requestAnimationFrame(animate);
+            renderer.render(guiContainer);
+        }
+
+
+        var mainScreen;
+        var secondScreen;
+        var thirdScreen;
 		EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'], function () {
 
 		    mainScreen = EZGUI.create(mainScreenJSON, 'metalworks');
@@ -121,30 +62,77 @@
 			setupGUI();
 		});
 
-        // add the renderer view element to the DOM
-        document.body.appendChild(renderer.view);
-        
-        
-        
-		
-		
-        function onAssetsLoaded() {
+		function setupGUI() {
+		    EZGUI.components.btNext1.on('click', function () {
+
+
+		        secondScreen.position.x = appWidth;
+		        secondScreen.visible = true;
+
+
+		        mainScreen.animatePosTo(-appWidth, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            mainScreen.visible = false;
+		        });
+
+		        secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            //dlg1.visible = false;
+		        });
+
+		    });
+		    EZGUI.components.btPrev2.on('click', function () {
+
+		        mainScreen.position.x = -appWidth;
+		        mainScreen.visible = true;
+
+		        secondScreen.animatePosTo(appWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            secondScreen.visible = false;
+		        });
+
+
+		        mainScreen.animatePosTo(0, mainScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+
+		        });
+
+		    });
+
+		    EZGUI.components.btNext2.on('click', function () {
+
+
+		        thirdScreen.position.x = appWidth;
+		        thirdScreen.visible = true;
+
+
+		        secondScreen.animatePosTo(-appWidth, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            secondScreen.visible = false;
+		        });
+
+		        thirdScreen.animatePosTo(0, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            //dlg1.visible = false;
+		        });
+
+		    });
+
+
+		    EZGUI.components.btPrev3.on('click', function () {
+
+		        secondScreen.position.x = -appWidth;
+		        secondScreen.visible = true;
+
+		        thirdScreen.animatePosTo(appWidth, thirdScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+		            thirdScreen.visible = false;
+		        });
+
+
+		        secondScreen.animatePosTo(0, secondScreen.position.y, 800, EZGUI.Easing.Back.Out, function () {
+
+		        });
+
+		    });
+
+		}
 
 
 
-            requestAnimationFrame(animate);
-            //sprite.setTexture(texture2);
-
-            function animate() {
-
-                requestAnimationFrame(animate);
-                renderer.render(guiContainer);
-            }
-        }
-
-
-
-        onAssetsLoaded();
 
 
         

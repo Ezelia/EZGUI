@@ -376,16 +376,44 @@ module EZGUI {
             if (!childSettings) return null;
             var i = order;
 
-            if (childSettings.position == 'center') {
+            var pos = childSettings.position;
+            var parts = pos.split(' ');
+            var pos1 = parts[0];
+            var pos2 = parts[1];
+
+            if (typeof pos == 'string') {
                 childSettings.position = { x: 0, y: 0 };
-                //childSettings.anchor = { x: 0.5, y: 0.5 };
-                childSettings.position.x =  (this._settings.width  - childSettings.width) / 2;
-                childSettings.position.y =  (this._settings.height  - childSettings.height) / 2;
+                
+
+                if (pos1 == 'center') {
+                    
+                    //childSettings.anchor = { x: 0.5, y: 0.5 };
+                    childSettings.position.x = (this._settings.width - childSettings.width) / 2;
+                    childSettings.position.y = (this._settings.height - childSettings.height) / 2;
+                }
+
+
+                switch (pos1) {
+                    case 'center':
+                        childSettings.position.y = (this._settings.height - childSettings.height) / 2;
+                        if (pos2 === undefined) childSettings.position.x = (this._settings.width - childSettings.width) / 2;
+                        break;
+                    case 'bottom':
+                        childSettings.position.y = this._settings.height - childSettings.height - this._settings.padding;
+                        break;
+
+                }
+
+                switch (pos2) {
+                    case 'center':
+                        childSettings.position.x = (this._settings.width - childSettings.width) / 2;
+                        break;
+                    case 'right':
+                        childSettings.position.x = this._settings.width - childSettings.width - this._settings.padding;
+                        break;
+                }
             }
-            else {
-                childSettings.position.x =  childSettings.position.x;
-                childSettings.position.y =  childSettings.position.y;
-            }
+
 
 
             var child = EZGUI.create(childSettings, this.theme);
