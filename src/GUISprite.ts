@@ -377,33 +377,35 @@ module EZGUI {
             var i = order;
 
             var pos = childSettings.position;
-            var parts = pos.split(' ');
-            var pos1 = parts[0];
-            var pos2 = parts[1];
-
-
-            //normalize pos
-            if (parts[0] == parts[1]) {
-                pos2 = undefined;
-            }
-            if ((parts[0] == 'top' && parts[2] == 'bottom') ||
-                (parts[0] == 'bottom' && parts[2] == 'top') ||
-                (parts[0] == 'left' && parts[2] == 'right') ||
-                (parts[0] == 'right' && parts[2] == 'left') 
-                ) {
-                pos1 = 'center';
-                pos2 = 'undefined';
-            }
-            if ((parts[0] == 'left' || parts[0] == 'right') && (parts[1] == 'top' || parts[1] == 'bottom')) {
-                pos1 = parts[1];
-                pos2 = parts[0];
-            }
-            if ((pos1 == 'left' || pos1 == 'right') && pos2 === undefined) {
-                pos2 = pos1;
-                pos1 = 'left';
-            }
 
             if (typeof pos == 'string') {
+                var parts = pos.split(' ');
+                var pos1 = parts[0];
+                var pos2 = parts[1];
+
+
+                //normalize pos
+                if (parts[0] == parts[1]) {
+                    pos2 = undefined;
+                }
+                if ((parts[0] == 'top' && parts[2] == 'bottom') ||
+                    (parts[0] == 'bottom' && parts[2] == 'top') ||
+                    (parts[0] == 'left' && parts[2] == 'right') ||
+                    (parts[0] == 'right' && parts[2] == 'left')
+                    ) {
+                    pos1 = 'center';
+                    pos2 = 'undefined';
+                }
+                if ((parts[0] == 'left' || parts[0] == 'right') && (parts[1] == 'top' || parts[1] == 'bottom')) {
+                    pos1 = parts[1];
+                    pos2 = parts[0];
+                }
+                if ((pos1 == 'left' || pos1 == 'right') && pos2 === undefined) {
+                    pos2 = pos1;
+                    pos1 = 'left';
+                }
+
+
                 childSettings.position = { x: 0, y: 0 };
                 
 
