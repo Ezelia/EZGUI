@@ -28,6 +28,11 @@ Online demos
  * [Pixi App screens](http://ezgui.ezelia.com/examples/app/pixi.html)
 
 
+Documentation
+=============
+A work in progress [documentation](https://github.com/Ezelia/EZGUI/wiki) is available in [the wiki section](https://github.com/Ezelia/EZGUI/wiki)
+There are also a lot of [commented examples](https://github.com/Ezelia/EZGUI/tree/master/examples) to get started
+
 Features.
 =========
  * Flexible configuration : EZGUI use a flexible JSON configuration format for theme an gui definitions

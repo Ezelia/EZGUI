@@ -21,7 +21,7 @@
             "color": "black"
         }
     },
-    "Dialog": {
+    "Window": {
         "bgPadding": 5,
         "bg": "wnd-grey-bg.png",
         "corner": "wnd-grey-corner.png",
