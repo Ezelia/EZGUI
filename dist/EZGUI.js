@@ -623,6 +623,7 @@ var EZGUI;
     EZGUI.game;
     EZGUI.themes = {};
     EZGUI.components = {};
+    EZGUI.radioGroups = [];
     var _components = {};
     function registerComponents(cpt, id) {
         id = id || cpt.name;
@@ -2617,12 +2618,21 @@ var EZGUI;
                 this.themeId = themeId;
                 this.group = null;
                 this.group = _settings.group;
-                if (!Radio.groups[this.group])
-                    Radio.groups[this.group] = [];
-                Radio.groups[this.group].push(this);
+                if (!EZGUI.radioGroups[this.group])
+                    EZGUI.radioGroups[this.group] = [];
+                EZGUI.radioGroups[this.group].push(this);
                 if (this._settings.checked === true)
                     this.checked = true;
             }
+            Object.defineProperty(Radio, "groups", {
+                //static groups: any = {};
+                //static selectedFrom: any = {};
+                get: function () {
+                    return EZGUI.radioGroups;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(Radio.prototype, "checked", {
                 get: function () {
                     return this._checked;
@@ -2640,16 +2650,16 @@ var EZGUI;
                             this._checkmark.visible = false;
                     }
                     this._checked = chk;
-                    Radio.selectedFrom[this.group] = this;
+                    EZGUI.radioGroups[this.group].selected = this;
                 },
                 enumerable: true,
                 configurable: true
             });
             Radio.prototype.clearGroup = function () {
-                if (!Radio.groups[this.group])
+                if (!EZGUI.radioGroups[this.group])
                     return;
-                for (var i = 0; i < Radio.groups[this.group].length; i++) {
-                    Radio.groups[this.group][i].checked = false;
+                for (var i = 0; i < EZGUI.radioGroups[this.group].length; i++) {
+                    EZGUI.radioGroups[this.group][i].checked = false;
                 }
             };
             Radio.prototype.handleEvents = function () {
@@ -2665,8 +2675,6 @@ var EZGUI;
             Radio.prototype.draw = function () {
                 _super.prototype.draw.call(this);
             };
-            Radio.groups = {};
-            Radio.selectedFrom = {};
             return Radio;
         })(Component.Checkbox);
         Component.Radio = Radio;

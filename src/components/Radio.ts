@@ -7,9 +7,12 @@ module EZGUI.Component {
         
         public group = null;
 
-        static groups: any = {};
-        static selectedFrom: any = {};
+        //static groups: any = {};
+        //static selectedFrom: any = {};
 
+        static get groups() {
+            return radioGroups;
+        }
 
         get checked(): boolean {
             return this._checked;
@@ -28,7 +31,7 @@ module EZGUI.Component {
             }
 
             this._checked = chk;
-            Radio.selectedFrom[this.group] = this;
+            radioGroups[this.group].selected = this;
 
         }
 
@@ -38,20 +41,22 @@ module EZGUI.Component {
             super(_settings, themeId);
             this.group = _settings.group;
 
-            if (!Radio.groups[this.group]) Radio.groups[this.group] = [];
+            if (!radioGroups[this.group]) radioGroups[this.group] = [];
 
-            Radio.groups[this.group].push(this);
+            radioGroups[this.group].push(this);
 
             if (this._settings.checked === true) 
                 this.checked = true;
             
         }
 
-        private clearGroup() {
-            if (!Radio.groups[this.group]) return;
 
-            for (var i = 0; i < Radio.groups[this.group].length; i++) {
-                Radio.groups[this.group][i].checked = false;
+
+        private clearGroup() {
+            if (!radioGroups[this.group]) return;
+
+            for (var i = 0; i < radioGroups[this.group].length; i++) {
+                radioGroups[this.group][i].checked = false;
             }
         }
 

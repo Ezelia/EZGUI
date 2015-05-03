@@ -12,18 +12,30 @@ The code in this repository is still in developement, and some breaking changes 
 
 
 Online demos
-============
+============ 
  * [simple window](http://ezgui.ezelia.com/examples/01-window/1-simple.html)
  * [window with children](http://ezgui.ezelia.com/examples/01-window/2-children.html)
  * [window with header](http://ezgui.ezelia.com/examples/01-window/3-header.html)
  * [window layout](http://ezgui.ezelia.com/examples/01-window/4-layout.html)
+ * [window layout relative positionning](http://ezgui.ezelia.com/examples/01-window/6-layout-relative-positions.html)
+
  * [simple button](http://ezgui.ezelia.com/examples/02-button/1-simple.html)
  * [button with skin](http://ezgui.ezelia.com/examples/02-button/2-skin.html)
+
+ * [checkbox](http://ezgui.ezelia.com/examples/03-checkbox/1-list.html)
+
+ * [radio](http://ezgui.ezelia.com/examples/04-radio/1-list.html)
+
+ * [slider](http://ezgui.ezelia.com/examples/05-slider/1-horizontal.html)
+
  * [Fonts](http://ezgui.ezelia.com/examples/fonts/01.html)
+
  * [Phaser complex](http://ezgui.ezelia.com/examples/Phaser/)
  * [Pixi complex](http://ezgui.ezelia.com/examples/Pixi/)
+
  * [Phaser Game screens](http://ezgui.ezelia.com/examples/game/phaser.html)
  * [Pixi Game screens](http://ezgui.ezelia.com/examples/game/pixi.html)
+
  * [Phaser App screens](http://ezgui.ezelia.com/examples/app/phaser.html)
  * [Pixi App screens](http://ezgui.ezelia.com/examples/app/pixi.html)
 
@@ -31,7 +43,9 @@ Online demos
 Documentation
 =============
 A work in progress [documentation](https://github.com/Ezelia/EZGUI/wiki) is available in [the wiki section](https://github.com/Ezelia/EZGUI/wiki)
+
 There are also a lot of [commented examples](https://github.com/Ezelia/EZGUI/tree/master/examples) to get started
+
 
 Features.
 =========

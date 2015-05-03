@@ -17,6 +17,7 @@ module EZGUI {
     
     export var themes = {};
     export var components = {};
+    export var radioGroups:any = [];
 
 
     var _components = {};

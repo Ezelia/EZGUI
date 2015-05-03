@@ -150,6 +150,7 @@ declare module EZGUI {
     var game: any;
     var themes: {};
     var components: {};
+    var radioGroups: any;
     function registerComponents(cpt: any, id?: any): void;
     function create(settings: any, theme: any): any;
 }
@@ -323,7 +324,6 @@ declare module EZGUI.Component {
         themeId: any;
         group: any;
         static groups: any;
-        static selectedFrom: any;
         checked: boolean;
         constructor(_settings: any, themeId: any);
         private clearGroup();
