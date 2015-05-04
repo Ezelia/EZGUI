@@ -84,6 +84,7 @@ module EZGUI.Component {
             var ly = 1;
 
 
+
             if (this._settings.layout != undefined) {
                 lx = this._settings.layout[0];
                 ly = this._settings.layout[1];
@@ -104,25 +105,31 @@ module EZGUI.Component {
                     var adjust = Math.floor(i / (lx * ly));
                     if (this._settings.dragY === false) {
 
-                        dx += adjust  * this._settings.width;
-                        dy -= adjust  * this._settings.height;
+                        dx += adjust * swidth;
+                        dy -= adjust * sheight;
+
+                        //ly = 1;
                     } else if (this._settings.dragX === false) {
 
+                        //lx = 1;
                         //dx -= adjust * this._settings.width;
                         //dy += adjust * this._settings.height;
                     }
                     
                     x = i % lx;
                     y = Math.floor(i / lx);
+
                 }
+
 
                 ly = ly || 1;
                 lx = lx || 1;
 
-                //vertical layout ? i : i%lx;
+
                         
                 dx += x * (swidth / lx);
                 dy += y * (sheight / ly);
+
             }
 
 
@@ -187,6 +194,7 @@ module EZGUI.Component {
                 childSettings.position.y = dy + childSettings.position.y;
             }
             
+            //console.log(' >> ', dx.toFixed(2), dy.toFixed(2), childSettings.position.x.toFixed(2), childSettings.position.y.toFixed(2));
 
             var child = EZGUI.create(childSettings, this.theme);
 

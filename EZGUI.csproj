@@ -72,6 +72,7 @@
     <Content Include="assets\metalworks-theme\images\corner.png" />
     <Content Include="assets\metalworks-theme\images\line.png" />
     <Content Include="dist\EZGUI.js" />
+    <Content Include="examples\01-window\6-layout-relative-positions.html" />
     <Content Include="examples\01-window\5-children-programmatically.html" />
     <Content Include="examples\01-window\4-layout.html" />
     <Content Include="examples\01-window\3-header.html" />
@@ -79,6 +80,9 @@
     <Content Include="examples\01-window\1-simple.html" />
     <Content Include="examples\02-button\1-simple.html" />
     <Content Include="examples\02-button\2-skin.html" />
+    <Content Include="examples\05-slider\1-horizontal.html" />
+    <Content Include="examples\04-radio\1-list.html" />
+    <Content Include="examples\03-checkbox\1-list.html" />
     <Content Include="examples\app\phaser.html" />
     <Content Include="examples\fonts\01.html" />
     <Content Include="examples\app\app-gui.js" />
@@ -133,6 +137,7 @@
   <ItemGroup>
     <Content Include="assets\fonts\Skranji-Bold-40.fnt" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>
