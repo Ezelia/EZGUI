@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>EZGUI Radio Example</title>
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            
+            //this ID must be unique, it'll help you easily access the gui component throught EZGUI.components.myWindow
+            id: 'myWindow',
+
+            //this the component ID, EZGUI define those components: Window, Button, Checkbox, Slider, Radio...
+            //but you can create your own components or extend existing
+            component: 'Window',
+            
+            //create a header and use blueheader skin
+            header: { skin: 'blueheader', position: { x: 0, y: 0 }, height: 60, text: 'my window' },
+
+            //when a header is defined, and the window is draggable, 
+            //the drag handler is set to the header
+            draggable: true,
+
+            //This is the padding space from the component borders
+            padding: 4,
+
+            //component position relative to parent
+            position: { x: 10, y: 10 },
+
+
+            width: 500,
+            height: 600,
+
+            //The layout define how the children are positioned
+            layout: [2, 5],
+
+
+            children: [
+              { id: 'radio1', text: 'radio #1', component: 'Radio', group: 'odd', position: 'center left', width: 40, height: 40 },
+              { id: 'radio2', text: 'radio #1', component: 'Radio', group: 'even', position: 'center left', width: 40, height: 40 },
+
+              { id: 'radio3', text: 'radio #2', component: 'Radio', group: 'odd', position: 'center left', width: 40, height: 40 },
+              { id: 'radio4', text: 'radio #2', component: 'Radio', group: 'even', position: 'center left', width: 40, height: 40 },
+
+              { id: 'radio5', text: 'radio #3', component: 'Radio', group: 'odd', position: 'center left', width: 40, height: 40 },
+              { id: 'radio6', text: 'radio #3', component: 'Radio', group: 'even', position: 'center left', width: 40, height: 40 },
+
+              { id: 'radio7', text: 'radio #4', component: 'Radio', group: 'odd', position: 'center left', width: 40, height: 40 },
+              { id: 'radio8', text: 'radio #4', component: 'Radio', group: 'even', position: 'center left', width: 40, height: 40 },
+
+              { id: 'myButton', skin:'bluebutton', text: 'Click to \nget selected', component: 'Button', position: 'center left', width: 200, height: 80 },
+              { id: 'myLabel', text: 'none', component: 'Label', position: 'center left', width: 120, height: 60 },
+
+            ]
+        }
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+
+
+        var guiContainer;
+
+        //Set EZGUI renderer
+        EZGUI.renderer = renderer;
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+
+            //create the gui
+            //the second parameter is the theme name, see kenney-theme.json, the name is defined under __config__ field
+            guiContainer = EZGUI.create(guiObj, 'kenney');
+
+
+            EZGUI.components.myButton.on('click', function () {
+                //static method getSelected of Radio component 
+                var selectedOddRadio = EZGUI.radioGroups['odd'].selected;
+                var selectedEvenRadio = EZGUI.radioGroups['even'].selected;
+
+                var txt1 = selectedOddRadio ? selectedOddRadio.text : '--';
+                var txt2 = selectedEvenRadio ? selectedEvenRadio.text : '--';
+
+                EZGUI.components.myLabel.text = txt1 + ' ' + txt2;
+            });
+
+            stage.addChild(guiContainer);
+
+        });
+        
+
+
+
+        requestAnimationFrame(animate);
+        //sprite.setTexture(texture2);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>

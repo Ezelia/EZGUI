@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Window Example</title>
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            
+            //this ID must be unique, it'll help you easily access the gui component throught EZGUI.components.myWindow
+            id: 'myWindow',
+
+            //this the component ID, EZGUI define those components: Window, Button, Checkbox, Slider, Radio...
+            //but you can create your own components or extend existing
+            component: 'Window',
+            
+            //create a header and use blueheader skin
+            header: { skin: 'blueheader', position: { x: 0, y: 0 }, height: 40, text: 'Drag from header' },
+
+            //when a header is defined, and the window is draggable, 
+            //the drag handler is set to the header
+            draggable: true,
+
+            //This is the padding space from the component borders
+            padding: 4,
+
+            //component position relative to parent
+            position: { x: 10, y: 10 },
+
+
+            width: 500,
+            height: 500,
+
+            //The layout define how the children are positioned
+            layout: [3, 3],
+
+
+            //Some components like Window support children
+            //in this case, children node will be parsed and components added to the parent
+            //you can also add children programmatically 
+            children: [
+              { text: 'child T L', component: 'Window', position: 'top left', width: 120, height: 100 },
+              { text: 'child T C', component: 'Window', position: 'top center', width: 120, height: 100 },
+              { text: 'child T R', component: 'Window', position: 'top right', width: 120, height: 100 },
+              { text: 'child C L', component: 'Window', position: 'center left', width: 120, height: 100 },
+              { text: 'child C', component: 'Window', position: 'center', width: 120, height: 100 },
+              { text: 'child C R', component: 'Window', position: 'center right', width: 120, height: 100 },
+              { text: 'child B L', component: 'Window', position: 'bottom left', width: 120, height: 100 },
+              { text: 'child B C', component: 'Window', position: 'bottom center', width: 120, height: 100 },
+              { text: 'child B R', component: 'Window', position: 'bottom right', width: 120, height: 100 },
+
+            ]
+        }
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+
+
+        var guiContainer;
+
+        //Set EZGUI renderer
+        EZGUI.renderer = renderer;
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+
+            //create the gui
+            //the second parameter is the theme name, see kenney-theme.json, the name is defined under __config__ field
+            guiContainer = EZGUI.create(guiObj, 'kenney');
+
+
+            stage.addChild(guiContainer);
+
+        });
+        
+
+
+
+        requestAnimationFrame(animate);
+        //sprite.setTexture(texture2);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>

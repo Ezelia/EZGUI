@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>EZGUI Checkbox Example</title>
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            
+            //this ID must be unique, it'll help you easily access the gui component throught EZGUI.components.myWindow
+            id: 'myWindow',
+
+            //this the component ID, EZGUI define those components: Window, Button, Checkbox, Slider, Radio...
+            //but you can create your own components or extend existing
+            component: 'Window',
+            
+            //create a header and use blueheader skin
+            header: { skin: 'blueheader', position: { x: 0, y: 0 }, height: 60, text: 'my window' },
+
+            //when a header is defined, and the window is draggable, 
+            //the drag handler is set to the header
+            draggable: true,
+
+            //This is the padding space from the component borders
+            padding: 4,
+
+            //component position relative to parent
+            position: { x: 10, y: 10 },
+
+
+            width: 500,
+            height: 500,
+
+            //The layout define how the children are positioned
+            layout: [1, 5],
+
+
+            children: [
+              { id:'chk1', text: 'checkbox #1', component: 'Checkbox', position: 'center left', width: 40, height: 40 },
+              { id: 'chk2', text: 'checkbox #2', component: 'Checkbox', position: 'center left', width: 40, height: 40 },
+              { id: 'chk3', text: 'checkbox #3', component: 'Checkbox', position: 'center left', width: 40, height: 40 },
+              { id: 'chk4', text: 'checkbox #4', component: 'Checkbox', position: 'center left', width: 40, height: 40 },
+              { id: 'chk5', text: 'checkbox #5', component: 'Checkbox', position: 'center left', width: 40, height: 40 },
+
+            ]
+        }
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+
+
+        var guiContainer;
+
+        //Set EZGUI renderer
+        EZGUI.renderer = renderer;
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+
+            //create the gui
+            //the second parameter is the theme name, see kenney-theme.json, the name is defined under __config__ field
+            guiContainer = EZGUI.create(guiObj, 'kenney');
+
+
+            stage.addChild(guiContainer);
+
+        });
+        
+
+
+
+        requestAnimationFrame(animate);
+        //sprite.setTexture(texture2);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>
