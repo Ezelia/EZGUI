@@ -964,7 +964,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.1.2 beta';
+    EZGUI.VERSION = '0.1.22 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
