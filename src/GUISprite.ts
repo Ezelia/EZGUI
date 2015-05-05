@@ -334,8 +334,12 @@ module EZGUI {
                 if (Compatibility.BitmapText.fonts && Compatibility.BitmapText.fonts[settings.font.family]) {
                     this.textObj = new Compatibility.BitmapText(this._settings.text, { font: settings.font.size + ' ' + settings.font.family });
                     var pixiColor = utils.ColorParser.parseToPixiColor(settings.font.color);
-                    if (pixiColor >= 0)
+                    if (pixiColor >= 0) {
                         this.textObj.tint = pixiColor;
+                        this.textObj.dirty = true;
+                    }
+
+                    
                 }
                 else {
 

@@ -53,7 +53,10 @@ var EZGUI;
             function GUIDisplayObjectContainer() {
                 _super.call(this);
                 if (typeof Phaser != 'undefined') {
-                    this.phaserGroup = Phaser.GAMES[0].add.sprite(0, 0); //new Phaser.Group(Phaser.GAMES[0]);
+                    var game = Phaser.GAMES[0];
+                    if (!GUIDisplayObjectContainer.phaserGroup)
+                        GUIDisplayObjectContainer.phaserGroup = new Phaser.Group(game, game.stage, 'guigroup');
+                    this.phaserGroup = GUIDisplayObjectContainer.phaserGroup.create(0, 0); //new Phaser.Group(Phaser.GAMES[0]);
                     this.phaserGroup.addChild(this);
                     this.phaserGroup.guiSprite = this;
                 }
@@ -608,12 +611,77 @@ var EZGUI;
     })();
     EZGUI.Tween = Tween;
 })(EZGUI || (EZGUI = {}));
+var EZGUI;
+(function (EZGUI) {
+    var utils;
+    (function (utils) {
+        var EventHandler = (function () {
+            function EventHandler() {
+            }
+            EventHandler.prototype.bind = function (event, fct) {
+                this._events = this._events || {};
+                this._events[event] = this._events[event] || [];
+                this._events[event].push(fct);
+            };
+            //same as bind
+            EventHandler.prototype.on = function (event, fct, nbcalls) {
+                this._events = this._events || {};
+                this._events[event] = this._events[event] || [];
+                if (nbcalls)
+                    fct.__nbcalls__ = nbcalls;
+                this._events[event].push(fct);
+            };
+            //unbind(event, fct) {
+            //    this._events = this._events || {};
+            //    //if (event in this._events === false) return;
+            //    if (event in this._events === false || typeof this._events[event] != 'array') return;
+            //    this._events[event].splice(this._events[event].indexOf(fct), 1);
+            //}
+            EventHandler.prototype.unbind = function (event, fct) {
+                this._events = this._events || {};
+                if (event in this._events === false || !this._events[event] || !(this._events[event] instanceof Array))
+                    return;
+                this._events[event].splice(this._events[event].indexOf(fct), 1);
+            };
+            EventHandler.prototype.unbindEvent = function (event) {
+                this._events = this._events || {};
+                this._events[event] = [];
+            };
+            EventHandler.prototype.unbindAll = function () {
+                this._events = this._events || {};
+                for (var event in this._events)
+                    this._events[event] = false;
+            };
+            EventHandler.prototype.trigger = function (event) {
+                var args = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    args[_i - 1] = arguments[_i];
+                }
+                this._events = this._events || {};
+                if (event in this._events !== false) {
+                    for (var i = 0; i < this._events[event].length; i++) {
+                        var fct = this._events[event][i];
+                        fct.apply(this, args);
+                        if (fct.__nbcalls__) {
+                            fct.__nbcalls__--;
+                            if (fct.__nbcalls__ <= 0)
+                                this.unbind(event, fct);
+                        }
+                    }
+                }
+            };
+            return EventHandler;
+        })();
+        utils.EventHandler = EventHandler;
+    })(utils = EZGUI.utils || (EZGUI.utils = {}));
+})(EZGUI || (EZGUI = {}));
 /// <reference path="tween/tween.ts" />
+/// <reference path="utils/eventhandler.ts" />
 /// <reference path="compatibility.ts" />
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.1.3 beta';
+    EZGUI.VERSION = '0.1.4 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -624,6 +692,7 @@ var EZGUI;
     EZGUI.themes = {};
     EZGUI.components = {};
     EZGUI.radioGroups = [];
+    EZGUI.EventsHelper = new EZGUI.utils.EventHandler();
     var _components = {};
     function registerComponents(cpt, id) {
         id = id || cpt.name;
@@ -1587,8 +1656,10 @@ var EZGUI;
                 if (EZGUI.Compatibility.BitmapText.fonts && EZGUI.Compatibility.BitmapText.fonts[settings.font.family]) {
                     this.textObj = new EZGUI.Compatibility.BitmapText(this._settings.text, { font: settings.font.size + ' ' + settings.font.family });
                     var pixiColor = EZGUI.utils.ColorParser.parseToPixiColor(settings.font.color);
-                    if (pixiColor >= 0)
+                    if (pixiColor >= 0) {
                         this.textObj.tint = pixiColor;
+                        this.textObj.dirty = true;
+                    }
                 }
                 else {
                     this.textObj = new PIXI.Text(this._settings.text, { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color });

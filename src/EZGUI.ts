@@ -1,11 +1,12 @@
 ﻿/// <reference path="tween/tween.ts" />
+/// <reference path="utils/eventhandler.ts" />
 
 /// <reference path="compatibility.ts" />
 
 /// <reference path="theme.ts" />
 
 module EZGUI {
-    export var VERSION = '0.1.3 beta';
+    export var VERSION = '0.1.4 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     export var tilingRenderer;
     
@@ -19,6 +20,7 @@ module EZGUI {
     export var components = {};
     export var radioGroups:any = [];
 
+    export var EventsHelper = new utils.EventHandler();
 
     var _components = {};
     export function registerComponents(cpt, id?) {        

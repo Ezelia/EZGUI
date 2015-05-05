@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Phaser Main Game Screen Kit</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+
+    </style>
+
+
+    <script src="../../js/phaser.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var gameWidth = 600;
+        var gameHeight = 500;
+
+        var guiObj = {
+            id: 'mainScreen',
+            component: 'MainScreen',
+
+            width: gameWidth,
+            height: gameHeight,
+
+            //logo can be an frame name
+            logo: '../../assets/img/gamelogo.png',
+            //or a text header            
+            //logo: { height: 100, transparent: true, text: 'My Game Title', font: { size: '45px', family: 'Skranji', color: 'red'} },
+            //or even a customized image header
+            //logo: { height: 200, image: '../../assets/img/gamelogo.png' },
+
+            buttons: [
+                //the event name defined here will trigger in the mainscreen, see code bellow
+                { event: 'play', text: 'Play', width: 300, height: 80 },
+                { event: 'options', text: 'Options', width: 300, height: 80 },
+            ]
+
+        }
+
+        var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create });
+
+        var resources = [
+            '../../assets/img/gamelogo.png'
+
+        ];
+
+
+
+        function preload() {
+            for (var i = 0; i < resources.length; i++) {
+                game.load.image(resources[i], resources[i]);
+            }
+        }
+
+        function create() {
+            setupGUI();
+        }
+
+
+
+        
+        
+        function setupGUI() {
+            EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+                guiContainer = EZGUI.create(guiObj, 'kenney');//new EZGUI.GUISprite(guiObj, guiTheme);
+                //guiContainer.visible = false;
+
+                guiContainer.on('play', function (event, btn) {
+                    console.log('clicked', btn.Id, btn.text);
+                });
+                guiContainer.on('options', function (event, btn) {
+                    console.log('clicked', btn.Id, btn.text);
+                });
+            });
+        }
+
+
+
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>

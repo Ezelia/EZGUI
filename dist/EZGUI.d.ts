@@ -10,6 +10,7 @@ declare module EZGUI.Compatibility {
     }
     class GUIDisplayObjectContainer extends GUIContainer {
         protected phaserGroup: any;
+        static phaserGroup: any;
         _listeners: any;
         constructor();
     }
@@ -136,6 +137,17 @@ declare module EZGUI {
         update(time: any): boolean;
     }
 }
+declare module EZGUI.utils {
+    class EventHandler {
+        private _events;
+        bind(event: any, fct: any): void;
+        on(event: any, fct: any, nbcalls?: any): void;
+        unbind(event: any, fct: any): void;
+        unbindEvent(event: any): void;
+        unbindAll(): void;
+        trigger(event: any, ...args: any[]): void;
+    }
+}
 declare module EZGUI {
     var VERSION: string;
     var tilingRenderer: any;
@@ -151,6 +163,7 @@ declare module EZGUI {
     var themes: {};
     var components: {};
     var radioGroups: any;
+    var EventsHelper: utils.EventHandler;
     function registerComponents(cpt: any, id?: any): void;
     function create(settings: any, theme: any): any;
 }

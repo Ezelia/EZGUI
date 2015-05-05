@@ -103,6 +103,7 @@
     <Content Include="examples\game\pixi.html" />
     <Content Include="examples\kits\MainScreen-Phaser.html" />
     <Content Include="examples\kits\MainScreen-Pixi.html" />
+    <Content Include="examples\kits\MainScreen2-Pixi.html" />
     <Content Include="examples\Phaser\index.html" />
     <Content Include="examples\Pixi\metalworks.html" />
     <Content Include="examples\Pixi\index.html" />
@@ -112,6 +113,7 @@
     <TypeScriptCompile Include="lib\TweenJS.d.ts" />
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
+    <TypeScriptCompile Include="src\utils\EventHandler.ts" />
     <TypeScriptCompile Include="src\GUIObject.ts" />
     <TypeScriptCompile Include="src\kits\MainScreenKit.ts" />
     <TypeScriptCompile Include="src\polyfills\IE.ts" />

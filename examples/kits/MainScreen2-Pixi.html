@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Pixi Main Game Screen Kit</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+
+    </style>
+
+
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            id: 'mainScreen',
+            component: 'MainScreen',
+
+            width: 600,
+            height: 550,
+
+            //you can set a custom image as background using image property
+            image: '../../assets/img/panel-650x400.png',
+
+            //logo can be an frame name
+            logo: '../../assets/img/gamelogo.png',
+            //or a text header            
+            //logo: { height: 100, transparent: true, text: 'My Game Title', font: { size: '45px', family: 'Skranji', color: 'red'} },
+            //or even a customized image header
+            //logo: { height: 200, image: '../../assets/img/gamelogo.png' },
+
+            buttons: [
+                //the event name defined here will trigger in the mainscreen, see code bellow
+                { event: 'play', text: 'Play', width: 300, height: 80 },
+                { event: 'options', text: 'Options', width: 300, height: 80 },
+            ]
+
+        }
+
+
+        // create an new instance of a pixi stage
+        // the second parameter is interactivity...
+        var interactive = true;
+        var renderer = PIXI.autoDetectRenderer(820, 800); 
+
+        var stage = new PIXI.Stage(0x000000, interactive);
+
+
+        // add the renderer view element to the DOM
+        document.body.appendChild(renderer.view);
+        var guiContainer, theme;
+        
+        
+        function onAssetsLoaded() {
+
+
+
+            requestAnimationFrame(animate);
+            //sprite.setTexture(texture2);
+
+
+            EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+                guiContainer = EZGUI.create(guiObj, 'kenney');//new EZGUI.GUISprite(guiObj, guiTheme);
+                //guiContainer.visible = false;
+
+                guiContainer.on('play', function (event, btn) {
+                    console.log('clicked', btn.Id, btn.text);
+                    
+                });
+                guiContainer.on('options', function (event, btn) {
+                    console.log('clicked', btn.Id, btn.text);
+                    
+                });
+
+                stage.addChild(guiContainer);
+
+            });
+
+
+
+            function animate() {
+
+                requestAnimationFrame(animate);
+                renderer.render(stage);
+            }
+        }
+
+        var resources = [
+            '../../assets/img/gamelogo.png',
+            '../../assets/img/panel-650x400.png'
+
+        ];
+
+        if (PIXI.loader) { //Pixi 3  
+            PIXI.loader.add(resources);
+            PIXI.loader.load(onAssetsLoaded);
+        }
+        else { //Pixi 2  
+
+            var loader = new PIXI.AssetLoader(resources, false);
+            loader.onComplete = onAssetsLoaded;
+            loader.load();
+        }
+        //onAssetsLoaded();
+
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>

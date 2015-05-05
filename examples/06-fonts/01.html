@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Pixi example</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+    </style>
+
+
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            id: 'main',
+            component: 'Window',
+            draggable: true,
+            padding: 4,
+            position: { x: 0, y: 0 },
+            width: 600,
+            height: 550,
+
+
+            layout: [1, 3],
+            children: [
+                {
+                    id: 'label1',
+                    text: 'This text is using native Arial font',
+                    font: {
+                        size: '35px',
+                        family: 'Arial'
+                    },
+                    component: 'Label',
+                    position: 'center',
+                    width: 600,
+                    height: 80
+                },
+                {
+                    id: 'label1',
+                    text: 'This text is using \nSkranji bitmap font',
+                    font: {
+                        size: '35px',
+                        family: 'Skranji',
+                        color:'white'
+                    },
+                    component: 'Label',
+                    position: 'center',
+                    width: 600,
+                    height: 80
+                },
+                {
+                    id: 'label1',
+                    text: 'This text is using \nTinted Skranji bitmap font',
+                    font: {
+                        size: '35px',
+                        family: 'Skranji',
+                        color: 'red'
+                    },
+                    component: 'Label',
+                    position: 'center',
+                    width: 600,
+                    height: 80
+                }
+            ]
+        }
+
+
+        // create an new instance of a pixi stage
+        // the second parameter is interactivity...
+        var interactive = true;
+        var renderer = PIXI.autoDetectRenderer(820, 800); //new PIXI.CanvasRenderer(820, 800);//
+
+
+
+
+        var stage = new PIXI.Stage(0x000000, interactive);
+
+
+        // add the renderer view element to the DOM
+        document.body.appendChild(renderer.view);
+        var guiContainer, theme;
+
+
+        function onAssetsLoaded() {
+
+
+
+            requestAnimationFrame(animate);
+            //sprite.setTexture(texture2);
+
+
+            EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+                guiContainer = EZGUI.create(guiObj, 'kenney');//new EZGUI.GUISprite(guiObj, guiTheme);
+                //guiContainer.visible = false;
+
+
+                stage.addChild(guiContainer);
+
+            });
+
+
+
+            function animate() {
+
+                requestAnimationFrame(animate);
+                renderer.render(stage);
+            }
+        }
+
+
+        onAssetsLoaded();
+
+
+
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>
