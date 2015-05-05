@@ -20,6 +20,17 @@
   <ItemGroup>
     <Content Include="assets\fonts\desyrel.png" />
     <Content Include="assets\fonts\Skranji-Bold-40.png" />
+    <Content Include="assets\img\bomb1-selected.png" />
+    <Content Include="assets\img\bomb1.png" />
+    <Content Include="assets\img\bomb2-selected.png" />
+    <Content Include="assets\img\bomb2.png" />
+    <Content Include="assets\img\bomb3-selected.png" />
+    <Content Include="assets\img\bomb3.png" />
+    <Content Include="assets\img\level-box.png" />
+    <Content Include="assets\img\lvlcomplete.png" />
+    <Content Include="assets\img\orange-btn.png" />
+    <Content Include="assets\img\panel-650x400.png" />
+    <Content Include="assets\img\star2.png" />
     <Content Include="assets\kenney-theme\images\bg.png" />
     <Content Include="assets\kenney-theme\images\btn-blue-bg-down.png" />
     <Content Include="assets\kenney-theme\images\btn-blue-bg.png" />
@@ -84,12 +95,14 @@
     <Content Include="examples\04-radio\1-list.html" />
     <Content Include="examples\03-checkbox\1-list.html" />
     <Content Include="examples\app\phaser.html" />
-    <Content Include="examples\fonts\01.html" />
+    <Content Include="examples\06-fonts\01.html" />
     <Content Include="examples\app\app-gui.js" />
     <Content Include="examples\game\game-gui.js" />
     <Content Include="examples\app\pixi.html" />
     <Content Include="examples\game\phaser.html" />
     <Content Include="examples\game\pixi.html" />
+    <Content Include="examples\kits\MainScreen-Phaser.html" />
+    <Content Include="examples\kits\MainScreen-Pixi.html" />
     <Content Include="examples\Phaser\index.html" />
     <Content Include="examples\Pixi\metalworks.html" />
     <Content Include="examples\Pixi\index.html" />
@@ -100,6 +113,7 @@
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
     <TypeScriptCompile Include="src\GUIObject.ts" />
+    <TypeScriptCompile Include="src\kits\MainScreenKit.ts" />
     <TypeScriptCompile Include="src\polyfills\IE.ts" />
     <TypeScriptCompile Include="src\tween\Easing.ts" />
     <TypeScriptCompile Include="src\tween\Interpolation.ts" />

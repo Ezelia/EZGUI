@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="layout.ts" />
+
 
 module EZGUI.Component {
     export class Window extends Layout {

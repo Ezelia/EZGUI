@@ -86,12 +86,12 @@ module EZGUI {
             }
 
             
-            _settings = this.theme.applySkin(_settings);
+            this._settings = this.theme.applySkin(_settings);
+
+            this.parseSettings();
 
             this.draw();
             this.drawText();
-
-
             
             this.setupEvents();
             this.handleEvents();
@@ -100,7 +100,8 @@ module EZGUI {
 
 
 
-
+        protected parseSettings() {
+        }
 
         public setDraggable(val=true) {
             if (val)
@@ -256,9 +257,14 @@ module EZGUI {
 
 
 
-
-                this.position.x = settings.position.x;
-                this.position.y = settings.position.y;
+                if (settings.position) {
+                    this.position.x = settings.position.x;
+                    this.position.y = settings.position.y;
+                }
+                else {
+                    this.position.x = 0;
+                    this.position.y = 0;
+                }
 
 
                 //this.container = new Compatibility.GUIContainer();

@@ -11,8 +11,8 @@ Important
 The code in this repository is still in developement, and some breaking changes may occure
 
 
-Online demos
-============ 
+Online components demos
+======================= 
  * [simple window](http://ezgui.ezelia.com/examples/01-window/1-simple.html)
  * [window with children](http://ezgui.ezelia.com/examples/01-window/2-children.html)
  * [window with header](http://ezgui.ezelia.com/examples/01-window/3-header.html)
@@ -23,7 +23,7 @@ Online demos
  * [checkbox](http://ezgui.ezelia.com/examples/03-checkbox/1-list.html)
  * [radio](http://ezgui.ezelia.com/examples/04-radio/1-list.html)
  * [slider](http://ezgui.ezelia.com/examples/05-slider/1-horizontal.html)
- * [Fonts](http://ezgui.ezelia.com/examples/fonts/01.html)
+ * [Fonts](http://ezgui.ezelia.com/examples/06-fonts/01.html)
  * [Phaser complex](http://ezgui.ezelia.com/examples/Phaser/)
  * [Pixi complex](http://ezgui.ezelia.com/examples/Pixi/)
  * [Phaser Game screens](http://ezgui.ezelia.com/examples/game/phaser.html)
@@ -31,6 +31,11 @@ Online demos
  * [Phaser App screens](http://ezgui.ezelia.com/examples/app/phaser.html)
  * [Pixi App screens](http://ezgui.ezelia.com/examples/app/pixi.html)
 
+Online Kits demos
+=================
+ * [Game Main screen Kit (Pixi)](http://ezgui.ezelia.com/examples/kits/MainScreen-Pixi.html)
+ * [Game Main screen Kit (Phaser)](http://ezgui.ezelia.com/examples/kits/MainScreen-Phaser.html)
+ 
 
 Documentation
 =============

@@ -1,4 +1,20 @@
-/// <reference path="../lib/pixi.d.ts" />
+/// <reference path="../lib/PIXI.d.ts" />
+declare module EZGUI.Compatibility {
+    var PIXIVersion: number;
+    var isPhaser: boolean;
+    var BitmapText: any;
+    class TilingSprite {
+        constructor(texture: PIXI.Texture, width: number, height: number);
+    }
+    class GUIContainer extends PIXI.DisplayObjectContainer {
+    }
+    class GUIDisplayObjectContainer extends GUIContainer {
+        protected phaserGroup: any;
+        _listeners: any;
+        constructor();
+    }
+    function createRenderTexture(width: any, height: any): any;
+}
 declare module EZGUI {
     var Easing: {
         Linear: {
@@ -120,21 +136,23 @@ declare module EZGUI {
         update(time: any): boolean;
     }
 }
-declare module EZGUI.Compatibility {
-    var PIXIVersion: number;
-    var isPhaser: boolean;
-    var BitmapText: any;
-    class TilingSprite {
-        constructor(texture: PIXI.Texture, width: number, height: number);
-    }
-    class GUIContainer extends PIXI.DisplayObjectContainer {
-    }
-    class GUIDisplayObjectContainer extends GUIContainer {
-        protected phaserGroup: any;
-        _listeners: any;
-        constructor();
-    }
-    function createRenderTexture(width: any, height: any): any;
+declare module EZGUI {
+    var VERSION: string;
+    var tilingRenderer: any;
+    var dragging: any;
+    var dsx: number;
+    var dsy: number;
+    var startDrag: {
+        x: any;
+        y: any;
+        t: any;
+    };
+    var game: any;
+    var themes: {};
+    var components: {};
+    var radioGroups: any;
+    function registerComponents(cpt: any, id?: any): void;
+    function create(settings: any, theme: any): any;
 }
 declare var Phaser: any;
 declare module EZGUI {
@@ -165,24 +183,6 @@ declare module EZGUI {
         getSkin(skinId: any): any;
         applySkin(settings: any): any;
     }
-}
-declare module EZGUI {
-    var VERSION: string;
-    var tilingRenderer: any;
-    var dragging: any;
-    var dsx: number;
-    var dsy: number;
-    var startDrag: {
-        x: any;
-        y: any;
-        t: any;
-    };
-    var game: any;
-    var themes: {};
-    var components: {};
-    var radioGroups: any;
-    function registerComponents(cpt: any, id?: any): void;
-    function create(settings: any, theme: any): any;
 }
 declare module EZGUI {
     class MultistateSprite extends PIXI.Sprite {
@@ -236,6 +236,7 @@ declare module EZGUI {
         settings: string;
         text: string;
         constructor(_settings: any, themeId: any);
+        protected parseSettings(): void;
         setDraggable(val?: boolean): void;
         protected handleEvents(): void;
         protected draw(): void;
@@ -255,34 +256,6 @@ declare module EZGUI {
         protected createThemeImage(settings: any, state: any, imagefield?: string): PIXI.Sprite;
         protected createVisuals(settings: any, state: any): any[];
     }
-}
-declare module EZGUI.Component {
-    class Label extends GUISprite {
-        _settings: any;
-        themeId: any;
-        constructor(_settings: any, themeId: any);
-        protected setupEvents(): void;
-        protected handleEvents(): void;
-        protected draw(): void;
-    }
-}
-declare module EZGUI.Component {
-    class Slider extends GUISprite {
-        _settings: any;
-        themeId: any;
-        value: number;
-        private slide;
-        private horizontalSlide;
-        constructor(_settings: any, themeId: any);
-        protected setupEvents(): void;
-        protected drawText(): void;
-        protected handleEvents(): void;
-        protected draw(): void;
-    }
-}
-declare module EZGUI.utils.ColorParser {
-    function parseToPixiColor(str: any): any;
-    function parseToRGB(str: any): any;
 }
 declare module EZGUI.Component {
     class Button extends GUISprite {
@@ -307,6 +280,16 @@ declare module EZGUI.Component {
     }
 }
 declare module EZGUI.Component {
+    class Label extends GUISprite {
+        _settings: any;
+        themeId: any;
+        constructor(_settings: any, themeId: any);
+        protected setupEvents(): void;
+        protected handleEvents(): void;
+        protected draw(): void;
+    }
+}
+declare module EZGUI.Component {
     class Layout extends GUISprite {
         _settings: any;
         themeId: any;
@@ -316,19 +299,6 @@ declare module EZGUI.Component {
         protected draw(): void;
         createChild(childSettings: any, order?: any): any;
         addChildAt(child: any, index: any): PIXI.DisplayObject;
-    }
-}
-declare module EZGUI.Component {
-    class Radio extends Checkbox {
-        _settings: any;
-        themeId: any;
-        group: any;
-        static groups: any;
-        checked: boolean;
-        constructor(_settings: any, themeId: any);
-        private clearGroup();
-        protected handleEvents(): void;
-        protected draw(): void;
     }
 }
 declare module EZGUI.Component {
@@ -350,6 +320,33 @@ declare module EZGUI.Component {
     }
 }
 declare module EZGUI.Component {
+    class Radio extends Checkbox {
+        _settings: any;
+        themeId: any;
+        group: any;
+        static groups: any;
+        checked: boolean;
+        constructor(_settings: any, themeId: any);
+        private clearGroup();
+        protected handleEvents(): void;
+        protected draw(): void;
+    }
+}
+declare module EZGUI.Component {
+    class Slider extends GUISprite {
+        _settings: any;
+        themeId: any;
+        value: number;
+        private slide;
+        private horizontalSlide;
+        constructor(_settings: any, themeId: any);
+        protected setupEvents(): void;
+        protected drawText(): void;
+        protected handleEvents(): void;
+        protected draw(): void;
+    }
+}
+declare module EZGUI.Component {
     class Window extends Layout {
         _settings: any;
         themeId: any;
@@ -361,6 +358,16 @@ declare module EZGUI.Component {
         setDraggable(val?: boolean): void;
     }
 }
+declare module EZGUI.Kit {
+    class MainScreen extends EZGUI.Component.Window {
+        _settings: any;
+        themeId: any;
+        private buttonsEvents;
+        constructor(_settings: any, themeId: any);
+        protected parseSettings(): void;
+        protected handleEvents(): void;
+    }
+}
 declare module EZGUI {
     class MultistateTilingSprite extends EZGUI.Compatibility.TilingSprite {
         stateTextures: any;
@@ -368,6 +375,10 @@ declare module EZGUI {
         constructor(texture: PIXI.Texture, width: number, height: number, states?: any);
         setState(state?: string): void;
     }
+}
+declare module EZGUI.utils.ColorParser {
+    function parseToPixiColor(str: any): any;
+    function parseToRGB(str: any): any;
 }
 declare module EZGUI.utils {
     /**

@@ -32,21 +32,22 @@ module EZGUI.Component {
 
 
 
+                if (this._settings.mask !== false) {
 
-                var myMask = new PIXI.Graphics();
-                myMask.beginFill();
-                myMask.drawRect(padding, padding, settings.width - padding * 2, settings.height - padding * 2);
-                myMask.endFill();
+                    var myMask = new PIXI.Graphics();
+                    myMask.beginFill();
+                    myMask.drawRect(padding, padding, settings.width - padding * 2, settings.height - padding * 2);
+                    myMask.endFill();
 
-                this.addChild(myMask);
+                    this.addChild(myMask);
 
-                if (this._settings.anchor) {
-                    myMask.position.x = this.container.position.x + padding;
-                    myMask.position.y = this.container.position.y + padding;
+                    if (this._settings.anchor) {
+                        myMask.position.x = this.container.position.x + padding;
+                        myMask.position.y = this.container.position.y + padding;
+                    }
+
+                    this.container.mask = myMask;
                 }
-
-                this.container.mask = myMask;
-
                 
 
                 this.guiMask.x = padding;
