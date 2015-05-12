@@ -308,6 +308,8 @@ module EZGUI {
                     if (data.originalEvent) origEvt = data.originalEvent;
                 }
 
+            if (!origEvt.target.getBoundingClientRect) return false;
+
 
             var bcr = origEvt.target.getBoundingClientRect();
             var px = clientpos.x - bcr.left;

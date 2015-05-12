@@ -97,7 +97,7 @@
         
     }
 
-    export function loadJSON(url, cb) {
+    export function loadJSON(url, cb, crossOrigin=true) {
         var xmlhttp = new XMLHttpRequest();
         
 
@@ -107,11 +107,11 @@
                 cb(jsonContent);
             }
         }
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open("GET", url, crossOrigin);
         xmlhttp.send();
     }
 
-    export function loadXML(url, cb) {
+    export function loadXML(url, cb, crossOrigin = true) {
         var xmlhttp = new XMLHttpRequest();
 
 
@@ -136,7 +136,7 @@
                 cb(xmlDoc);
             }
         }
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open("GET", url, crossOrigin);
         xmlhttp.send();
 
 

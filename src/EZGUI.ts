@@ -6,7 +6,7 @@
 /// <reference path="theme.ts" />
 
 module EZGUI {
-    export var VERSION = '0.1.4 beta';
+    export var VERSION = '0.1.41 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     export var tilingRenderer;
     
@@ -21,6 +21,15 @@ module EZGUI {
     export var radioGroups:any = [];
 
     export var EventsHelper = new utils.EventHandler();
+
+    /**
+     * generic settings object
+     * accepted parameters
+     * crossOrigin : true/false
+     */
+    export var settings: any = {
+        crossOrigin: false
+    };
 
     var _components = {};
     export function registerComponents(cpt, id?) {        

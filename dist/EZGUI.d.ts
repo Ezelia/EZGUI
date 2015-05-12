@@ -1,21 +1,4 @@
-/// <reference path="../lib/PIXI.d.ts" />
-declare module EZGUI.Compatibility {
-    var PIXIVersion: number;
-    var isPhaser: boolean;
-    var BitmapText: any;
-    class TilingSprite {
-        constructor(texture: PIXI.Texture, width: number, height: number);
-    }
-    class GUIContainer extends PIXI.DisplayObjectContainer {
-    }
-    class GUIDisplayObjectContainer extends GUIContainer {
-        protected phaserGroup: any;
-        static phaserGroup: any;
-        _listeners: any;
-        constructor();
-    }
-    function createRenderTexture(width: any, height: any): any;
-}
+/// <reference path="../lib/pixi.d.ts" />
 declare module EZGUI {
     var Easing: {
         Linear: {
@@ -148,24 +131,22 @@ declare module EZGUI.utils {
         trigger(event: any, ...args: any[]): void;
     }
 }
-declare module EZGUI {
-    var VERSION: string;
-    var tilingRenderer: any;
-    var dragging: any;
-    var dsx: number;
-    var dsy: number;
-    var startDrag: {
-        x: any;
-        y: any;
-        t: any;
-    };
-    var game: any;
-    var themes: {};
-    var components: {};
-    var radioGroups: any;
-    var EventsHelper: utils.EventHandler;
-    function registerComponents(cpt: any, id?: any): void;
-    function create(settings: any, theme: any): any;
+declare module EZGUI.Compatibility {
+    var PIXIVersion: number;
+    var isPhaser: boolean;
+    var BitmapText: any;
+    class TilingSprite {
+        constructor(texture: PIXI.Texture, width: number, height: number);
+    }
+    class GUIContainer extends PIXI.DisplayObjectContainer {
+    }
+    class GUIDisplayObjectContainer extends GUIContainer {
+        protected phaserGroup: any;
+        static phaserGroup: any;
+        _listeners: any;
+        constructor();
+    }
+    function createRenderTexture(width: any, height: any): any;
 }
 declare var Phaser: any;
 declare module EZGUI {
@@ -196,6 +177,31 @@ declare module EZGUI {
         getSkin(skinId: any): any;
         applySkin(settings: any): any;
     }
+}
+declare module EZGUI {
+    var VERSION: string;
+    var tilingRenderer: any;
+    var dragging: any;
+    var dsx: number;
+    var dsy: number;
+    var startDrag: {
+        x: any;
+        y: any;
+        t: any;
+    };
+    var game: any;
+    var themes: {};
+    var components: {};
+    var radioGroups: any;
+    var EventsHelper: utils.EventHandler;
+    /**
+     * generic settings object
+     * accepted parameters
+     * crossOrigin : true/false
+     */
+    var settings: any;
+    function registerComponents(cpt: any, id?: any): void;
+    function create(settings: any, theme: any): any;
 }
 declare module EZGUI {
     class MultistateSprite extends PIXI.Sprite {
@@ -271,76 +277,11 @@ declare module EZGUI {
     }
 }
 declare module EZGUI.Component {
-    class Button extends GUISprite {
-        _settings: any;
-        themeId: any;
-        constructor(_settings: any, themeId: any);
-        protected handleEvents(): void;
-    }
-}
-declare module EZGUI.Component {
-    class Checkbox extends Button {
-        _settings: any;
-        themeId: any;
-        protected _checked: boolean;
-        protected _checkmark: any;
-        checked: boolean;
-        text: string;
-        constructor(_settings: any, themeId: any);
-        protected handleEvents(): void;
-        protected draw(): void;
-        protected drawText(): void;
-    }
-}
-declare module EZGUI.Component {
     class Label extends GUISprite {
         _settings: any;
         themeId: any;
         constructor(_settings: any, themeId: any);
         protected setupEvents(): void;
-        protected handleEvents(): void;
-        protected draw(): void;
-    }
-}
-declare module EZGUI.Component {
-    class Layout extends GUISprite {
-        _settings: any;
-        themeId: any;
-        guiMask: any;
-        constructor(_settings: any, themeId: any);
-        protected handleEvents(): void;
-        protected draw(): void;
-        createChild(childSettings: any, order?: any): any;
-        addChildAt(child: any, index: any): PIXI.DisplayObject;
-    }
-}
-declare module EZGUI.Component {
-    class List extends Layout {
-        _settings: any;
-        themeId: any;
-        private decelerationItv;
-        private decelerationSpeed;
-        private tween;
-        private slotSize;
-        private horizontalSlide;
-        constructor(_settings: any, themeId: any);
-        protected handleEvents(): void;
-        private decelerateScroll(endPos);
-        addChildAt(child: any, index: any): PIXI.DisplayObject;
-        removeChild(child: any): PIXI.DisplayObject;
-        slideBy(value: any, delay?: any): void;
-        slideTo(value: any, delay?: any): void;
-    }
-}
-declare module EZGUI.Component {
-    class Radio extends Checkbox {
-        _settings: any;
-        themeId: any;
-        group: any;
-        static groups: any;
-        checked: boolean;
-        constructor(_settings: any, themeId: any);
-        private clearGroup();
         protected handleEvents(): void;
         protected draw(): void;
     }
@@ -357,6 +298,18 @@ declare module EZGUI.Component {
         protected drawText(): void;
         protected handleEvents(): void;
         protected draw(): void;
+    }
+}
+declare module EZGUI.Component {
+    class Layout extends GUISprite {
+        _settings: any;
+        themeId: any;
+        guiMask: any;
+        constructor(_settings: any, themeId: any);
+        protected handleEvents(): void;
+        protected draw(): void;
+        createChild(childSettings: any, order?: any): any;
+        addChildAt(child: any, index: any): PIXI.DisplayObject;
     }
 }
 declare module EZGUI.Component {
@@ -381,6 +334,63 @@ declare module EZGUI.Kit {
         protected handleEvents(): void;
     }
 }
+declare module EZGUI.utils.ColorParser {
+    function parseToPixiColor(str: any): any;
+    function parseToRGB(str: any): any;
+}
+declare module EZGUI.Component {
+    class Button extends GUISprite {
+        _settings: any;
+        themeId: any;
+        constructor(_settings: any, themeId: any);
+        protected handleEvents(): void;
+    }
+}
+declare module EZGUI.Component {
+    class Checkbox extends Button {
+        _settings: any;
+        themeId: any;
+        protected _checked: boolean;
+        protected _checkmark: any;
+        checked: boolean;
+        text: string;
+        constructor(_settings: any, themeId: any);
+        protected handleEvents(): void;
+        protected draw(): void;
+        protected drawText(): void;
+    }
+}
+declare module EZGUI.Component {
+    class Radio extends Checkbox {
+        _settings: any;
+        themeId: any;
+        group: any;
+        static groups: any;
+        checked: boolean;
+        constructor(_settings: any, themeId: any);
+        private clearGroup();
+        protected handleEvents(): void;
+        protected draw(): void;
+    }
+}
+declare module EZGUI.Component {
+    class List extends Layout {
+        _settings: any;
+        themeId: any;
+        private decelerationItv;
+        private decelerationSpeed;
+        private tween;
+        private slotSize;
+        private horizontalSlide;
+        constructor(_settings: any, themeId: any);
+        protected handleEvents(): void;
+        private decelerateScroll(endPos);
+        addChildAt(child: any, index: any): PIXI.DisplayObject;
+        removeChild(child: any): PIXI.DisplayObject;
+        slideBy(value: any, delay?: any): void;
+        slideTo(value: any, delay?: any): void;
+    }
+}
 declare module EZGUI {
     class MultistateTilingSprite extends EZGUI.Compatibility.TilingSprite {
         stateTextures: any;
@@ -388,10 +398,6 @@ declare module EZGUI {
         constructor(texture: PIXI.Texture, width: number, height: number, states?: any);
         setState(state?: string): void;
     }
-}
-declare module EZGUI.utils.ColorParser {
-    function parseToPixiColor(str: any): any;
-    function parseToRGB(str: any): any;
 }
 declare module EZGUI.utils {
     /**
@@ -410,6 +416,6 @@ declare module EZGUI.utils {
     };
     function distance(x: any, y: any, x0: any, y0: any): number;
     function extendJSON(target: any, source: any): void;
-    function loadJSON(url: any, cb: any): void;
-    function loadXML(url: any, cb: any): void;
+    function loadJSON(url: any, cb: any, crossOrigin?: boolean): void;
+    function loadXML(url: any, cb: any, crossOrigin?: boolean): void;
 }

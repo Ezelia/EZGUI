@@ -229,6 +229,7 @@ module EZGUI {
 
                 this.guiID = settings.id;
 
+                //add reference to component
                 if (this.guiID) EZGUI.components[this.guiID] = this;
 
                 

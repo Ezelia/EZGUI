@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Window Example</title>
+
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+            id: 'myWindow',
+            component: 'Window',
+            padding: 4,
+            position: { x: 10, y: 10 },
+            width: 500,
+            height: 500
+        }
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+        var guiContainer;
+
+
+
+        //set cross origin to true
+        EZGUI.settings.crossOrigin = true;
+        //cross origin is not really used here, we are only demonstrating how to activate it
+
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+            guiContainer = EZGUI.create(guiObj, 'kenney');
+            stage.addChild(guiContainer);
+        })
+
+
+
+
+
+        requestAnimationFrame(animate);
+
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>
