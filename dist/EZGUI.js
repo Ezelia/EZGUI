@@ -949,6 +949,7 @@ var EZGUI;
                 if (typeof Phaser != 'undefined') {
                     console.log('Phaser loader');
                     var loader = new Phaser.Loader(Phaser.GAMES[0]);
+                    loader.crossOrigin = true; //TODO: into config???
                     for (var i = 0; i < images.length; i++) {
                         loader.image(images[i], images[i]);
                     }
