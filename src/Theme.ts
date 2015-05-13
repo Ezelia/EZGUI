@@ -310,11 +310,12 @@ module EZGUI {
             }
 
             var loadImages = function () {
-
+                var crossOrigin = (EZGUI.settings.crossOrigin == true);
                 
                 if (typeof Phaser != 'undefined') {
                     console.log('Phaser loader');
                     var loader: any = new Phaser.Loader(Phaser.GAMES[0]);
+                    loader.crossOrigin = crossOrigin;
                     for (var i = 0; i < images.length; i++) {
                         loader.image(images[i], images[i]);
                     }
@@ -324,12 +325,15 @@ module EZGUI {
                     return;
                 }
                 if ((<any>PIXI).loader) {
-                    (<any>PIXI).loader.add(images);
+                    for (var i = 0; i < images.length; i++) {
+                        (<any>PIXI).loader.add({ url: images[i], crossOrigin: crossOrigin});
+                    }
+                    //(<any>PIXI).loader.add(images);
                     (<any>PIXI).loader.load(cacheAtlas);
                 }
                 else {
 
-                    var loader: any = new PIXI.AssetLoader(images, false);
+                    var loader: any = new PIXI.AssetLoader(images, crossOrigin);
                     loader.onComplete = cacheAtlas;
                     loader.load();
                 }

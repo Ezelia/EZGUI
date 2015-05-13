@@ -107,6 +107,7 @@
     <Content Include="examples\Phaser\index.html" />
     <Content Include="examples\Pixi\metalworks.html" />
     <Content Include="examples\Pixi\index.html" />
+    <Content Include="examples\settings\1-crossorigin.html" />
     <Content Include="examples\test\index.html" />
     <Content Include="js\pixi2.dev.js" />
     <Content Include="js\pixi3.dev.js" />
