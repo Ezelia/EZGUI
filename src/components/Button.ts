@@ -5,7 +5,7 @@
 module EZGUI.Component {
     export class Button extends GUISprite {
         
-
+        
 
                 
         
@@ -58,5 +58,5 @@ module EZGUI.Component {
 
     }
 
-    EZGUI.registerComponents(Button);
+    EZGUI.registerComponents(Button, 'Button');
 }

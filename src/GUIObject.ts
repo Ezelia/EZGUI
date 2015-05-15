@@ -381,7 +381,16 @@ module EZGUI {
         public preUpdate() { }
         public update() { }
         public postUpdate() { }
-        public destroy() { }
+        public destroy() {
+            
+            if (this.phaserGroup) {
+                this.phaserGroup.destroy();
+                
+            }
+            
+            if (this.parent && this.parent.removeChild) this.parent.removeChild(this);
+            
+        }
 
 
 

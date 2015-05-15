@@ -118,5 +118,5 @@ module EZGUI.Component {
         }
     }
 
-    EZGUI.registerComponents(Slider);
+    EZGUI.registerComponents(Slider, 'Slider');
 }

@@ -304,5 +304,5 @@ module EZGUI.Component {
 
     }
 
-    EZGUI.registerComponents(Layout);
+    EZGUI.registerComponents(Layout, 'Layout');
 }

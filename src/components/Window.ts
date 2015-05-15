@@ -123,5 +123,5 @@ module EZGUI.Component {
         //}
     }
 
-    EZGUI.registerComponents(Window);
+    EZGUI.registerComponents(Window, 'Window');
 } 

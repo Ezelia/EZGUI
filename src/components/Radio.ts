@@ -80,5 +80,5 @@ module EZGUI.Component {
         }
     }
 
-    EZGUI.registerComponents(Radio);
+    EZGUI.registerComponents(Radio, 'Radio');
 }

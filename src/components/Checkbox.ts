@@ -128,5 +128,5 @@ module EZGUI.Component {
 
     }
 
-    EZGUI.registerComponents(Checkbox);
+    EZGUI.registerComponents(Checkbox, 'Checkbox');
 }

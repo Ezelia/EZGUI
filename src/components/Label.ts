@@ -48,5 +48,5 @@ module EZGUI.Component {
         }
     }
 
-    EZGUI.registerComponents(Label);
+    EZGUI.registerComponents(Label, 'Label');
 }

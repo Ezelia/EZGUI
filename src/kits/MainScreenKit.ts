@@ -75,5 +75,5 @@ module EZGUI.Kit {
         }
     }
 
-    EZGUI.registerComponents(MainScreen);
+    EZGUI.registerComponents(MainScreen, 'MainScreen');
 }

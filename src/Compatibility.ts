@@ -31,17 +31,17 @@ module EZGUI.Compatibility {
 
 
     export class GUIDisplayObjectContainer extends GUIContainer {
-        protected phaserGroup;
-        static phaserGroup;
+        public phaserGroup;
+        static globalPhaserGroup;
         public _listeners;
         constructor() {
             super();
             if (typeof Phaser != 'undefined') {
                 var game = Phaser.GAMES[0];
-                if (!GUIDisplayObjectContainer.phaserGroup)
-                    GUIDisplayObjectContainer.phaserGroup = new Phaser.Group(game, game.stage, 'guigroup');
+                if (!GUIDisplayObjectContainer.globalPhaserGroup)
+                    GUIDisplayObjectContainer.globalPhaserGroup = new Phaser.Group(game, game.stage, 'guigroup');
 
-                this.phaserGroup = GUIDisplayObjectContainer.phaserGroup.create(0, 0);//new Phaser.Group(Phaser.GAMES[0]);
+                this.phaserGroup = GUIDisplayObjectContainer.globalPhaserGroup.create(0, 0);//new Phaser.Group(Phaser.GAMES[0]);
                 this.phaserGroup.addChild(this);
                 this.phaserGroup.guiSprite = this;
             }

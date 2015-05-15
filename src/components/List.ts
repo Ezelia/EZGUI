@@ -283,5 +283,5 @@
         }
     }
 
-    EZGUI.registerComponents(List);
+    EZGUI.registerComponents(List, 'List');
 }
