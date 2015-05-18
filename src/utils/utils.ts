@@ -3,14 +3,25 @@
      * check if the the point defined by x and y outside a visible gui element
      * 
      */
-    export function isMasked(x, y, obj) {
+    export function isMasked(x, y, obj)
+    {
         var parent = obj.parent;
         if (parent == null) return false;
         if (!parent.worldTransform || !parent.guiMask) return isMasked(x, y, parent);
-        var tx = parent.worldTransform.tx + parent.guiMask.x;
-        var ty = parent.worldTransform.ty + parent.guiMask.y;
-        var w = parent.guiMask.width;
-        var h = parent.guiMask.height;
+
+        var wratio = 1;
+        var hratio = 1;
+        
+        if (Compatibility.isPhaser) {
+            wratio = Phaser.GAMES[0].scale.width / Phaser.GAMES[0].width;
+            hratio = Phaser.GAMES[0].scale.height / Phaser.GAMES[0].height;
+        }
+
+        var tx = (parent.worldTransform.tx + parent.guiMask.x) * wratio;
+        var ty = (parent.worldTransform.ty + parent.guiMask.y) * hratio;
+
+        var w = parent.guiMask.width * wratio;
+        var h = parent.guiMask.height * hratio;
         if (x < tx || y < ty || x > tx + w || y > ty + h) return true;
 
         return isMasked(x, y, parent);
