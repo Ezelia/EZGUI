@@ -6,14 +6,15 @@
 /// <reference path="theme.ts" />
 
 module EZGUI {
-    export var VERSION = '0.1.43 beta';
+    export var VERSION = '0.1.5 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     export var tilingRenderer;
     
     export var dragging: any;
     export var dsx: number;
     export var dsy: number;
-    export var startDrag = { x: null, y: null, t:null };
+    export var startDrag = { x: null, y: null, t: null };
+    export var focused: any;
     export var game;
     
     export var themes = {};

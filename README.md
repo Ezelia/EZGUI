@@ -63,6 +63,7 @@ implemented components
  * Radio
  * Slider
  * List 
+ * Input
 
 
 
@@ -81,7 +82,7 @@ TODO
 
 Known issues 
 ============
-Bitmap font tint don't work in some PIXI v2 versions and Phaser.
+Input control : viewport do not follow the caret.
 
  
 

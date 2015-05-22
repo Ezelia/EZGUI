@@ -95,6 +95,11 @@ module EZGUI {
                 var pos = utils.getRealPos(event);
                 if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
                     _this.emit('ezgui:click', event, _this);
+
+                    if (EZGUI.focused && _this != EZGUI.focused && EZGUI.focused.emit) EZGUI.focused.emit('ezgui:blur');
+                    EZGUI.focused = _this;
+                    EZGUI.focused.emit('ezgui:focus');
+                    
                     event.stopped = true;
                 }
 
@@ -182,6 +187,11 @@ module EZGUI {
                     var pos = utils.getRealPos(event);
                     if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
                         _this.emit('ezgui:click', event, _this);
+
+                        if (EZGUI.focused && _this != EZGUI.focused && EZGUI.focused.emit) EZGUI.focused.emit('ezgui:blur');
+                        EZGUI.focused = _this;
+                        EZGUI.focused.emit('ezgui:focus');
+
                         //console.log('ezgui:click', event);
                     }
 

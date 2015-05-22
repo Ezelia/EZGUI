@@ -89,6 +89,7 @@
     <Content Include="examples\01-window\3-header.html" />
     <Content Include="examples\01-window\2-children.html" />
     <Content Include="examples\01-window\1-simple.html" />
+    <Content Include="examples\07-input\1-simple.html" />
     <Content Include="examples\02-button\1-simple.html" />
     <Content Include="examples\02-button\2-skin.html" />
     <Content Include="examples\05-slider\1-horizontal.html" />
@@ -112,8 +113,10 @@
     <Content Include="js\pixi2.dev.js" />
     <Content Include="js\pixi3.dev.js" />
     <TypeScriptCompile Include="lib\TweenJS.d.ts" />
+    <TypeScriptCompile Include="src\components\Input.ts" />
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
+    <TypeScriptCompile Include="src\utils\Device.ts" />
     <TypeScriptCompile Include="src\utils\EventHandler.ts" />
     <TypeScriptCompile Include="src\GUIObject.ts" />
     <TypeScriptCompile Include="src\kits\MainScreenKit.ts" />

@@ -181,7 +181,7 @@ module EZGUI {
                 EZGUI.dragging = null;
                 _this.setState('default');
 
-
+                
 
             });
 
