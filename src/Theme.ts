@@ -237,7 +237,7 @@ module EZGUI {
                     onAssetsLoaded();
                 }
                 else {
-                    console.log('Theme preloading ', resources);
+                    //console.log('Theme preloading ', resources);
 
                     
                     //utils.loadJSON(_this.url, function (themeConfig) {
@@ -313,7 +313,7 @@ module EZGUI {
                 var crossOrigin = (EZGUI.settings.crossOrigin == true);
                 
                 if (typeof Phaser != 'undefined') {
-                    console.log('Phaser loader');
+                    //console.log('Phaser loader');
                     var loader: any = new Phaser.Loader(Phaser.GAMES[0]);
                     loader.crossOrigin = crossOrigin;
                     for (var i = 0; i < images.length; i++) {
@@ -372,7 +372,7 @@ module EZGUI {
                             atlasData[atlasUrl] = atlasjson;
 
                             if (resToLoad <= 0) {
-                                console.log('Atlas loaded ', images);
+                                //console.log('Atlas loaded ', images);
                                 loadImages();
                             }
                         });
@@ -398,7 +398,7 @@ module EZGUI {
                             var src = path + img;
 
 
-                            console.log('Fake font load = ', src);
+                            //console.log('Fake font load = ', src);
                             
 
                             images.push(src);
@@ -410,7 +410,7 @@ module EZGUI {
                             }
 
                             if (resToLoad <= 0) {
-                                console.log('Fonts loaded ', images);
+                                //console.log('Fonts loaded ', images);
                                 loadImages();
                             }
                         });

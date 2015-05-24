@@ -222,7 +222,9 @@ module EZGUI {
 
         }
 
-
+        /**
+         * Main draw function
+         */
         protected draw() {
             var settings = this._settings;
             if (settings) {
@@ -325,9 +327,13 @@ module EZGUI {
             this.container.children.sort(comparator);
         }
 
+        /**
+         * Text draw function
+         * shared by all components
+         */
         protected drawText() {
 
-            if (this._settings && this._settings.text && this.rootSprite) {
+            if (this._settings && this._settings.text!=undefined && this.rootSprite) {
                 //var settings = this.theme.applySkin(this._settings);
                 var settings = this._settings;
 
@@ -457,6 +463,9 @@ module EZGUI {
         }
 
 
+        /**
+         * 
+         */
         public setState(state= 'default') {
             for (var i = 0; i < this.children.length; i++) {
                 var child: any = this.children[i];
@@ -506,6 +515,9 @@ module EZGUI {
 
 
 
+        /**
+         * 
+         */
         protected getFrameConfig(config, state) {
             var cfg = JSON.parse(JSON.stringify(config));//if (cfg.texture instanceof PIXI.Texture) return cfg;
             if (typeof cfg == 'string') {

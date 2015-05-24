@@ -25,6 +25,10 @@ module EZGUI.Component {
         protected handleEvents() {
             //clear event handlers
         }
+        protected drawText() {
+            this._settings.text = this._settings.text || '';
+            super.drawText();
+        }
 
         protected draw() {
             var settings = this._settings;

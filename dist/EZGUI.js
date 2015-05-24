@@ -681,7 +681,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.1.5 beta';
+    EZGUI.VERSION = '0.1.51 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -907,7 +907,7 @@ var EZGUI;
                     onAssetsLoaded();
                 }
                 else {
-                    console.log('Theme preloading ', resources);
+                    //console.log('Theme preloading ', resources);
                     //utils.loadJSON(_this.url, function (themeConfig) {
                     //    _this.themeConfig = themeConfig;
                     //    _this.initThemeConfig(themeConfig);
@@ -957,7 +957,7 @@ var EZGUI;
             var loadImages = function () {
                 var crossOrigin = (EZGUI.settings.crossOrigin == true);
                 if (typeof Phaser != 'undefined') {
-                    console.log('Phaser loader');
+                    //console.log('Phaser loader');
                     var loader = new Phaser.Loader(Phaser.GAMES[0]);
                     loader.crossOrigin = crossOrigin;
                     for (var i = 0; i < images.length; i++) {
@@ -1002,7 +1002,7 @@ var EZGUI;
                             resToLoad--;
                             atlasData[atlasUrl] = atlasjson;
                             if (resToLoad <= 0) {
-                                console.log('Atlas loaded ', images);
+                                //console.log('Atlas loaded ', images);
                                 loadImages();
                             }
                         });
@@ -1018,7 +1018,7 @@ var EZGUI;
                             var img = xmlfont.getElementsByTagName('page')[0].getAttribute('file');
                             var path = atlasUrl.substring(0, atlasUrl.lastIndexOf('\\') + atlasUrl.lastIndexOf('/') + 2);
                             var src = path + img;
-                            console.log('Fake font load = ', src);
+                            //console.log('Fake font load = ', src);
                             images.push(src);
                             resToLoad--;
                             fontData[atlasUrl] = {
@@ -1026,7 +1026,7 @@ var EZGUI;
                                 textureId: src
                             };
                             if (resToLoad <= 0) {
-                                console.log('Fonts loaded ', images);
+                                //console.log('Fonts loaded ', images);
                                 loadImages();
                             }
                         });
@@ -1605,6 +1605,9 @@ var EZGUI;
                 }
             });
         };
+        /**
+         * Main draw function
+         */
         GUISprite.prototype.draw = function () {
             var settings = this._settings;
             if (settings) {
@@ -1679,8 +1682,12 @@ var EZGUI;
             };
             this.container.children.sort(comparator);
         };
+        /**
+         * Text draw function
+         * shared by all components
+         */
         GUISprite.prototype.drawText = function () {
-            if (this._settings && this._settings.text && this.rootSprite) {
+            if (this._settings && this._settings.text != undefined && this.rootSprite) {
                 //var settings = this.theme.applySkin(this._settings);
                 var settings = this._settings;
                 if (EZGUI.Compatibility.BitmapText.fonts && EZGUI.Compatibility.BitmapText.fonts[settings.font.family]) {
@@ -1774,6 +1781,9 @@ var EZGUI;
             var child = EZGUI.create(childSettings, this.theme);
             return child;
         };
+        /**
+         *
+         */
         GUISprite.prototype.setState = function (state) {
             if (state === void 0) { state = 'default'; }
             for (var i = 0; i < this.children.length; i++) {
@@ -1809,6 +1819,9 @@ var EZGUI;
             tween.start();
             return tween;
         };
+        /**
+         *
+         */
         GUISprite.prototype.getFrameConfig = function (config, state) {
             var cfg = JSON.parse(JSON.stringify(config)); //if (cfg.texture instanceof PIXI.Texture) return cfg;
             if (typeof cfg == 'string') {
@@ -2363,6 +2376,7 @@ var EZGUI;
                 this.addChild(this.container);
             };
             Input.prototype.drawText = function () {
+                this._settings.text = this._settings.text || '';
                 _super.prototype.drawText.call(this);
                 this.textObj.position.x = 5;
                 this.container.addChild(this.textObj);
@@ -2487,6 +2501,10 @@ var EZGUI;
             };
             Label.prototype.handleEvents = function () {
                 //clear event handlers
+            };
+            Label.prototype.drawText = function () {
+                this._settings.text = this._settings.text || '';
+                _super.prototype.drawText.call(this);
             };
             Label.prototype.draw = function () {
                 var settings = this._settings;

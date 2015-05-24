@@ -107,6 +107,7 @@ module EZGUI.Component {
 
 
         protected drawText() {
+            this._settings.text = this._settings.text || '';
             super.drawText();
             this.textObj.position.x = 5;
             this.container.addChild(this.textObj);

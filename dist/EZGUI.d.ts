@@ -259,13 +259,26 @@ declare module EZGUI {
         protected parseSettings(): void;
         setDraggable(val?: boolean): void;
         protected handleEvents(): void;
+        /**
+         * Main draw function
+         */
         protected draw(): void;
         protected sortChildren(): void;
+        /**
+         * Text draw function
+         * shared by all components
+         */
         protected drawText(): void;
         createChild(childSettings: any, order?: any): any;
+        /**
+         *
+         */
         setState(state?: string): void;
         animatePosTo(x: any, y: any, time?: number, easing?: (k: any) => any, callback?: any): Tween;
         animateSizeTo(w: any, h: any, time?: number, easing?: (k: any) => any, callback?: any): Tween;
+        /**
+         *
+         */
         protected getFrameConfig(config: any, state: any): any;
         protected getComponentConfig(component: any, part: any, side: any, state: any): any;
         protected createThemeCorner(settings: any, part: any, side: any, state: any): PIXI.Sprite;
@@ -323,6 +336,7 @@ declare module EZGUI.Component {
         constructor(_settings: any, themeId: any);
         protected setupEvents(): void;
         protected handleEvents(): void;
+        protected drawText(): void;
         protected draw(): void;
     }
 }
