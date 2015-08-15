@@ -6,6 +6,7 @@ module EZGUI.Compatibility {
     export var PIXIVersion =
         (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0) ? 3 : 2;
     export var isPhaser = (typeof Phaser != 'undefined');
+    export var isPhaser24 = isPhaser && Phaser.VERSION.indexOf('2.4') == 0;
 
     export var BitmapText = PIXIVersion >= 3 ? (<any>PIXI).extras.BitmapText : PIXI.BitmapText;
 
@@ -73,6 +74,24 @@ module EZGUI.Compatibility {
         return texture;
     }
 
+
+    /*
+     * 
+     * this function is used to fix Phaser 2.4 compatibility
+     * it need to be attached to onLoadComplete of phaser's loader to copy loaded resources to PIXI.TextureCache
+     */
+    export function fixCache(resources) {
+
+        if (!EZGUI.Compatibility.isPhaser24 || !this._fileList) return;
+        for (var i = 0; i < this._fileList.length; i++) {
+            if (!resources || resources.length == 0 || resources.indexOf(this._fileList[i].key) >= 0) {
+                
+                var tx = new PIXI.Texture(new (<any>PIXI).BaseTexture(this._fileList[i].data));
+                PIXI.TextureCache[this._fileList[i].key] = tx;
+            }
+        }
+    }
+
 }
 
 
@@ -84,6 +103,30 @@ if (EZGUI.Compatibility.PIXIVersion == 3) {
 else {
     EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
+}
+EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
+    if (EZGUI.Compatibility.isPhaser24) {
+        var ltexture = this.originalTexture || this.texture;
+
+        var frame = ltexture.frame;
+        var targetWidth, targetHeight;
+
+        //  Check that the frame is the same size as the base texture.
+        var isFrame = frame.width !== ltexture.baseTexture.width || frame.height !== ltexture.baseTexture.height;
+
+
+        this._frame = {};
+
+
+        if (ltexture.trim) {
+            this._frame.spriteSourceSizeX = ltexture.trim.width;
+            this._frame.spriteSourceSizeY = ltexture.trim.height;
+        }
+        else {
+            this._frame.sourceSizeW = frame.width;
+            this._frame.sourceSizeH = frame.height;
+        }
+    }
 }
 
 

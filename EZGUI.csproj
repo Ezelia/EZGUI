@@ -98,6 +98,7 @@
     <Content Include="examples\app\phaser.html" />
     <Content Include="examples\06-fonts\01.html" />
     <Content Include="examples\app\app-gui.js" />
+    <Content Include="examples\checkers\index.html" />
     <Content Include="examples\game\game-gui.js" />
     <Content Include="examples\app\pixi.html" />
     <Content Include="examples\game\phaser.html" />

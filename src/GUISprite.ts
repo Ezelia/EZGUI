@@ -732,6 +732,9 @@ module EZGUI {
             //var line: any = new MultistateTilingSprite(cfg.texture, twidth, theight, cfg.textures);
             var line: any = new EZGUI.Compatibility.TilingSprite(cfg.texture, twidth, theight);
             
+            //phaser 2.4 compatibility /////////////////////////////////
+            line.fixPhaser24();
+            ////////////////////////////////////////////////////////////
 
 
 
@@ -805,6 +808,10 @@ module EZGUI {
 
             //var bg: any = new MultistateTilingSprite(cfg.texture, settings.width - cfg.bgPadding * 2, settings.height - cfg.bgPadding * 2, cfg.textures);
             var bg: any = new EZGUI.Compatibility.TilingSprite(cfg.texture, settings.width - cfg.bgPadding * 2, settings.height - cfg.bgPadding * 2);
+            //phaser 2.4 compatibility /////////////////////////////////
+            bg.fixPhaser24();
+            ////////////////////////////////////////////////////////////
+
 
             bg.position.x = cfg.bgPadding;
             bg.position.y = cfg.bgPadding;

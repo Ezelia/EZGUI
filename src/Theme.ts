@@ -274,7 +274,8 @@ module EZGUI {
 
             var resToLoad = 0;
 
-            var cacheAtlas = function () {
+            var cacheAtlas = function () {                
+                
                 for (var i in atlasData) {
                     var atlasJson:any = atlasData[i];
                     var imgUrl = _this.path + atlasJson.meta.image;
@@ -309,6 +310,18 @@ module EZGUI {
                 cb();
             }
 
+            //var phaser24cache = function (loader) {
+            //    if (!loader._fileList) return;
+            //    //console.log(loader._fileList);
+            //    for (var i = 0; i < loader._fileList.length; i++) {
+            //        var tx = new (<any>PIXI).Texture(new (<any>PIXI).BaseTexture(loader._fileList[i].data));
+            //        //tx._frame = { test: 1 };
+            //        //console.log('Caching : ', loader._fileList[i].key);
+            //        PIXI.TextureCache[loader._fileList[i].key] = tx;
+            //        //console.log(tx);
+            //    }
+            //}
+
             var loadImages = function () {
                 var crossOrigin = (EZGUI.settings.crossOrigin == true);
                 
@@ -319,7 +332,12 @@ module EZGUI {
                     for (var i = 0; i < images.length; i++) {
                         loader.image(images[i], images[i]);
                     }
-                    loader.onLoadComplete.add(cacheAtlas);
+                    loader.onLoadComplete.add(function () {
+                        //loader.onLoadComplete.add(EZGUI.Compatibility.fixCache, loader);
+                        EZGUI.Compatibility.fixCache.apply(loader);
+                        //phaser24cache(loader);
+                        cacheAtlas();
+                    });
                     
                     loader.start();
                     return;

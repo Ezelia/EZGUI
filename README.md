@@ -6,6 +6,15 @@ it's focused on PIXI 3 but support PIXI 2 to garantee seamless transition, and t
 ![Game GUI sample](http://ezgui.ezelia.com/img/ezgui-game-optimized2.gif) ![App GUI sample](http://ezgui.ezelia.com/img/ezgui-app-optimized2.gif) 
 
 
+Note for Phaser 2.4.x users
+===========================
+if you use Phaser 2.4.x, please include phaser-compat-2.4.js file *after* phaser.js script (see examples/Phaser/phaser-2.4.html) 
+if you load custom resources to be used in your GUI templates and you are loading them with phaser default loader, 
+you'll need to add an event listener for onLoadComplete and pass EZGUI.Compatibility.fixCache (see examples/game/phaser-2.4.html line ~193)
+
+
+
+
 Important 
 =========
 The code in this repository is still in developement, and some breaking changes may occure
@@ -26,8 +35,12 @@ Online components demos
  * [Fonts](http://ezgui.ezelia.com/examples/06-fonts/01.html)
  * [Phaser complex](http://ezgui.ezelia.com/examples/Phaser/)
  * [Pixi complex](http://ezgui.ezelia.com/examples/Pixi/)
+
  * [Phaser Game screens](http://ezgui.ezelia.com/examples/game/phaser.html)
+ * [Phaser 2.4 Game screens](http://ezgui.ezelia.com/examples/game/phaser-2.4.html)
+
  * [Pixi Game screens](http://ezgui.ezelia.com/examples/game/pixi.html)
+
  * [Phaser App screens](http://ezgui.ezelia.com/examples/app/phaser.html)
  * [Pixi App screens](http://ezgui.ezelia.com/examples/app/pixi.html)
 
@@ -69,6 +82,7 @@ implemented components
 
 TODO 
 ====
+ * Enhance Phaser 2.4 compatibility
  * Two states button component
  * Tabs component
  * Scrollbar component

@@ -400,6 +400,7 @@ module EZGUI {
             
             if (this.parent && this.parent.removeChild) this.parent.removeChild(this);
             
+            delete EZGUI.components[this.guiID];
         }
 
 

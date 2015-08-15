@@ -6,7 +6,7 @@
 /// <reference path="theme.ts" />
 
 module EZGUI {
-    export var VERSION = '0.1.51 beta';
+    export var VERSION = '0.1.9 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     export var tilingRenderer;
     
@@ -16,7 +16,7 @@ module EZGUI {
     export var startDrag = { x: null, y: null, t: null };
     export var focused: any;
     export var game;
-    
+
     export var themes = {};
     export var components = {};
     export var radioGroups:any = [];
