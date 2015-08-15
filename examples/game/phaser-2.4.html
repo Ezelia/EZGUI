@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Game screens sample</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+
+    </style>
+
+
+    <script src="../../js/phaser-2.4.2.js"></script>
+    <!-- don't forget to add compatibility js -->
+    <script src="../../js/phaser-compat-2.4.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+	<script src="./game-gui.js"></script>
+</head>
+<body>
+    <script>
+        var themeOverride = {
+            levelBtn: {
+                image: '../../assets/img/level-box.png',                
+                font: { size: '45px', family: 'Skranji', color: 'white' },
+                anchor: {x:0.5, y:0.5}
+            },
+        }
+
+
+		var gameWidth = 600;
+		var gameHeight = 500;
+		
+		var mainScreen;
+		var avatarSelectScreen;
+		var levelSelectScreen;
+		var fakeGameScreen;
+		
+        function setupGUI() {
+			EZGUI.components.playBtn.on('click', function() {
+				mainScreen.visible = false;
+				avatarSelectScreen.visible = true;
+			});
+			
+			EZGUI.components.avatarSelectBtn.on('click', function() {
+				avatarSelectScreen.visible = false;
+				levelSelectScreen.visible = true;
+			});
+
+			avatarSelectScreen.bindChildrenOfType(EZGUI.Component.Radio, 'checked', function (event, me) {
+			    console.log('checked ', me.guiID);
+			});
+			
+
+			EZGUI.components.levelsList.bindChildren('mousedown', function (event, me) {
+			    console.log('mousedown ', me);
+			    var ow = me.width;
+			    var oh = me.height;
+			    me.animateSizeTo(ow * 1.3, oh * 1.3, 100, EZGUI.Easing.Back.Out, function () {
+			        me.animateSizeTo(ow, oh, 100);
+			    });
+			});
+			EZGUI.components.levelsList.bindChildren('click', function (event, me) {
+
+                //wait for animation to finish
+			    setTimeout(function () {
+			        levelSelectScreen.visible = false;
+			        fakeGameScreen.visible = true;
+			        EZGUI.components.gameLabel.text = 'Selected ' + me.userData;
+			    }, 150);
+			    //console.log('clicked', event, me.guiID);
+			});
+
+
+			
+			
+			EZGUI.components.gameBtn1.on('click', function() {
+			    var dlg = EZGUI.components.dialog1;
+			    dlg.visible = true;
+			    dlg.position.x = (gameWidth - dlg.settings.width) / 2;
+			    dlg.position.y = -20 - dlg.settings.height;
+			    var targetY = (gameHeight - dlg.settings.height) / 2;
+			    dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.Out);
+			});			
+			
+
+			var hideBtn = EZGUI.components.dialog1HideBtn;
+			hideBtn.on('click', function () {
+				var targetY = gameHeight + 20;
+				var dlg = EZGUI.components.dialog1;
+				dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.In, function () {
+				    dlg.visible = false;
+				});			
+			});
+
+			hideBtn.on('mousedown', function () {
+			    var ow = hideBtn.width;
+			    var oh = hideBtn.height;
+			    hideBtn.animateSizeTo(ow * 1.2, oh * 1.2, 200, EZGUI.Easing.Back.Out, function () {
+			        hideBtn.animateSizeTo(ow, oh, 200);
+			    });
+			});
+
+
+
+			EZGUI.components.gameBtn2.on('click', function () {
+			    var dlg = EZGUI.components.dialog2;
+			    dlg.visible = true;
+			    dlg.position.x = (gameWidth - dlg.settings.width) / 2;
+			    dlg.position.y = -20 - dlg.settings.height;
+			    var targetY = (gameHeight - dlg.settings.height) / 2;
+			    dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.Out);
+			});
+
+			var hideBtn2 = EZGUI.components.dialog2HideBtn;
+			hideBtn2.on('click', function () {
+			    var targetY = gameHeight + 20;
+			    var dlg = EZGUI.components.dialog2;
+			    dlg.animatePosTo(dlg.position.x, targetY, 800, EZGUI.Easing.Back.In, function () {
+			        dlg.visible = false;
+			    });
+			});
+
+			hideBtn2.on('mousedown', function () {
+			    var ow = hideBtn2.width;
+			    var oh = hideBtn2.height;
+			    hideBtn2.animateSizeTo(ow * 1.2, oh * 1.2, 200, EZGUI.Easing.Back.Out, function () {
+			        hideBtn2.animateSizeTo(ow, oh, 200);
+			    });
+			});
+
+
+			EZGUI.components.gameBtn3.on('click', function () {
+			    fakeGameScreen.visible = false;
+			    mainScreen.visible = true;
+			});
+
+		}
+		
+		
+		
+		EZGUI.Theme.load(['../../assets/metalworks-theme/metalworks-theme.json'], function () {
+		    EZGUI.themes['metalworks'].override(themeOverride);
+		    
+			mainScreen = EZGUI.create(mainScreenJSON, 'metalworks');
+			
+			
+			avatarSelectScreen = EZGUI.create(avatarSelectScreenJSON, 'metalworks');
+			avatarSelectScreen.visible = false;
+
+			levelSelectScreen = EZGUI.create(levelSelectScreenJSON, 'metalworks');
+			levelSelectScreen.visible = false;
+			
+			fakeGameScreen = EZGUI.create(fakeGameScreenJSON, 'metalworks');
+			fakeGameScreen.visible = false;
+			
+			var dlg1  = EZGUI.create(dialog1JSON, 'metalworks');
+			dlg1.visible=false;
+			var dlg2  = EZGUI.create(dialog2JSON, 'metalworks');
+			dlg2.visible=false;			
+			
+			
+			
+			setupGUI();
+		});
+
+		var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create });
+
+        var resources = [
+            '../../assets/img/bomb1.png',
+            '../../assets/img/bomb1-selected.png',
+            '../../assets/img/bomb2.png',
+            '../../assets/img/bomb2-selected.png',
+            '../../assets/img/bomb3.png',
+            '../../assets/img/bomb3-selected.png',
+            '../../assets/img/orange-btn.png',
+            '../../assets/img/panel-650x400.png',
+            '../../assets/img/level-box.png',
+            '../../assets/img/lvlcomplete.png',
+            '../../assets/img/star2.png'
+        ];
+
+
+
+        function preload() {
+            for (var i = 0; i < resources.length; i++) {
+                game.load.image(resources[i], resources[i]);
+            }
+
+            //Note that you need to call fixCache here to fix compatibility issue
+            //this is temporary fix, it will be replaced with a specific EZGUI Loader
+            game.load.onLoadComplete.add(EZGUI.Compatibility.fixCache, game.load, null, resources);
+        }
+
+
+
+        function create() {
+
+        }
+
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>
