@@ -11,8 +11,8 @@ module EZGUI.Component {
         public focused: boolean;
 
         get text(): string {
-            if (this.domInput && this.domInput.value) return this.domInput.value;
-            if (this.textObj) return this.textObj.text;
+            if (this.domInput) return this.domInput.value;
+            return ""
         }
         set text(val: string) {
             if (this.textObj) {
