@@ -16,12 +16,15 @@ module EZGUI.Component {
         }
         set text(val: string) {
             if (this.textObj) {
+                var cpos = this.getCaretPosition();
                 if (Compatibility.PIXIVersion == 3) {
-                    this.textObj.text = val;
+                    this.textObj.text = val.substr(0, cpos) + '|' + val.substr(cpos);
                 }
                 else {
-                    this.textObj.setText(val);
+                    this.textObj.setText(val.substr(0, cpos) + '|' + val.substr(cpos));
                 }
+                this.domInput.value = val;
+                this.setCaretPosition(cpos);
 
                 if (this._settings.anchor) {
                     this.textObj.position.x = 0;
@@ -127,31 +130,15 @@ module EZGUI.Component {
                 var _this: any = this;
                 
                 this.domInput.addEventListener('input', function (event) {
-
-                    var cpos = _this.getCaretPosition();
-                    var str: string = _this.domInput.value;                    
-
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
-
-                    _this.text = str;
+                    _this.text = _this.domInput.value;
                     _this.emit('ezgui:change', event, _this);
                 });
                 this.domInput.addEventListener('keydown', function (event) {
-
-                    var cpos = _this.getCaretPosition();
-                    var str: string = _this.domInput.value;
-
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
-                    
+                    _this.text = _this.domInput.value;
                 });
 
                 this.domInput.addEventListener('keyup', function (event) {
-
-                    var cpos = _this.getCaretPosition();
-                    var str: string = _this.domInput.value;
-
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
-
+                    _this.text = _this.domInput.value;
                 });
             }
         }
@@ -170,28 +157,14 @@ module EZGUI.Component {
             }
 
             guiObj.on('focus', function () {
-                if (_this.focused) return;
-                _this.focused = true;
-
                 if (!_this.domInput) return;
-                _this.domInput.value = _this.text;
-
-                _this.setCaretPosition(_this.domInput.value.length);
-                var cpos = _this.getCaretPosition();
-                var str: string = _this.domInput.value;
-                _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
-
-
+                _this.text = _this.domInput.value;
                 _this.domInput.focus();
 
             });
             guiObj.on('blur', function () {
-                if (!_this.focused) return;
-                _this.focused = false;
-
                 if (!_this.domInput) return;
                 _this.text = _this.domInput.value;
-                //_this.text = _this.text.substr(0, _this.text.length - 1);
                 _this.domInput.blur();
             });
 
