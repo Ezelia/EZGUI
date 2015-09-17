@@ -17,11 +17,15 @@ module EZGUI.Component {
         set text(val: string) {
             if (this.textObj) {
                 var cpos = this.getCaretPosition();
-                if (Compatibility.PIXIVersion == 3) {
-                    this.textObj.text = val.substr(0, cpos) + '|' + val.substr(cpos);
+                var text = val;
+                if(!EZGUI.Device.isMobile){ //Don't show cursor on mobile
+                    text = val.substr(0, cpos) + '|' + val.substr(cpos);
+                }
+                if (EZGUI.Compatibility.PIXIVersion == 3) {
+                    this.textObj.text = text;
                 }
                 else {
-                    this.textObj.setText(val.substr(0, cpos) + '|' + val.substr(cpos));
+                    this.textObj.setText(text);
                 }
                 this.domInput.value = val;
                 this.setCaretPosition(cpos);
@@ -119,7 +123,7 @@ module EZGUI.Component {
         protected setupEvents() {
             super.setupEvents();
 
-            if (!EZGUI.Device.isMobile && document && document.createElement) {
+            if (document && document.createElement) {
                 this.domInput = document.createElement("input");
                 this.domInput.id = this.guiID + "_input";
                 this.domInput.style.position = 'absolute';
