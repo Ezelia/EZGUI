@@ -101,6 +101,7 @@
     <Content Include="examples\checkers\index.html" />
     <Content Include="examples\game\game-gui.js" />
     <Content Include="examples\app\pixi.html" />
+    <Content Include="examples\game\phaser-2.4.html" />
     <Content Include="examples\game\phaser.html" />
     <Content Include="examples\game\pixi.html" />
     <Content Include="examples\kits\MainScreen-Phaser.html" />
@@ -113,6 +114,7 @@
     <Content Include="examples\test\index.html" />
     <Content Include="js\pixi2.dev.js" />
     <Content Include="js\pixi3.dev.js" />
+    <None Include="changelog.md" />
     <TypeScriptCompile Include="lib\TweenJS.d.ts" />
     <TypeScriptCompile Include="src\components\Input.ts" />
     <TypeScriptCompile Include="src\components\Label.ts" />

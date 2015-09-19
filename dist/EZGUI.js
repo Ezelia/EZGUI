@@ -642,9 +642,11 @@ var EZGUI;
     })(Compatibility = EZGUI.Compatibility || (EZGUI.Compatibility = {}));
 })(EZGUI || (EZGUI = {}));
 if (EZGUI.Compatibility.PIXIVersion == 3) {
+    PIXI['utils']._saidHello = true;
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
     EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = (PIXI.extras).TilingSprite;
+    PIXI['utils']._saidHello = false;
 }
 else {
     EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
@@ -1088,7 +1090,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.1.9 beta';
+    EZGUI.VERSION = '0.2.0 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -1576,7 +1578,46 @@ var EZGUI;
             enumerable: true,
             configurable: true
         });
+        GUISprite.prototype.parsePercentageValue = function (str) {
+            if (typeof str != 'string')
+                return NaN;
+            var val = NaN;
+            var percentToken = str.split('%');
+            if (percentToken.length == 2 && percentToken[1] == '') {
+                val = parseFloat(percentToken[0]);
+            }
+            return val >= 0 ? val : NaN;
+        };
         GUISprite.prototype.parseSettings = function () {
+        };
+        GUISprite.prototype.prepareChildSettings = function (settings) {
+            var _settings = JSON.parse(JSON.stringify(settings));
+            if (_settings) {
+                //support percentage values for width and height
+                if (typeof _settings.width == 'string') {
+                    var p = this.parsePercentageValue(_settings.width);
+                    if (p != NaN)
+                        _settings.width = this.width * p / 100;
+                }
+                if (typeof _settings.height == 'string') {
+                    var p = this.parsePercentageValue(_settings.height);
+                    if (p != NaN)
+                        _settings.height = this.height * p / 100;
+                }
+                if (typeof _settings.position == 'object') {
+                    if (typeof _settings.position.x == 'string') {
+                        var px = this.parsePercentageValue(_settings.position.x);
+                        if (px != NaN)
+                            _settings.position.x = this.width * px / 100;
+                    }
+                    if (typeof _settings.position.y == 'string') {
+                        var py = this.parsePercentageValue(_settings.position.y);
+                        if (py != NaN)
+                            _settings.position.y = this.height * py / 100;
+                    }
+                }
+            }
+            return _settings;
         };
         GUISprite.prototype.setDraggable = function (val) {
             if (val === void 0) { val = true; }
@@ -1697,7 +1738,7 @@ var EZGUI;
                 //this.addChild(this.container);
                 if (settings.children) {
                     for (var i = 0; i < settings.children.length; i++) {
-                        var btnObj = JSON.parse(JSON.stringify(settings.children[i]));
+                        var btnObj = this.prepareChildSettings(settings.children[i]); // JSON.parse(JSON.stringify(settings.children[i]));
                         var child = this.createChild(btnObj, i);
                         if (!child)
                             continue;
@@ -1714,6 +1755,13 @@ var EZGUI;
                     this.container.position.y -= this.rootSprite.height * this._settings.anchor.y;
                     this.position.x += this.rootSprite.width * this._settings.anchor.x;
                     this.position.y += this.rootSprite.height * this._settings.anchor.y;
+                }
+                //tint color
+                if (this._settings.color) {
+                    var pixiColor = EZGUI.utils.ColorParser.parseToPixiColor(this._settings.color);
+                    if (pixiColor >= 0) {
+                        this.rootSprite.tint = pixiColor;
+                    }
                 }
                 //move container to top
                 this.addChild(this.container);
@@ -1751,7 +1799,12 @@ var EZGUI;
                     }
                 }
                 else {
-                    this.textObj = new PIXI.Text(this._settings.text, { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color });
+                    var style = { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color };
+                    for (var s in settings.font) {
+                        if (!style[s])
+                            style[s] = settings.font[s];
+                    }
+                    this.textObj = new PIXI.Text(this._settings.text, style);
                 }
                 //text.height = this.height;
                 this.textObj.position.x = 0; //(this._settings.width - this.textObj.width) / 2;
@@ -2208,46 +2261,58 @@ var EZGUI;
             }
             Object.defineProperty(Input.prototype, "text", {
                 get: function () {
-                    if (this.domInput && this.domInput.value)
+                    if (this.domInput)
                         return this.domInput.value;
                     if (this.textObj)
                         return this.textObj.text;
                 },
                 set: function (val) {
-                    if (this.textObj) {
-                        if (EZGUI.Compatibility.PIXIVersion == 3) {
-                            this.textObj.text = val;
-                        }
-                        else {
-                            this.textObj.setText(val);
-                        }
-                        if (this._settings.anchor) {
-                            this.textObj.position.x = 0;
-                            this.textObj.position.y = 0;
-                            if (this.textObj.anchor) {
-                                this.textObj.anchor.x = this._settings.anchor.x;
-                                this.textObj.anchor.y = this._settings.anchor.y;
-                            }
-                            else {
-                                //fake anchor for bitmap font
-                                this.textObj.position.x -= this.textObj.width / 2;
-                                this.textObj.position.y -= this.textObj.height / 2;
-                            }
-                        }
-                        else {
-                            this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
-                            this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
-                            if (this.textObj.anchor) {
-                                this.textObj.anchor.x = 0;
-                                this.textObj.anchor.y = 0;
-                            }
-                        }
-                    }
-                    this.textObj.position.x = 5;
+                    var cpos = this.getCaretPosition();
+                    this.domInput.value = val;
+                    this.setTextWithCaret(val);
+                    this.setCaretPosition(cpos);
                 },
                 enumerable: true,
                 configurable: true
             });
+            Input.prototype.setTextWithCaret = function (val, event) {
+                if (event === void 0) { event = null; }
+                if (this.textObj) {
+                    if (EZGUI.Compatibility.PIXIVersion == 3) {
+                        this.textObj.text = val;
+                    }
+                    else {
+                        this.textObj.setText(val);
+                    }
+                    if (this._settings.anchor) {
+                        this.textObj.position.x = 0;
+                        this.textObj.position.y = 0;
+                        if (this.textObj.anchor) {
+                            this.textObj.anchor.x = this._settings.anchor.x;
+                            this.textObj.anchor.y = this._settings.anchor.y;
+                        }
+                        else {
+                            //fake anchor for bitmap font
+                            this.textObj.position.x -= this.textObj.width / 2;
+                            this.textObj.position.y -= this.textObj.height / 2;
+                        }
+                    }
+                    else {
+                        this.textObj.position.x = (this._settings.width - this.textObj.width) / 2;
+                        this.textObj.position.y = (this._settings.height - this.textObj.height) / 2;
+                        if (this.textObj.anchor) {
+                            this.textObj.anchor.x = 0;
+                            this.textObj.anchor.y = 0;
+                        }
+                    }
+                }
+                //var cpos = this.getCaretPosition();
+                //console.log('setting value ', val, cpos, val.substr(0, cpos - 1), val.substr(cpos));
+                //this.domInput.value = val.substr(0, cpos - 1) + val.substr(cpos);
+                this.textObj.position.x = 5;
+                if (event)
+                    this.emit('ezgui:change', event, this);
+            };
             Input.prototype.draw = function () {
                 _super.prototype.draw.call(this);
                 this.guiMask = { width: 0, height: 0 };
@@ -2286,24 +2351,24 @@ var EZGUI;
                     this.domInput.id = this.guiID + "_input";
                     this.domInput.style.position = 'absolute';
                     this.domInput.style.top = '-100px';
+                    this.domInput.value = '';
                     document.body.appendChild(this.domInput);
                     var _this = this;
                     this.domInput.addEventListener('input', function (event) {
                         var cpos = _this.getCaretPosition();
                         var str = _this.domInput.value;
-                        _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
-                        _this.text = str;
-                        _this.emit('ezgui:change', event, _this);
+                        _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
+                        _this.setTextWithCaret(str, true);
                     });
                     this.domInput.addEventListener('keydown', function (event) {
                         var cpos = _this.getCaretPosition();
                         var str = _this.domInput.value;
-                        _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
+                        _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
                     });
                     this.domInput.addEventListener('keyup', function (event) {
                         var cpos = _this.getCaretPosition();
                         var str = _this.domInput.value;
-                        _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
+                        _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
                     });
                 }
             };
@@ -2313,7 +2378,7 @@ var EZGUI;
                 var _this = this;
                 if (EZGUI.Device.isMobile) {
                     guiObj.on('click', function () {
-                        _this.text = prompt('', _this.text);
+                        _this.setTextWithCaret(prompt('', _this.text), true);
                     });
                     return;
                 }
@@ -2327,7 +2392,7 @@ var EZGUI;
                     _this.setCaretPosition(_this.domInput.value.length);
                     var cpos = _this.getCaretPosition();
                     var str = _this.domInput.value;
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
+                    _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
                     _this.domInput.focus();
                 });
                 guiObj.on('blur', function () {
@@ -2336,7 +2401,7 @@ var EZGUI;
                     _this.focused = false;
                     if (!_this.domInput)
                         return;
-                    _this.text = _this.domInput.value;
+                    _this.setTextWithCaret(_this.domInput.value);
                     //_this.text = _this.text.substr(0, _this.text.length - 1);
                     _this.domInput.blur();
                 });

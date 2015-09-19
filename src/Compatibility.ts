@@ -63,6 +63,7 @@ module EZGUI.Compatibility {
 
 
     export function createRenderTexture(width, height) {
+
         var texture;
         if (EZGUI.Compatibility.PIXIVersion == 3) {
             texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
@@ -96,14 +97,18 @@ module EZGUI.Compatibility {
 
 
 if (EZGUI.Compatibility.PIXIVersion == 3) {
+    PIXI['utils']._saidHello = true;
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
     EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = ((<any>PIXI).extras).TilingSprite;
+    PIXI['utils']._saidHello = false;
 }
 else {
     EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
 }
+
+
 EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
     if (EZGUI.Compatibility.isPhaser24) {
         var ltexture = this.originalTexture || this.texture;

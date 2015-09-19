@@ -338,12 +338,12 @@ module EZGUI {
 
 
 
-        public on(event, fn, context?) {
+        public on(event, fn, context?):any {
             return super.on('ezgui:' + event, fn, context);
             //super.on('gui:' + event, cb);
         }
 
-        public off(event, fn?, context?) {
+        public off(event, fn?, context?):any {
             if (EZGUI.Compatibility.PIXIVersion == 2) {
                 if (fn == null && context == null) {
                     (<any>this)._listeners['ezgui:' + event] = [];

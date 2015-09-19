@@ -99,8 +99,51 @@ module EZGUI {
         }
 
 
+        protected parsePercentageValue(str) {
+            if (typeof str != 'string') return NaN;
+            var val = NaN;
+            var percentToken = str.split('%');
+            if (percentToken.length == 2 && percentToken[1] == '') {
+                val = parseFloat(percentToken[0]);
+            }
+            return val >=0 ? val : NaN;
+        }
 
         protected parseSettings() {
+            
+
+        }
+
+        protected prepareChildSettings(settings) {
+
+            var _settings = JSON.parse(JSON.stringify(settings));
+            if (_settings) {
+                //support percentage values for width and height
+                if (typeof _settings.width == 'string') {
+                    var p = this.parsePercentageValue(_settings.width);
+                    if (p != NaN) _settings.width = this.width * p / 100;
+                }
+                if (typeof _settings.height == 'string') {
+                    var p = this.parsePercentageValue(_settings.height);
+                    if (p != NaN) _settings.height = this.height * p / 100;
+                }
+
+                if (typeof _settings.position == 'object') {
+                    if (typeof _settings.position.x == 'string') {
+                        var px = this.parsePercentageValue(_settings.position.x);
+                        if (px != NaN) _settings.position.x = this.width * px / 100;
+                    }
+
+                    if (typeof _settings.position.y == 'string') {
+                        var py = this.parsePercentageValue(_settings.position.y);
+                        if (py != NaN) _settings.position.y = this.height * py / 100;
+                    }
+
+                }
+
+
+            }
+            return _settings;
         }
 
         public setDraggable(val=true) {
@@ -277,7 +320,7 @@ module EZGUI {
                 if (settings.children) {
                     for (var i = 0; i < settings.children.length; i++) {
 
-                        var btnObj = JSON.parse(JSON.stringify(settings.children[i]));
+                        var btnObj = this.prepareChildSettings(settings.children[i]);// JSON.parse(JSON.stringify(settings.children[i]));
 
                         var child:any = this.createChild(btnObj, i);
 
@@ -304,6 +347,15 @@ module EZGUI {
 
                     this.position.x += this.rootSprite.width * this._settings.anchor.x;
                     this.position.y += this.rootSprite.height * this._settings.anchor.y;
+                }
+
+
+                //tint color
+                if (this._settings.color) {
+                    var pixiColor = utils.ColorParser.parseToPixiColor(this._settings.color);
+                    if (pixiColor >= 0) {
+                        this.rootSprite.tint = pixiColor;
+                    }
                 }
                 //move container to top
                 this.addChild(this.container);
@@ -349,11 +401,17 @@ module EZGUI {
                     
                 }
                 else {
+                    var style = { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color };
 
-                    this.textObj = new PIXI.Text(this._settings.text, { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color });
+                    for (var s in settings.font) {
+                        if (!style[s])
+                            style[s] = settings.font[s];
+                    }
+                    this.textObj = new PIXI.Text(this._settings.text, style);
                 }
 
                 //text.height = this.height;
+                
                 
                 this.textObj.position.x = 0;//(this._settings.width - this.textObj.width) / 2;
                 this.textObj.position.y = 0;//(this._settings.height - this.textObj.height) / 2;

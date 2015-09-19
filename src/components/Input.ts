@@ -11,11 +11,22 @@ module EZGUI.Component {
         public focused: boolean;
 
         get text(): string {
-            if (this.domInput && this.domInput.value) return this.domInput.value;
+            if (this.domInput) return this.domInput.value;
             if (this.textObj) return this.textObj.text;
         }
-        set text(val: string) {
+        set text(val: string) {       
+            
+            var cpos = this.getCaretPosition();
+            this.domInput.value = val;
+            this.setTextWithCaret(val);
+            
+
+            this.setCaretPosition(cpos);
+        } 
+
+        private setTextWithCaret(val: string, event=null) {
             if (this.textObj) {
+                
                 if (Compatibility.PIXIVersion == 3) {
                     this.textObj.text = val;
                 }
@@ -47,11 +58,16 @@ module EZGUI.Component {
                     }
                 }
 
+                
+
             }
+            //var cpos = this.getCaretPosition();
+            //console.log('setting value ', val, cpos, val.substr(0, cpos - 1), val.substr(cpos));
+            //this.domInput.value = val.substr(0, cpos - 1) + val.substr(cpos);
 
             this.textObj.position.x = 5;
-        } 
-
+            if (event) (<any>this).emit('ezgui:change', event, this);
+        }
 
 
         constructor(public _settings, public themeId) {
@@ -121,6 +137,8 @@ module EZGUI.Component {
                 this.domInput.id = this.guiID + "_input";
                 this.domInput.style.position = 'absolute';
                 this.domInput.style.top = '-100px';
+                this.domInput.value = '';
+
                 document.body.appendChild(this.domInput);
 
 
@@ -131,17 +149,17 @@ module EZGUI.Component {
                     var cpos = _this.getCaretPosition();
                     var str: string = _this.domInput.value;                    
 
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
+                    _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
 
-                    _this.text = str;
-                    _this.emit('ezgui:change', event, _this);
+                    _this.setTextWithCaret(str, true);
+                    
                 });
                 this.domInput.addEventListener('keydown', function (event) {
 
                     var cpos = _this.getCaretPosition();
                     var str: string = _this.domInput.value;
 
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
+                    _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
                     
                 });
 
@@ -150,7 +168,7 @@ module EZGUI.Component {
                     var cpos = _this.getCaretPosition();
                     var str: string = _this.domInput.value;
 
-                    _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
+                    _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
 
                 });
             }
@@ -163,7 +181,7 @@ module EZGUI.Component {
             
             if (EZGUI.Device.isMobile) {
                 guiObj.on('click', function () {
-                   _this.text = prompt('', _this.text);
+                    _this.setTextWithCaret(prompt('', _this.text), true);
                 });
 
                 return;
@@ -176,11 +194,13 @@ module EZGUI.Component {
                 if (!_this.domInput) return;
                 _this.domInput.value = _this.text;
 
+                
+
                 _this.setCaretPosition(_this.domInput.value.length);
                 var cpos = _this.getCaretPosition();
                 var str: string = _this.domInput.value;
-                _this.text = str.substr(0, cpos) + '|' + str.substr(cpos);
-
+                _this.setTextWithCaret(str.substr(0, cpos) + '|' + str.substr(cpos));
+                
 
                 _this.domInput.focus();
 
@@ -190,7 +210,7 @@ module EZGUI.Component {
                 _this.focused = false;
 
                 if (!_this.domInput) return;
-                _this.text = _this.domInput.value;
+                _this.setTextWithCaret(_this.domInput.value);
                 //_this.text = _this.text.substr(0, _this.text.length - 1);
                 _this.domInput.blur();
             });

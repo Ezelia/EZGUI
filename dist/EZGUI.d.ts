@@ -194,7 +194,7 @@ declare module EZGUI {
     var focused: any;
     var game: any;
     var themes: {};
-    var components: {};
+    var components: any;
     var radioGroups: any;
     var EventsHelper: utils.EventHandler;
     /**
@@ -229,8 +229,8 @@ declare module EZGUI {
         removeChild(child: any): PIXI.DisplayObject;
         mouseInObj(event: any, guiSprite: any): boolean;
         canTrigger(event: any, guiSprite: any): boolean;
-        on(event: any, fn: any, context?: any): void;
-        off(event: any, fn?: any, context?: any): void;
+        on(event: any, fn: any, context?: any): any;
+        off(event: any, fn?: any, context?: any): any;
         bindChildren(event: any, fn: any): void;
         bindChildrenOfType(_type: any, event: any, fn: any): void;
         unbindChildren(event: any, fn?: any): void;
@@ -258,7 +258,9 @@ declare module EZGUI {
         settings: string;
         text: string;
         constructor(_settings: any, themeId: any);
+        protected parsePercentageValue(str: any): number;
         protected parseSettings(): void;
+        protected prepareChildSettings(settings: any): any;
         setDraggable(val?: boolean): void;
         protected handleEvents(): void;
         /**
@@ -300,6 +302,7 @@ declare module EZGUI.Component {
         private domInput;
         focused: boolean;
         text: string;
+        private setTextWithCaret(val, event?);
         constructor(_settings: any, themeId: any);
         protected draw(): void;
         protected drawText(): void;
