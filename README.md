@@ -64,6 +64,7 @@ Features.
  * Tweening 
  * Bitmap fonts
  * Extendable : you can easily create your own components
+ * relative width/height and positionning using percentage values 
  
 
 implemented components
@@ -87,7 +88,6 @@ TODO
  * Tabs component
  * Scrollbar component
  * texts/texts alignements 
- * relative width/height 
  * Documentation for theme definition
  * Documentation for gui definition
  * GUI Designer :)
