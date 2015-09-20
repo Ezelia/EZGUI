@@ -8,16 +8,14 @@ it's focused on PIXI 3 but support PIXI 2 to garantee seamless transition, and t
 
 Note for Phaser 2.4.x users
 ===========================
-if you use Phaser 2.4.x, please include phaser-compat-2.4.js file *after* phaser.js script (see examples/Phaser/phaser-2.4.html) 
-if you load custom resources to be used in your GUI templates and you are loading them with phaser default loader, 
+If you use Phaser 2.4.x, please include phaser-compat-2.4.js file *after* phaser.js script (see examples/Phaser/phaser-2.4.html) 
+If you load custom resources to be used in your GUI templates and you are loading them with phaser default loader, 
 you'll need to add an event listener for onLoadComplete and pass EZGUI.Compatibility.fixCache (see examples/game/phaser-2.4.html line ~193)
-
-
 
 
 Important 
 =========
-The code in this repository is still in developement, and some breaking changes may occure
+The code in this repository is still in development, and some breaking changes may occur.
 
 
 Online components demos
@@ -57,9 +55,9 @@ A work in progress [documentation](https://github.com/Ezelia/EZGUI/wiki) is avai
 There are also a lot of [commented examples](https://github.com/Ezelia/EZGUI/tree/master/examples) to get started
 
 
-Features.
-=========
- * Flexible configuration : EZGUI use a flexible JSON configuration format for theme an gui definitions
+Features
+========
+ * Flexible configuration : EZGUI use a flexible JSON configuration format for theme and gui definitions
  * Themes : a default theme is provided but you can create your own custom theme.
  * Tweening 
  * Bitmap fonts
@@ -67,7 +65,7 @@ Features.
  * relative width/height and positionning using percentage values 
  
 
-implemented components
+Implemented Components
 ======================
  * Window 
  * Layout 
@@ -78,7 +76,6 @@ implemented components
  * Slider
  * List 
  * Input
-
 
 
 TODO 
@@ -93,12 +90,9 @@ TODO
  * GUI Designer :)
 
 
-
 Known issues 
 ============
-Input control : viewport do not follow the caret.
-
- 
+Input control : viewport does not follow the caret.
 
 
 License
