@@ -106,7 +106,7 @@ module EZGUI {
             if (percentToken.length == 2 && percentToken[1] == '') {
                 val = parseFloat(percentToken[0]);
             }
-            return val >=0 ? val : NaN;
+            return val;
         }
 
         protected parseSettings() {
@@ -331,7 +331,8 @@ module EZGUI {
                         //if (child.phaserGroup) this.container.addChild(child.phaserGroup);
                         //else this.container.addChild(child);
 
-                        this.addChild(child);
+                        //force call original addChild to prevent conflict with local addchild
+                        super.addChild(child);
 
                         child.guiParent = this;
 

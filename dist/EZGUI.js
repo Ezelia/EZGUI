@@ -1090,7 +1090,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.2.0 beta';
+    EZGUI.VERSION = '0.2.1 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -1586,7 +1586,7 @@ var EZGUI;
             if (percentToken.length == 2 && percentToken[1] == '') {
                 val = parseFloat(percentToken[0]);
             }
-            return val >= 0 ? val : NaN;
+            return val;
         };
         GUISprite.prototype.parseSettings = function () {
         };
@@ -1744,7 +1744,8 @@ var EZGUI;
                             continue;
                         //if (child.phaserGroup) this.container.addChild(child.phaserGroup);
                         //else this.container.addChild(child);
-                        this.addChild(child);
+                        //force call original addChild to prevent conflict with local addchild
+                        _super.prototype.addChild.call(this, child);
                         child.guiParent = this;
                     }
                 }
@@ -2267,10 +2268,15 @@ var EZGUI;
                         return this.textObj.text;
                 },
                 set: function (val) {
-                    var cpos = this.getCaretPosition();
-                    this.domInput.value = val;
-                    this.setTextWithCaret(val);
-                    this.setCaretPosition(cpos);
+                    if (this.domInput) {
+                        var cpos = this.getCaretPosition();
+                        this.domInput.value = val;
+                        this.setCaretPosition(cpos);
+                        this.setTextWithCaret(val);
+                    }
+                    if (this.textObj) {
+                        this.textObj.text = val;
+                    }
                 },
                 enumerable: true,
                 configurable: true
@@ -2377,8 +2383,8 @@ var EZGUI;
                 var guiObj = this;
                 var _this = this;
                 if (EZGUI.Device.isMobile) {
-                    guiObj.on('click', function () {
-                        _this.setTextWithCaret(prompt('', _this.text), true);
+                    guiObj.on('click', function (event) {
+                        _this.setTextWithCaret(prompt('', _this.text), event);
                     });
                     return;
                 }
@@ -2855,28 +2861,18 @@ var EZGUI;
                 var child = EZGUI.create(childSettings, this.theme);
                 return child;
             };
-            //public addChild(child) {
-            //    console.log('Layout add');
-            //    if (child instanceof GUISprite) {
-            //        return super.addChild(child);
-            //    }
-            //    else {
-            //        return super.addChild(child);
-            //    }
-            //}
-            //this code is buggy
-            //children added to layout will not be aligner
-            //public addChild(child) {
-            //    if (child instanceof GUISprite) {
-            //        return this.addChildAt(child, this.container.children.length);
-            //    }
-            //    else {
-            //        return super.addChild(child);
-            //    }
-            //}
+            Layout.prototype.addChild = function (child) {
+                if (child instanceof EZGUI.GUISprite) {
+                    return this.addChildAt(child, this.container.children.length);
+                }
+                else {
+                    return _super.prototype.addChild.call(this, child);
+                }
+            };
             Layout.prototype.addChildAt = function (child, index) {
                 if (child instanceof EZGUI.GUISprite) {
                     var i = index;
+                    //console.log('adding ', i);
                     var padTop = this._settings['padding-top'] || this._settings.padding || 0;
                     var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
                     var swidth = this._settings.width - padLeft;
@@ -2899,26 +2895,69 @@ var EZGUI;
                             y = i;
                         }
                         else {
-                            x = i % lx;
                             var adjust = Math.floor(i / (lx * ly));
                             if (this._settings.dragY === false) {
-                                dx += adjust * this._settings.width;
-                                dy -= adjust * this._settings.height;
+                                dx += adjust * swidth;
+                                dy -= adjust * sheight;
                             }
                             else if (this._settings.dragX === false) {
-                                dx -= adjust * this._settings.width;
-                                dy += adjust * this._settings.height;
                             }
+                            x = i % lx;
                             y = Math.floor(i / lx);
                         }
                         ly = ly || 1;
                         lx = lx || 1;
-                        //vertical layout ? i : i%lx;
                         dx += x * (swidth / lx);
                         dy += y * (sheight / ly);
-                        child.position.x = dx + (this._settings.width / lx) / 2 - child.width / 2;
-                        child.position.y = dy + (this._settings.height / ly) / 2 - child.height / 2;
                     }
+                    var childSettings = child._settings;
+                    var pos = childSettings.position;
+                    if (typeof pos == 'string') {
+                        var parts = pos.split(' ');
+                        var pos1 = parts[0];
+                        var pos2 = parts[1];
+                        //normalize pos
+                        if (parts[0] == parts[1]) {
+                            pos2 = undefined;
+                        }
+                        if ((parts[0] == 'top' && parts[2] == 'bottom') || (parts[0] == 'bottom' && parts[2] == 'top') || (parts[0] == 'left' && parts[2] == 'right') || (parts[0] == 'right' && parts[2] == 'left')) {
+                            pos1 = 'center';
+                            pos2 = 'undefined';
+                        }
+                        if ((parts[0] == 'left' || parts[0] == 'right') && (parts[1] == 'top' || parts[1] == 'bottom')) {
+                            pos1 = parts[1];
+                            pos2 = parts[0];
+                        }
+                        if ((pos1 == 'left' || pos1 == 'right') && pos2 === undefined) {
+                            pos2 = pos1;
+                            pos1 = 'left';
+                        }
+                        childSettings.position = { x: dx, y: dy };
+                        switch (pos1) {
+                            case 'center':
+                                childSettings.position.y = dy + (this._settings.height / ly) / 2 - childSettings.height / 2;
+                                if (pos2 === undefined)
+                                    childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                                break;
+                            case 'bottom':
+                                childSettings.position.y = dy + (this._settings.height / ly) - childSettings.height - this._settings.padding;
+                                break;
+                        }
+                        switch (pos2) {
+                            case 'center':
+                                childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                                break;
+                            case 'right':
+                                childSettings.position.x = dx + (this._settings.width / lx) - childSettings.width - this._settings.padding;
+                                break;
+                        }
+                    }
+                    else {
+                        childSettings.position.x = dx + childSettings.position.x;
+                        childSettings.position.y = dy + childSettings.position.y;
+                    }
+                    child.position.x = childSettings.position.x;
+                    child.position.y = childSettings.position.y;
                     child.guiParent = this;
                     if (child.phaserGroup)
                         return this.container.addChild(child.phaserGroup);
@@ -2926,6 +2965,7 @@ var EZGUI;
                         return this.container.addChild(child);
                 }
                 else {
+                    //return Compatibility.GUIDisplayObjectContainer.prototype.addChild.call(this, child, index);
                     return _super.prototype.addChildAt.call(this, child, index);
                 }
             };

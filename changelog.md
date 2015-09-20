@@ -1,5 +1,18 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.2.1 beta
+==========
+
+Fixes
+-----
+ * programmatically addChild/addChildAt for List component (components inheriting Layout class)
+ * Input Control issue on mobiles fixed
+
+
+
+
+
+
 0.2.0 beta
 ==========
 New features

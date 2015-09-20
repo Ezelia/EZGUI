@@ -83,6 +83,7 @@
     <Content Include="assets\metalworks-theme\images\corner.png" />
     <Content Include="assets\metalworks-theme\images\line.png" />
     <Content Include="dist\EZGUI.js" />
+    <Content Include="examples\08-list\add-children-programmatically.html" />
     <Content Include="examples\01-window\6-layout-relative-positions.html" />
     <Content Include="examples\01-window\5-children-programmatically.html" />
     <Content Include="examples\01-window\4-layout.html" />

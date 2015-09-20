@@ -459,6 +459,7 @@ declare module EZGUI.Component {
         protected handleEvents(): void;
         protected draw(): void;
         createChild(childSettings: any, order?: any): any;
+        addChild(child: any): PIXI.DisplayObject;
         addChildAt(child: any, index: any): PIXI.DisplayObject;
     }
 }

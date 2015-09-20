@@ -15,13 +15,16 @@ module EZGUI.Component {
             if (this.textObj) return this.textObj.text;
         }
         set text(val: string) {       
-            
-            var cpos = this.getCaretPosition();
-            this.domInput.value = val;
-            this.setTextWithCaret(val);
-            
+            if (this.domInput) {
+                var cpos = this.getCaretPosition();
+                this.domInput.value = val;                
+                this.setCaretPosition(cpos);
+                this.setTextWithCaret(val);
+            }
 
-            this.setCaretPosition(cpos);
+            if (this.textObj) {
+                this.textObj.text = val;
+            }
         } 
 
         private setTextWithCaret(val: string, event=null) {
@@ -180,8 +183,8 @@ module EZGUI.Component {
             var _this = this;
             
             if (EZGUI.Device.isMobile) {
-                guiObj.on('click', function () {
-                    _this.setTextWithCaret(prompt('', _this.text), true);
+                guiObj.on('click', function (event) {
+                    _this.setTextWithCaret(prompt('', _this.text), event);
                 });
 
                 return;

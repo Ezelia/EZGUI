@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Window Example</title>
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+	id: 'levelSelectScreen',
+	component: 'Window',
+	padding: 4,
+	position: { x: 0, y: 0 },
+	width: 700,
+	height: 550,
+
+
+	layout: [1, 1],
+	children: [
+	{
+		id: 'levelsList',
+		component: 'List',
+		dragX:false,
+		padding: 3,
+		position: {x:0, y:0},
+		width: 590,
+		height: 450,
+		layout: [3, 2],
+		children: [
+			{ id: 'lvl1', text: '1', userData: 'level 1', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl2', text: '2', userData: 'level 2', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl3', text: '3', userData: 'level 3', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl4', text: '4', userData: 'level 4', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl5', text: '5', userData: 'level 5', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl6', text: '6', userData: 'level 6', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl7', text: '7', userData: 'level 7', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl8', text: '8', userData: 'level 8', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl9', text: '9', userData: 'level 9', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			{ id: 'lvl10', text: '10', userData: 'level 10', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+
+			//{ id: 'lvl11', text: '11', userData: 'level 11', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl12', text: '12', userData: 'level 12', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl13', text: '13', userData: 'level 13', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl14', text: '14', userData: 'level 14', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl15', text: '15', userData: 'level 15', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl16', text: '16', userData: 'level 16', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl17', text: '17', userData: 'level 17', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl18', text: '18', userData: 'level 18', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+			//{ id: 'lvl19', text: '19', userData: 'level 19', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' },
+
+		]
+	}
+	]
+}
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+
+
+        var guiContainer;
+
+        //Set EZGUI renderer
+        EZGUI.renderer = renderer;
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+
+            //create the gui
+            //the second parameter is the theme name, see kenney-theme.json, the name is defined under __config__ field
+            guiContainer = EZGUI.create(guiObj, 'kenney');
+
+
+            var childTpl = { id: 'lvl1', text: '1', userData: 'level 1', component: 'Button', position: 'center', width: 100, height: 100, skin: 'levelBtn' };
+            for (var i = 0; i < 20; i++)
+            {
+                var childCfg = JSON.parse(JSON.stringify(childTpl)); //clone child template
+                childCfg.text = 'T'+i;
+                childCfg.id = 'L' + i;
+                
+                var child = EZGUI.create(childCfg, 'kenney');
+
+                EZGUI.components.levelsList.addChild(child);
+            }
+
+            stage.addChild(guiContainer);
+
+        });
+        
+
+
+
+        requestAnimationFrame(animate);
+        //sprite.setTexture(texture2);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>

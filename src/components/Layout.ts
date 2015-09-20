@@ -202,32 +202,30 @@ module EZGUI.Component {
             return child;
         }
 
-        //public addChild(child) {
-        //    console.log('Layout add');
-        //    if (child instanceof GUISprite) {
-        //        return super.addChild(child);
-        //    }
-        //    else {
-        //        return super.addChild(child);
-        //    }
-        //}
+        public addChild(child) {
 
+            if (child instanceof GUISprite) {
 
-        //this code is buggy
-        //children added to layout will not be aligner
+                return this.addChildAt(child, this.container.children.length);
 
-        //public addChild(child) {
-        //    if (child instanceof GUISprite) {
-        //        return this.addChildAt(child, this.container.children.length);
-        //    }
-        //    else {
-        //        return super.addChild(child);
-        //    }
-        //}
+            }
+            else {
+
+                return super.addChild(child);
+            }
+        }  
 
         public addChildAt(child, index) {
+            
+
             if (child instanceof GUISprite) {
+                
+
+
+
                 var i = index;
+                //console.log('adding ', i);
+
 
                 var padTop = this._settings['padding-top'] || this._settings.padding || 0;
                 var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
@@ -239,10 +237,11 @@ module EZGUI.Component {
                 var dx = padLeft;
                 var dy = padTop;
                 var lx = 1;
-                var ly = 1;       
-                         
-                if (this._settings.layout != undefined) {
+                var ly = 1;
 
+
+
+                if (this._settings.layout != undefined) {
                     lx = this._settings.layout[0];
                     ly = this._settings.layout[1];
 
@@ -256,37 +255,113 @@ module EZGUI.Component {
                         y = i;
                     }
                     else {
-                        x = i % lx;
+
+
 
                         var adjust = Math.floor(i / (lx * ly));
                         if (this._settings.dragY === false) {
 
-                            dx += adjust * this._settings.width;
-                            dy -= adjust * this._settings.height;
+                            dx += adjust * swidth;
+                            dy -= adjust * sheight;
+
+                            //ly = 1;
                         } else if (this._settings.dragX === false) {
 
-                            dx -= adjust * this._settings.width;
-                            dy += adjust * this._settings.height;
+                            //lx = 1;
+                            //dx -= adjust * this._settings.width;
+                            //dy += adjust * this._settings.height;
                         }
 
-
+                        x = i % lx;
                         y = Math.floor(i / lx);
+
                     }
+
 
                     ly = ly || 1;
                     lx = lx || 1;
 
-                    //vertical layout ? i : i%lx;
-                        
+
 
                     dx += x * (swidth / lx);
                     dy += y * (sheight / ly);
 
-
-                    child.position.x = dx + (this._settings.width / lx) / 2 - child.width / 2;
-                    child.position.y = dy + (this._settings.height / ly) / 2 - child.height / 2;
-
                 }
+
+                var childSettings = child._settings;
+
+                var pos = childSettings.position;
+                if (typeof pos == 'string') {
+                    var parts = pos.split(' ');
+                    var pos1 = parts[0];
+                    var pos2 = parts[1];
+
+                    //normalize pos
+                    if (parts[0] == parts[1]) {
+                        pos2 = undefined;
+                    }
+                    if ((parts[0] == 'top' && parts[2] == 'bottom') ||
+                        (parts[0] == 'bottom' && parts[2] == 'top') ||
+                        (parts[0] == 'left' && parts[2] == 'right') ||
+                        (parts[0] == 'right' && parts[2] == 'left')
+                        ) {
+                        pos1 = 'center';
+                        pos2 = 'undefined';
+                    }
+                    if ((parts[0] == 'left' || parts[0] == 'right') && (parts[1] == 'top' || parts[1] == 'bottom')) {
+                        pos1 = parts[1];
+                        pos2 = parts[0];
+                    }
+                    if ((pos1 == 'left' || pos1 == 'right') && pos2 === undefined) {
+                        pos2 = pos1;
+                        pos1 = 'left';
+                    }
+
+                    childSettings.position = { x: dx, y: dy };
+
+                    switch (pos1) {
+                        case 'center':
+                            childSettings.position.y = dy + (this._settings.height / ly) / 2 - childSettings.height / 2;
+                            if (pos2 === undefined) childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                            break;
+                        case 'bottom':
+                            childSettings.position.y = dy + (this._settings.height / ly) - childSettings.height - this._settings.padding;
+                            break;
+
+                    }
+
+                    switch (pos2) {
+                        case 'center':
+                            childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                            break;
+                        case 'right':
+                            childSettings.position.x = dx + (this._settings.width / lx) - childSettings.width - this._settings.padding;
+                            break;
+                    }
+                }
+                //if (childSettings.position == 'center') {
+                //    childSettings.position = { x: 0, y: 0 };
+                //    childSettings.position.x = dx + (this._settings.width / lx) / 2 - childSettings.width / 2;
+                //    childSettings.position.y = dy + (this._settings.height / ly) / 2 - childSettings.height / 2;
+
+                //}
+                else {
+                    childSettings.position.x = dx + childSettings.position.x;
+                    childSettings.position.y = dy + childSettings.position.y;
+                }
+  
+
+
+                child.position.x = childSettings.position.x;
+                child.position.y = childSettings.position.y;
+  
+
+
+
+
+
+                
+                
 
                 child.guiParent = this;
                 if (child.phaserGroup) return this.container.addChild(child.phaserGroup);
@@ -295,6 +370,8 @@ module EZGUI.Component {
                 //return super.addChild(child);
             }
             else {
+
+                //return Compatibility.GUIDisplayObjectContainer.prototype.addChild.call(this, child, index);
                 return super.addChildAt(child, index);
             }
             
