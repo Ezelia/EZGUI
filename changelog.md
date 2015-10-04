@@ -1,5 +1,20 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.3.0 beta
+==========
+
+New features
+------------
+ * experimental component erase/rebuild through erase() / rebuild() calls : 
+   this will allow for example to modify size, change component skin, ...etc at runtime
+ * Added Tabs controls (custom skin is still missing tabs will use button skin for now)
+ 
+
+Fixes
+-----
+ * small fixes to relative positionning and size to take parent Window paddings in consideration. 
+
+
 0.2.1 beta
 ==========
 
