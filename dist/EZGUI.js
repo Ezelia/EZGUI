@@ -1090,7 +1090,7 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.2.1 beta';
+    EZGUI.VERSION = '0.3.0 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     EZGUI.tilingRenderer;
     EZGUI.dragging;
@@ -1508,15 +1508,16 @@ var EZGUI;
 (function (EZGUI) {
     var GUISprite = (function (_super) {
         __extends(GUISprite, _super);
-        function GUISprite(_settings, themeId) {
+        //private savedSettings;
+        function GUISprite(settings, themeId) {
             _super.call(this);
-            this._settings = _settings;
+            this.settings = settings;
             this.themeId = themeId;
             this.dragXInterval = [-Infinity, +Infinity];
             this.dragYInterval = [-Infinity, +Infinity];
             //this.container = new Compatibility.GUIContainer();
             //this.addChild(this.container);
-            this.userData = _settings.userData;
+            this.userData = settings.userData;
             if (themeId instanceof EZGUI.Theme)
                 this.theme = themeId;
             else
@@ -1525,21 +1526,19 @@ var EZGUI;
                 console.error('[EZGUI ERROR]', 'Theme is not ready, nothing to display');
                 this.theme = new EZGUI.Theme({});
             }
-            this._settings = this.theme.applySkin(_settings);
-            this.parseSettings();
-            this.draw();
-            this.drawText();
-            this.setupEvents();
-            this.handleEvents();
+            //this.savedSettings = JSON.parse(JSON.stringify(_settings));
+            //this._settings = this.theme.applySkin(_settings);
+            //this.parseSettings();
+            //this.draw();
+            //this.drawText();
+            //this.setupEvents();
+            //this.handleEvents();
+            this.rebuild();
         }
-        Object.defineProperty(GUISprite.prototype, "settings", {
-            get: function () {
-                return this._settings;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(GUISprite.prototype, "text", {
+            //get settings(): string {
+            //    return this._settings;
+            //}
             get: function () {
                 if (this.textObj)
                     return this.textObj.text;
@@ -1578,6 +1577,21 @@ var EZGUI;
             enumerable: true,
             configurable: true
         });
+        GUISprite.prototype.erase = function () {
+            this.container.children.length = 0; //clear all children
+            this.children.length = 0;
+            this.rootSprite = undefined;
+        };
+        GUISprite.prototype.rebuild = function () {
+            this.erase();
+            var _settings = JSON.parse(JSON.stringify(this.settings));
+            this._settings = this.theme.applySkin(_settings);
+            this.parseSettings();
+            this.draw();
+            this.drawText();
+            this.setupEvents();
+            this.handleEvents();
+        };
         GUISprite.prototype.parsePercentageValue = function (str) {
             if (typeof str != 'string')
                 return NaN;
@@ -1591,29 +1605,36 @@ var EZGUI;
         GUISprite.prototype.parseSettings = function () {
         };
         GUISprite.prototype.prepareChildSettings = function (settings) {
+            var padTop = this._settings['padding-top'] || this._settings.padding || 0;
+            var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
+            var padBottom = this._settings['padding-bottom'] || this._settings.padding || 0;
+            var padRight = this._settings['padding-right'] || this._settings.padding || 0;
+            var padX = padRight + padLeft;
+            var padY = padTop + padBottom;
+            //var _psettings = this._settings;
             var _settings = JSON.parse(JSON.stringify(settings));
             if (_settings) {
                 //support percentage values for width and height
                 if (typeof _settings.width == 'string') {
                     var p = this.parsePercentageValue(_settings.width);
                     if (p != NaN)
-                        _settings.width = this.width * p / 100;
+                        _settings.width = (this.width - padX) * p / 100;
                 }
                 if (typeof _settings.height == 'string') {
                     var p = this.parsePercentageValue(_settings.height);
                     if (p != NaN)
-                        _settings.height = this.height * p / 100;
+                        _settings.height = (this.height - padY) * p / 100;
                 }
                 if (typeof _settings.position == 'object') {
                     if (typeof _settings.position.x == 'string') {
                         var px = this.parsePercentageValue(_settings.position.x);
                         if (px != NaN)
-                            _settings.position.x = this.width * px / 100;
+                            _settings.position.x = (this.width - padX) * px / 100;
                     }
                     if (typeof _settings.position.y == 'string') {
                         var py = this.parsePercentageValue(_settings.position.y);
                         if (py != NaN)
-                            _settings.position.y = this.height * py / 100;
+                            _settings.position.y = (this.height - padY) * py / 100;
                     }
                 }
             }
@@ -1859,15 +1880,17 @@ var EZGUI;
                     pos2 = pos1;
                     pos1 = 'left';
                 }
+                var padTop = this._settings['padding-top'] || this._settings.padding || 0;
+                var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
                 childSettings.position = { x: 0, y: 0 };
                 if (pos1 == 'center') {
                     //childSettings.anchor = { x: 0.5, y: 0.5 };
                     childSettings.position.x = (this._settings.width - childSettings.width) / 2;
-                    childSettings.position.y = (this._settings.height - childSettings.height) / 2;
+                    childSettings.position.y = (this._settings.height - childSettings.height + padTop) / 2;
                 }
                 switch (pos1) {
                     case 'center':
-                        childSettings.position.y = (this._settings.height - childSettings.height) / 2;
+                        childSettings.position.y = (this._settings.height - childSettings.height + padTop) / 2;
                         if (pos2 === undefined)
                             childSettings.position.x = (this._settings.width - childSettings.width) / 2;
                         break;
@@ -2253,12 +2276,12 @@ var EZGUI;
     (function (Component) {
         var Input = (function (_super) {
             __extends(Input, _super);
-            function Input(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Input(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
-                if (_settings.text)
-                    this.text = _settings.text;
+                if (settings.text)
+                    this.text = settings.text;
             }
             Object.defineProperty(Input.prototype, "text", {
                 get: function () {
@@ -2457,12 +2480,12 @@ var EZGUI;
     (function (Component) {
         var Label = (function (_super) {
             __extends(Label, _super);
-            function Label(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Label(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
-                if (_settings.text)
-                    this.text = _settings.text;
+                if (settings.text)
+                    this.text = settings.text;
             }
             Label.prototype.setupEvents = function () {
                 //clear events
@@ -2499,9 +2522,9 @@ var EZGUI;
     (function (Component) {
         var Slider = (function (_super) {
             __extends(Slider, _super);
-            function Slider(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Slider(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
             }
             Object.defineProperty(Slider.prototype, "value", {
@@ -2593,6 +2616,98 @@ var EZGUI;
         })(EZGUI.GUISprite);
         Component.Slider = Slider;
         EZGUI.registerComponents(Slider, 'Slider');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+/// <reference path="../guisprite.ts" />
+var EZGUI;
+(function (EZGUI) {
+    var Component;
+    (function (Component) {
+        var Tabs = (function (_super) {
+            __extends(Tabs, _super);
+            function Tabs(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+            }
+            Tabs.prototype.handleEvents = function () {
+                _super.prototype.handleEvents.call(this);
+                var _this = this;
+                if (this.tabsBar) {
+                    for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
+                        //remove default buttons events
+                        _this.tabsBar.container.children[i]._events = {};
+                    }
+                    this.tabsBar.bindChildren('click', function (e, tab) {
+                        //console.log('clicked ', tab);
+                        _this.activate(tab.userData.id);
+                        for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
+                            _this.tabsBar.container.children[i].setState('default');
+                        }
+                        tab.setState('down');
+                    });
+                }
+            };
+            Tabs.prototype.draw = function () {
+                //tabs should not have layout positionning
+                delete this._settings.layout;
+                var tabsH = this._settings.tabHeight || 50;
+                this._settings['padding-top'] = tabsH;
+                var tabsCfg = {
+                    component: 'Window',
+                    transparent: true,
+                    padding: 0,
+                    position: { x: 0, y: 0 },
+                    width: this._settings.width,
+                    height: tabsH,
+                    layout: [this._settings.children.length, 1],
+                    children: [
+                    ]
+                };
+                for (var i = 0; i < this._settings.children.length; i++) {
+                    var child = { text: this._settings.children[i].title || '', userData: { id: i }, component: 'Button', position: { x: 0, y: 0 }, width: ~~(this._settings.width / this._settings.children.length), height: tabsH };
+                    tabsCfg.children.push(child);
+                }
+                this.tabsBar = EZGUI.create(tabsCfg, this.themeId);
+                //this._settings.children.unshift(tabs);
+                _super.prototype.draw.call(this);
+                this.addChild(this.tabsBar);
+            };
+            Tabs.prototype.createChild = function (childSettings, order) {
+                var child = _super.prototype.createChild.call(this, childSettings, order);
+                if (!this.activeChild)
+                    this.activeChild = child;
+                if (childSettings.active) {
+                    this.activeChild.visible = false;
+                    this.activeChild = child;
+                    this.activeChild.visible = true;
+                    if (this.tabsBar)
+                        this.tabsBar.container.children[order].setState('down');
+                }
+                else {
+                    child.visible = false;
+                    if (this.tabsBar)
+                        this.tabsBar.container.children[order].setState('default');
+                }
+                return child;
+            };
+            Tabs.prototype.activate = function (idx) {
+                if (this.container.children[idx]) {
+                    this.activeChild.visible = false;
+                    this.activeChild = this.container.children[idx];
+                    this.activeChild.visible = true;
+                    if (this.tabsBar) {
+                        for (var i = 0; i < this.tabsBar.container.children.length; i++) {
+                            this.tabsBar.container.children[i].setState('default');
+                        }
+                        this.tabsBar.container.children[idx].setState('down');
+                    }
+                }
+            };
+            return Tabs;
+        })(EZGUI.GUISprite);
+        Component.Tabs = Tabs;
+        EZGUI.registerComponents(Tabs, 'Tabs');
     })(Component = EZGUI.Component || (EZGUI.Component = {}));
 })(EZGUI || (EZGUI = {}));
 var EZGUI;
@@ -2736,9 +2851,9 @@ var EZGUI;
     (function (Component) {
         var Layout = (function (_super) {
             __extends(Layout, _super);
-            function Layout(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Layout(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
             }
             Layout.prototype.handleEvents = function () {
@@ -2982,9 +3097,9 @@ var EZGUI;
     (function (Component) {
         var Window = (function (_super) {
             __extends(Window, _super);
-            function Window(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Window(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
             }
             Window.prototype.draw = function () {
@@ -3040,9 +3155,9 @@ var EZGUI;
     (function (Kit) {
         var MainScreen = (function (_super) {
             __extends(MainScreen, _super);
-            function MainScreen(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function MainScreen(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
                 //this.parseSettings();
             }
@@ -3387,20 +3502,20 @@ var EZGUI;
     (function (Component) {
         var Button = (function (_super) {
             __extends(Button, _super);
-            function Button(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Button(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
-                if (_settings.text)
-                    this.text = _settings.text;
+                if (settings.text)
+                    this.text = settings.text;
             }
             Button.prototype.handleEvents = function () {
                 _super.prototype.handleEvents.call(this);
                 var guiObj = this;
                 var _this = this;
                 var isDown = false;
-                guiObj.on('mousemove', function () {
-                });
+                //guiObj.on('mousemove', function () {
+                //});
                 guiObj.on('mousedown', function () {
                     isDown = true;
                     //console.log('down', _this.guiID);
@@ -3439,9 +3554,9 @@ var EZGUI;
     (function (Component) {
         var Checkbox = (function (_super) {
             __extends(Checkbox, _super);
-            function Checkbox(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Checkbox(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
             }
             Object.defineProperty(Checkbox.prototype, "checked", {
@@ -3547,12 +3662,12 @@ var EZGUI;
     (function (Component) {
         var Radio = (function (_super) {
             __extends(Radio, _super);
-            function Radio(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function Radio(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
                 this.group = null;
-                this.group = _settings.group;
+                this.group = settings.group;
                 if (!EZGUI.radioGroups[this.group])
                     EZGUI.radioGroups[this.group] = [];
                 EZGUI.radioGroups[this.group].push(this);
@@ -3622,9 +3737,9 @@ var EZGUI;
     (function (Component) {
         var List = (function (_super) {
             __extends(List, _super);
-            function List(_settings, themeId) {
-                _super.call(this, _settings, themeId);
-                this._settings = _settings;
+            function List(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
                 this.themeId = themeId;
                 //this.draghandle = this.uichildren['sbtn1'];
             }

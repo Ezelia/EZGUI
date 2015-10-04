@@ -27,8 +27,8 @@ module EZGUI.Component {
         
         private slide;
         private horizontalSlide;
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);            
+        constructor(public settings, public themeId) {
+            super(settings, themeId);            
 
         }
         protected setupEvents() {

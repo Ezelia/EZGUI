@@ -5,8 +5,8 @@
 module EZGUI.Component {
     export class Layout extends GUISprite {
         public guiMask;
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);
+        constructor(public settings, public themeId) {
+            super(settings, themeId);
 
 
             

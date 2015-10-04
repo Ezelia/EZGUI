@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Tabs Example</title>
+    <script src="../../js/pixi3.dev.js"></script>
+    <script src="../../dist/EZGUI.js"></script>
+</head>
+<body>
+    <script>
+        var guiObj = {
+	
+	component: 'Window',
+	padding: 4,
+	position: { x: 0, y: 0 },
+	width: 700,
+	height: 550,
+
+
+	layout: [1, 1],
+	children: [
+	{
+		id: 'tabsObj',
+		component: 'Tabs',
+
+        //Tabs bar height
+		tabHeight: 40,
+
+		padding: 1,
+		position: {x:0, y:0},
+		width: 590,
+		height: 450,
+		
+
+        //tabs components
+		children: [
+            //titles are used in tabs
+			{ id: 'lvl1', text: 'tab 1', title: 't1', userData: 'level 1', component: 'Button', position: 'center', width: "100%", height: "100%", skin: 'levelBtn' },
+			{ id: 'lvl2', text: 'tab 2', title: 't2', userData: 'level 2', component: 'Button', position: 'center', width: "100%", height: "100%", skin: 'levelBtn' },
+			{ id: 'lvl3', text: 'tab 3', title: 't3', userData: 'level 3', component: 'Button', position: 'center', width: "100%", height: "100%", skin: 'levelBtn' },
+
+            //active flag indicate which tab is active by default
+            
+			{ id: 'lvl4', text: 'tab 4', title: 't4', userData: 'level 4', component: 'Button', position: 'center', width: "100%", height: "100%", skin: 'levelBtn', active: true },
+			{ id: 'lvl5', text: 'tab 5', title: 't5', userData: 'level 5', component: 'Button', position: 'center', width: "100%", height: "100%", skin: 'levelBtn' },
+
+		]
+	}
+	]
+}
+
+
+        var renderer = PIXI.autoDetectRenderer(820, 800);
+        document.body.appendChild(renderer.view);
+        var stage = new PIXI.Stage(0x000000);
+
+
+        var guiContainer;
+
+        //Set EZGUI renderer
+        EZGUI.renderer = renderer;
+
+        //load EZGUI themes 
+        //here you can pass multiple themes
+        EZGUI.Theme.load(['../../assets/kenney-theme/kenney-theme.json'], function () {
+
+
+            guiContainer = EZGUI.create(guiObj, 'kenney');
+
+
+            stage.addChild(guiContainer);
+
+
+            //you can use guiContainer.activate(i) to activate the tab i (where i>=0)
+
+
+        });
+        
+
+
+
+        requestAnimationFrame(animate);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
+        }
+
+        
+    </script>
+    <script src="../../js/ga.js"></script>
+</body>
+</html>

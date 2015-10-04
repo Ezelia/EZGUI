@@ -4,8 +4,8 @@
 module EZGUI.Kit {
     export class MainScreen extends EZGUI.Component.Window {
         private buttonsEvents;
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);
+        constructor(public settings, public themeId) {
+            super(settings, themeId);
          
             //this.parseSettings();
         }

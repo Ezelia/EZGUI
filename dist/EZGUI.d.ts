@@ -243,7 +243,7 @@ declare module EZGUI {
 }
 declare module EZGUI {
     class GUISprite extends GUIObject {
-        _settings: any;
+        settings: any;
         themeId: any;
         guiID: string;
         userData: any;
@@ -255,9 +255,11 @@ declare module EZGUI {
         theme: Theme;
         protected textObj: any;
         protected rootSprite: any;
-        settings: string;
         text: string;
-        constructor(_settings: any, themeId: any);
+        protected _settings: any;
+        constructor(settings: any, themeId: any);
+        erase(): void;
+        rebuild(): void;
         protected parsePercentageValue(str: any): number;
         protected parseSettings(): void;
         protected prepareChildSettings(settings: any): any;
@@ -296,14 +298,14 @@ declare module EZGUI {
 }
 declare module EZGUI.Component {
     class Input extends GUISprite {
-        _settings: any;
+        settings: any;
         themeId: any;
         private guiMask;
         private domInput;
         focused: boolean;
         text: string;
         private setTextWithCaret(val, event?);
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected draw(): void;
         protected drawText(): void;
         protected setupEvents(): void;
@@ -314,9 +316,9 @@ declare module EZGUI.Component {
 }
 declare module EZGUI.Component {
     class Label extends GUISprite {
-        _settings: any;
+        settings: any;
         themeId: any;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected setupEvents(): void;
         protected handleEvents(): void;
         protected drawText(): void;
@@ -325,16 +327,29 @@ declare module EZGUI.Component {
 }
 declare module EZGUI.Component {
     class Slider extends GUISprite {
-        _settings: any;
+        settings: any;
         themeId: any;
         value: number;
         private slide;
         private horizontalSlide;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected setupEvents(): void;
         protected drawText(): void;
         protected handleEvents(): void;
         protected draw(): void;
+    }
+}
+declare module EZGUI.Component {
+    class Tabs extends GUISprite {
+        settings: any;
+        themeId: any;
+        activeChild: any;
+        private tabsBar;
+        constructor(settings: any, themeId: any);
+        protected handleEvents(): void;
+        protected draw(): void;
+        createChild(childSettings: any, order?: any): any;
+        activate(idx: any): void;
     }
 }
 declare module EZGUI.Device {
@@ -452,10 +467,10 @@ declare module EZGUI.Device {
 }
 declare module EZGUI.Component {
     class Layout extends GUISprite {
-        _settings: any;
+        settings: any;
         themeId: any;
         guiMask: any;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected handleEvents(): void;
         protected draw(): void;
         createChild(childSettings: any, order?: any): any;
@@ -465,11 +480,11 @@ declare module EZGUI.Component {
 }
 declare module EZGUI.Component {
     class Window extends Layout {
-        _settings: any;
+        settings: any;
         themeId: any;
         guiMask: any;
         private titleBar;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected draw(): void;
         protected handleEvents(): void;
         setDraggable(val?: boolean): void;
@@ -477,10 +492,10 @@ declare module EZGUI.Component {
 }
 declare module EZGUI.Kit {
     class MainScreen extends EZGUI.Component.Window {
-        _settings: any;
+        settings: any;
         themeId: any;
         private buttonsEvents;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected parseSettings(): void;
         protected handleEvents(): void;
     }
@@ -491,21 +506,21 @@ declare module EZGUI.utils.ColorParser {
 }
 declare module EZGUI.Component {
     class Button extends GUISprite {
-        _settings: any;
+        settings: any;
         themeId: any;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected handleEvents(): void;
     }
 }
 declare module EZGUI.Component {
     class Checkbox extends Button {
-        _settings: any;
+        settings: any;
         themeId: any;
         protected _checked: boolean;
         protected _checkmark: any;
         checked: boolean;
         text: string;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected handleEvents(): void;
         protected draw(): void;
         protected drawText(): void;
@@ -513,12 +528,12 @@ declare module EZGUI.Component {
 }
 declare module EZGUI.Component {
     class Radio extends Checkbox {
-        _settings: any;
+        settings: any;
         themeId: any;
         group: any;
         static groups: any;
         checked: boolean;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         private clearGroup();
         protected handleEvents(): void;
         protected draw(): void;
@@ -526,14 +541,14 @@ declare module EZGUI.Component {
 }
 declare module EZGUI.Component {
     class List extends Layout {
-        _settings: any;
+        settings: any;
         themeId: any;
         private decelerationItv;
         private decelerationSpeed;
         private tween;
         private slotSize;
         private horizontalSlide;
-        constructor(_settings: any, themeId: any);
+        constructor(settings: any, themeId: any);
         protected handleEvents(): void;
         private decelerateScroll(endPos);
         addChildAt(child: any, index: any): PIXI.DisplayObject;

@@ -6,8 +6,8 @@ module EZGUI.Component {
         public guiMask;
 
         private titleBar;
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);
+        constructor(public settings, public themeId) {
+            super(settings, themeId);
 
         }
         protected draw() {

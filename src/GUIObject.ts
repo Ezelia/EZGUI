@@ -32,8 +32,10 @@ module EZGUI {
 
             this.container = new Compatibility.GUIContainer();
             this.addChild(this.container);
-        }
 
+            
+        }
+        
 
 
         protected setupEvents() {

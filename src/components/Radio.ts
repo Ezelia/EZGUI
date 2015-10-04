@@ -37,9 +37,9 @@ module EZGUI.Component {
 
 
 
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);
-            this.group = _settings.group;
+        constructor(public settings, public themeId) {
+            super(settings, themeId);
+            this.group = settings.group;
 
             if (!radioGroups[this.group]) radioGroups[this.group] = [];
 

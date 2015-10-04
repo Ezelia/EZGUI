@@ -13,8 +13,8 @@
   
 
 
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);
+        constructor(public settings, public themeId) {
+            super(settings, themeId);
 
             //this.draghandle = this.uichildren['sbtn1'];
         }

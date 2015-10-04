@@ -9,10 +9,10 @@ module EZGUI.Component {
 
                 
         
-        constructor(public _settings, public themeId) {
-            super(_settings, themeId);
+        constructor(public settings, public themeId) {
+            super(settings, themeId);
 
-            if (_settings.text) this.text = _settings.text;
+            if (settings.text) this.text = settings.text;
 
         }
 
@@ -25,8 +25,8 @@ module EZGUI.Component {
             
 
 
-            guiObj.on('mousemove', function () {
-            });
+            //guiObj.on('mousemove', function () {
+            //});
             guiObj.on('mousedown', function () {
                 isDown = true;
                 //console.log('down', _this.guiID);

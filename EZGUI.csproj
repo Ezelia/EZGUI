@@ -96,6 +96,7 @@
     <Content Include="examples\05-slider\1-horizontal.html" />
     <Content Include="examples\04-radio\1-list.html" />
     <Content Include="examples\03-checkbox\1-list.html" />
+    <Content Include="examples\09-tabs\1.html" />
     <Content Include="examples\app\phaser.html" />
     <Content Include="examples\06-fonts\01.html" />
     <Content Include="examples\app\app-gui.js" />
@@ -120,6 +121,7 @@
     <TypeScriptCompile Include="src\components\Input.ts" />
     <TypeScriptCompile Include="src\components\Label.ts" />
     <TypeScriptCompile Include="src\components\Slider.ts" />
+    <TypeScriptCompile Include="src\components\Tabs.ts" />
     <TypeScriptCompile Include="src\utils\Device.ts" />
     <TypeScriptCompile Include="src\utils\EventHandler.ts" />
     <TypeScriptCompile Include="src\GUIObject.ts" />

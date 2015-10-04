@@ -30,7 +30,9 @@ Online components demos
  * [checkbox](http://ezgui.ezelia.com/examples/03-checkbox/1-list.html)
  * [radio](http://ezgui.ezelia.com/examples/04-radio/1-list.html)
  * [slider](http://ezgui.ezelia.com/examples/05-slider/1-horizontal.html)
+ * [Tabs](http://ezgui.ezelia.com/examples/09-tabs/1.html)
  * [Fonts](http://ezgui.ezelia.com/examples/06-fonts/01.html)
+
  * [Phaser complex](http://ezgui.ezelia.com/examples/Phaser/)
  * [Pixi complex](http://ezgui.ezelia.com/examples/Pixi/)
 
@@ -76,13 +78,13 @@ Implemented Components
  * Slider
  * List 
  * Input
+ * Tabs
 
 
 TODO 
 ====
  * Enhance Phaser 2.4 compatibility
  * Two states button component
- * Tabs component
  * Scrollbar component
  * texts/texts alignements 
  * Documentation for theme definition
@@ -90,9 +92,7 @@ TODO
  * GUI Designer :)
 
 
-Known issues 
-============
-Input control : viewport does not follow the caret.
+
 
 
 License

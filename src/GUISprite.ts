@@ -24,9 +24,9 @@ module EZGUI {
         protected rootSprite: any;
         
 
-        get settings(): string {
-            return this._settings;
-        }
+        //get settings(): string {
+        //    return this._settings;
+        //}
 
         get text(): string {
             if (this.textObj) return this.textObj.text;
@@ -68,14 +68,17 @@ module EZGUI {
         }        
   
 
-        constructor(public _settings, public themeId:any) {
+        protected _settings;
+        //private savedSettings;
+
+        constructor(public settings, public themeId:any) {
             super();
                 //this.container = new Compatibility.GUIContainer();
                 //this.addChild(this.container);
 
             
 
-            this.userData = _settings.userData;
+            this.userData = settings.userData;
 
             if (themeId instanceof Theme) this.theme = themeId;
             else this.theme = EZGUI.themes[themeId];
@@ -85,17 +88,43 @@ module EZGUI {
                 this.theme = new Theme({});
             }
 
+            //this.savedSettings = JSON.parse(JSON.stringify(_settings));
+
             
+
+            //this._settings = this.theme.applySkin(_settings);
+
+            //this.parseSettings();
+
+            //this.draw();
+            //this.drawText();
+            
+            //this.setupEvents();
+            //this.handleEvents();
+
+            this.rebuild();
+        }
+
+
+        public erase() {
+            this.container.children.length = 0;//clear all children
+            this.children.length = 0;
+            this.rootSprite = undefined;
+        }
+        public rebuild() {
+            this.erase();
+
+            var _settings = JSON.parse(JSON.stringify(this.settings));
+
             this._settings = this.theme.applySkin(_settings);
 
             this.parseSettings();
 
             this.draw();
             this.drawText();
-            
+
             this.setupEvents();
             this.handleEvents();
-            
         }
 
 
@@ -116,27 +145,36 @@ module EZGUI {
 
         protected prepareChildSettings(settings) {
 
+            var padTop = this._settings['padding-top'] || this._settings.padding || 0;
+            var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
+            var padBottom = this._settings['padding-bottom'] || this._settings.padding || 0;
+            var padRight = this._settings['padding-right'] || this._settings.padding || 0;
+
+            var padX = padRight + padLeft;
+            var padY = padTop + padBottom;
+
+            //var _psettings = this._settings;
             var _settings = JSON.parse(JSON.stringify(settings));
             if (_settings) {
                 //support percentage values for width and height
                 if (typeof _settings.width == 'string') {
                     var p = this.parsePercentageValue(_settings.width);
-                    if (p != NaN) _settings.width = this.width * p / 100;
+                    if (p != NaN) _settings.width = (this.width - padX) * p / 100;
                 }
                 if (typeof _settings.height == 'string') {
                     var p = this.parsePercentageValue(_settings.height);
-                    if (p != NaN) _settings.height = this.height * p / 100;
+                    if (p != NaN) _settings.height = (this.height -padY) * p / 100;
                 }
 
                 if (typeof _settings.position == 'object') {
                     if (typeof _settings.position.x == 'string') {
                         var px = this.parsePercentageValue(_settings.position.x);
-                        if (px != NaN) _settings.position.x = this.width * px / 100;
+                        if (px != NaN) _settings.position.x = (this.width - padX) * px / 100;
                     }
 
                     if (typeof _settings.position.y == 'string') {
                         var py = this.parsePercentageValue(_settings.position.y);
-                        if (py != NaN) _settings.position.y = this.height * py / 100;
+                        if (py != NaN) _settings.position.y = (this.height - padY) * py / 100;
                     }
 
                 }
@@ -481,6 +519,10 @@ module EZGUI {
                     pos1 = 'left';
                 }
 
+                var padTop = this._settings['padding-top'] || this._settings.padding || 0;
+                var padLeft = this._settings['padding-left'] || this._settings.padding || 0;
+
+
 
                 childSettings.position = { x: 0, y: 0 };
                 
@@ -489,13 +531,13 @@ module EZGUI {
                     
                     //childSettings.anchor = { x: 0.5, y: 0.5 };
                     childSettings.position.x = (this._settings.width - childSettings.width) / 2;
-                    childSettings.position.y = (this._settings.height - childSettings.height) / 2;
+                    childSettings.position.y = (this._settings.height - childSettings.height + padTop) / 2;
                 }
 
 
                 switch (pos1) {
                     case 'center':
-                        childSettings.position.y = (this._settings.height - childSettings.height) / 2;
+                        childSettings.position.y = (this._settings.height - childSettings.height + padTop) / 2;
                         if (pos2 === undefined) childSettings.position.x = (this._settings.width - childSettings.width) / 2;
                         break;
                     case 'bottom':
@@ -512,6 +554,9 @@ module EZGUI {
                         childSettings.position.x = this._settings.width - childSettings.width - this._settings.padding;
                         break;
                 }
+
+                //childSettings.position.x += padLeft;
+                //childSettings.position.y += padTop;
             }
 
 
