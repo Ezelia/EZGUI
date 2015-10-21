@@ -1,16 +1,16 @@
 ﻿EZGUI 
 =====
-EZGUI is a gui system for PIXI and Phaser.
-it's focused on PIXI 3 but support PIXI 2 to garantee seamless transition, and to remain compatible with Phaser 2.x
+EZGUI is a GUI system for PIXI and Phaser.
+It's focused on PIXI 3 but supports PIXI 2 to guarantee seamless transition, and to remain compatible with Phaser 2.x
 
 ![Game GUI sample](http://ezgui.ezelia.com/img/ezgui-game-optimized2.gif) ![App GUI sample](http://ezgui.ezelia.com/img/ezgui-app-optimized2.gif) 
 
 
 Note for Phaser 2.4.x users
 ===========================
-If you use Phaser 2.4.x, please include phaser-compat-2.4.js file *after* phaser.js script (see examples/Phaser/phaser-2.4.html) 
-If you load custom resources to be used in your GUI templates and you are loading them with phaser default loader, 
-you'll need to add an event listener for onLoadComplete and pass EZGUI.Compatibility.fixCache (see examples/game/phaser-2.4.html line ~193)
+If you use Phaser 2.4.x, please include phaser-compat-2.4.js file *after* phaser.js script (see examples/Phaser/phaser-2.4.html)
+
+If you load custom resources to be used in your GUI templates and you are loading them with phaser default loader, you'll need to add an event listener for onLoadComplete and pass EZGUI.Compatibility.fixCache (see [examples/game/phaser-2.4.html line ~193](examples/game/phaser-2.4.html#L193))
 
 
 Important 
