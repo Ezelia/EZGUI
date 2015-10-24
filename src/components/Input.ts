@@ -226,10 +226,10 @@ module EZGUI.Component {
 
             var CaretPos = 0;
             // IE Support
-            if (document.selection) {
+            if (document['selection']) { //MS specific
 
                 ctrl.focus();
-                var Sel = document.selection.createRange();
+                var Sel = document['selection'].createRange();
 
                 Sel.moveStart('character', -ctrl.value.length);
 
