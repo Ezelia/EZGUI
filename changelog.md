@@ -1,5 +1,11 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.3.1 beta
+==========
+ * small fixes
+ * fix Tabs component issue with phaser (issue #27)
+
+
 0.3.0 beta
 ==========
 

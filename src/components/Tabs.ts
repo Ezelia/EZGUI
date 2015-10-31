@@ -33,9 +33,11 @@ module EZGUI.Component {
 
 
                     for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
-                        _this.tabsBar.container.children[i].setState('default');
+                        _this.setTaskbarChildState(i, 'default');
+                        //_this.tabsBar.container.children[i].setState('default');
                     }
-                    tab.setState('down');
+
+                   tab.setState('down');
                 });
             }
         }
@@ -60,7 +62,7 @@ module EZGUI.Component {
             }
 
             for (var i = 0; i < this._settings.children.length; i++) {
-                var child = { text: this._settings.children[i].title || '', userData: { id: i }, component: 'Button', position: { x: 0, y: 0 }, width: ~~(this._settings.width / this._settings.children.length), height: tabsH };
+                var child = { text: this._settings.children[i].title || '', userData: { id: i }, component: 'Sprite', skin:'Button', position: { x: 0, y: 0 }, width: ~~(this._settings.width / this._settings.children.length), height: tabsH };
 
                 tabsCfg.children.push(child);
             }
@@ -75,6 +77,29 @@ module EZGUI.Component {
             this.addChild(this.tabsBar);
         }
 
+
+        //Phaser container children are not instances of EZGUI MultistateSprite but they are parents of EZGUI MultistateSprite
+        //we need this function to check the the type before setting state
+        private setTaskbarChildState(idx, state) {
+
+            var child = this.tabsBar.container.children[idx];
+            if (typeof child.setState == 'function') {
+                child.setState(state);
+
+            }
+            else {
+                var parent = child;
+                if (!parent.children || parent.children.length <= 0) return;
+                for (var i = 0; i < parent.children.length; i++) {
+                    var child: any = parent.children[i];
+                    if (typeof child.setState == 'function') {
+                        child.setState(state);
+
+                    }
+                }
+            }
+        }
+
         public createChild(childSettings, order?) {               
             var child = super.createChild(childSettings, order);
 
@@ -86,12 +111,12 @@ module EZGUI.Component {
                 this.activeChild = child;
                 this.activeChild.visible = true;
 
-                if (this.tabsBar) this.tabsBar.container.children[order].setState('down');
+                if (this.tabsBar) this.setTaskbarChildState(order, 'down');// this.tabsBar.container.children[order].setState('down');
             }
             else {
                 child.visible = false;
 
-                if (this.tabsBar) this.tabsBar.container.children[order].setState('default');
+                if (this.tabsBar) this.setTaskbarChildState(order, 'default'); // this.tabsBar.container.children[order].setState('default');
             }
 
 
@@ -102,15 +127,21 @@ module EZGUI.Component {
 
         public activate(idx) {
             if (this.container.children[idx]) {
+
+                var child = Compatibility.isPhaser ? this.container.children[idx]['children'][0] : this.container.children[idx];
                 this.activeChild.visible = false;
-                this.activeChild = this.container.children[idx];
+                this.activeChild = child;
                 this.activeChild.visible = true;
 
                 if (this.tabsBar) {
                     for (var i = 0; i < this.tabsBar.container.children.length; i++) {
-                        this.tabsBar.container.children[i].setState('default');
+                        this.setTaskbarChildState(i, 'default');
+
+                        //this.tabsBar.container.children[i].setState('default');
                     }
-                    this.tabsBar.container.children[idx].setState('down');
+
+                    this.setTaskbarChildState(idx, 'down');
+                    //this.tabsBar.container.children[idx].setState('down');
                     
                 }
             }
