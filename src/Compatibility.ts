@@ -3,6 +3,7 @@
 
 //declare var __extends;
 module EZGUI.Compatibility {
+    
     export var PIXIVersion =
         (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0) ? 3 : 2;
     export var isPhaser = (typeof Phaser != 'undefined');
@@ -64,12 +65,24 @@ module EZGUI.Compatibility {
 
     export function createRenderTexture(width, height) {
 
+        if (!EZGUI.tilingRenderer) {
+            if (EZGUI.Compatibility.PIXIVersion == 3) {
+                EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+            }
+            else {
+                if (!isPhaser)
+                    EZGUI.tilingRenderer = new PIXI.CanvasRenderer(game);
+            }
+        }
+
         var texture;
         if (EZGUI.Compatibility.PIXIVersion == 3) {
             texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
         }
-        else {
+        else {            
             texture = new PIXI.RenderTexture(width, height, EZGUI.tilingRenderer);
+            
+            
         }
 
         return texture;
@@ -96,17 +109,21 @@ module EZGUI.Compatibility {
 }
 
 
+
 if (EZGUI.Compatibility.PIXIVersion == 3) {
     PIXI['utils']._saidHello = true;
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
-    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = ((<any>PIXI).extras).TilingSprite;
     PIXI['utils']._saidHello = false;
 }
 else {
-    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+
+    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+
     EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
 }
+
 
 
 EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {

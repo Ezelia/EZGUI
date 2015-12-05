@@ -31,6 +31,7 @@ module EZGUI.Component {
         }
 
         protected draw() {
+            
             var settings = this._settings;
             if (settings) {
 

@@ -96,7 +96,7 @@ module EZGUI.Component {
 
         protected draw() {
             super.draw();
-
+            
 
             this._checkmark = this.createThemeImage(this._settings, 'default', 'checkmark');
 

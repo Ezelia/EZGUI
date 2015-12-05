@@ -278,6 +278,7 @@ var EZGUI;
             this._onCompleteCallback = null;
             this._onStopCallback = null;
             this._object = object;
+            // Set all starting values present on the target object
             for (var field in object) {
                 this._valuesStart[field] = parseFloat(object[field], 10);
             }
@@ -438,6 +439,7 @@ var EZGUI;
                     if (isFinite(this._repeat)) {
                         this._repeat--;
                     }
+                    // reassign starting values, restart by making startTime = now
                     for (property in this._valuesStartRepeat) {
                         if (typeof (this._valuesEnd[property]) === "string") {
                             this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property], 10);
@@ -548,16 +550,14 @@ if (Function.prototype['name'] === undefined && Object.defineProperty !== undefi
             var results = (funcNameRegex).exec((this).toString());
             return (results && results.length > 1) ? results[1].trim() : "";
         },
-        set: function (value) {
-        }
+        set: function (value) { }
     });
 }
 /// <reference path="polyfills/ie.ts" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 //declare var __extends;
 var EZGUI;
@@ -613,6 +613,15 @@ var EZGUI;
         //})(Phaser.Group);
         //Compatibility['GUIDisplayObjectContainer'] = dummy;
         function createRenderTexture(width, height) {
+            if (!EZGUI.tilingRenderer) {
+                if (EZGUI.Compatibility.PIXIVersion == 3) {
+                    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+                }
+                else {
+                    if (!Compatibility.isPhaser)
+                        EZGUI.tilingRenderer = new PIXI.CanvasRenderer(EZGUI.game);
+                }
+            }
             var texture;
             if (EZGUI.Compatibility.PIXIVersion == 3) {
                 texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
@@ -644,12 +653,12 @@ var EZGUI;
 if (EZGUI.Compatibility.PIXIVersion == 3) {
     PIXI['utils']._saidHello = true;
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
-    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = (PIXI.extras).TilingSprite;
     PIXI['utils']._saidHello = false;
 }
 else {
-    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
 }
 EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
@@ -1007,8 +1016,7 @@ var EZGUI;
                             images.push(src);
                             resToLoad--;
                             fontData[atlasUrl] = {
-                                data: xmlfont,
-                                textureId: src
+                                data: xmlfont, textureId: src
                             };
                             if (resToLoad <= 0) {
                                 //console.log('Fonts loaded ', images);
@@ -1090,15 +1098,8 @@ var EZGUI;
 /// <reference path="theme.ts" />
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.3.1 beta';
-    //export var states = ['default', 'hover', 'down', 'checked'];
-    EZGUI.tilingRenderer;
-    EZGUI.dragging;
-    EZGUI.dsx;
-    EZGUI.dsy;
+    EZGUI.VERSION = '0.3.11 beta';
     EZGUI.startDrag = { x: null, y: null, t: null };
-    EZGUI.focused;
-    EZGUI.game;
     EZGUI.themes = {};
     EZGUI.components = {};
     EZGUI.radioGroups = [];
@@ -1484,12 +1485,9 @@ var EZGUI;
                     child.off(event, fn);
             }
         };
-        GUIObject.prototype.preUpdate = function () {
-        };
-        GUIObject.prototype.update = function () {
-        };
-        GUIObject.prototype.postUpdate = function () {
-        };
+        GUIObject.prototype.preUpdate = function () { };
+        GUIObject.prototype.update = function () { };
+        GUIObject.prototype.postUpdate = function () { };
         GUIObject.prototype.destroy = function () {
             if (this.phaserGroup) {
                 this.phaserGroup.destroy();
@@ -1868,7 +1866,10 @@ var EZGUI;
                 if (parts[0] == parts[1]) {
                     pos2 = undefined;
                 }
-                if ((parts[0] == 'top' && parts[2] == 'bottom') || (parts[0] == 'bottom' && parts[2] == 'top') || (parts[0] == 'left' && parts[2] == 'right') || (parts[0] == 'right' && parts[2] == 'left')) {
+                if ((parts[0] == 'top' && parts[2] == 'bottom') ||
+                    (parts[0] == 'bottom' && parts[2] == 'top') ||
+                    (parts[0] == 'left' && parts[2] == 'right') ||
+                    (parts[0] == 'right' && parts[2] == 'left')) {
                     pos1 = 'center';
                     pos2 = 'undefined';
                 }
@@ -1917,7 +1918,7 @@ var EZGUI;
             if (state === void 0) { state = 'default'; }
             for (var i = 0; i < this.children.length; i++) {
                 var child = this.children[i];
-                if (child instanceof EZGUI.MultistateSprite) {
+                if (child instanceof EZGUI.MultistateSprite /*|| child instanceof MultistateTilingSprite*/) {
                     child.setState(state);
                 }
             }
@@ -1927,10 +1928,15 @@ var EZGUI;
             if (easing === void 0) { easing = EZGUI.Easing.Linear.None; }
             easing = easing || EZGUI.Easing.Linear.None;
             if (typeof callback == 'function') {
-                var tween = new EZGUI.Tween(this.position).to({ x: x, y: y }, time).easing(easing).onComplete(callback);
+                var tween = new EZGUI.Tween(this.position)
+                    .to({ x: x, y: y }, time)
+                    .easing(easing)
+                    .onComplete(callback);
             }
             else {
-                var tween = new EZGUI.Tween(this.position).to({ x: x, y: y }, time).easing(easing);
+                var tween = new EZGUI.Tween(this.position)
+                    .to({ x: x, y: y }, time)
+                    .easing(easing);
             }
             tween.start();
             return tween;
@@ -1940,10 +1946,15 @@ var EZGUI;
             if (easing === void 0) { easing = EZGUI.Easing.Linear.None; }
             easing = easing || EZGUI.Easing.Linear.None;
             if (typeof callback == 'function') {
-                var tween = new EZGUI.Tween(this).to({ width: w, height: h }, time).easing(easing).onComplete(callback);
+                var tween = new EZGUI.Tween(this)
+                    .to({ width: w, height: h }, time)
+                    .easing(easing)
+                    .onComplete(callback);
             }
             else {
-                var tween = new EZGUI.Tween(this).to({ width: w, height: h }, time).easing(easing);
+                var tween = new EZGUI.Tween(this)
+                    .to({ width: w, height: h }, time)
+                    .easing(easing);
             }
             tween.start();
             return tween;
@@ -2105,6 +2116,7 @@ var EZGUI;
             var line = new EZGUI.Compatibility.TilingSprite(cfg.texture, twidth, theight);
             //phaser 2.4 compatibility /////////////////////////////////
             line.fixPhaser24();
+            ////////////////////////////////////////////////////////////
             switch (side) {
                 case 't':
                     line.position.x = cwidth;
@@ -2661,8 +2673,7 @@ var EZGUI;
                     width: this._settings.width,
                     height: tabsH,
                     layout: [this._settings.children.length, 1],
-                    children: [
-                    ]
+                    children: []
                 };
                 for (var i = 0; i < this._settings.children.length; i++) {
                     var child = { text: this._settings.children[i].title || '', userData: { id: i }, component: 'Sprite', skin: 'Button', position: { x: 0, y: 0 }, width: ~~(this._settings.width / this._settings.children.length), height: tabsH };
@@ -2956,7 +2967,10 @@ var EZGUI;
                     if (parts[0] == parts[1]) {
                         pos2 = undefined;
                     }
-                    if ((parts[0] == 'top' && parts[2] == 'bottom') || (parts[0] == 'bottom' && parts[2] == 'top') || (parts[0] == 'left' && parts[2] == 'right') || (parts[0] == 'right' && parts[2] == 'left')) {
+                    if ((parts[0] == 'top' && parts[2] == 'bottom') ||
+                        (parts[0] == 'bottom' && parts[2] == 'top') ||
+                        (parts[0] == 'left' && parts[2] == 'right') ||
+                        (parts[0] == 'right' && parts[2] == 'left')) {
                         pos1 = 'center';
                         pos2 = 'undefined';
                     }
@@ -3055,7 +3069,10 @@ var EZGUI;
                         if (parts[0] == parts[1]) {
                             pos2 = undefined;
                         }
-                        if ((parts[0] == 'top' && parts[2] == 'bottom') || (parts[0] == 'bottom' && parts[2] == 'top') || (parts[0] == 'left' && parts[2] == 'right') || (parts[0] == 'right' && parts[2] == 'left')) {
+                        if ((parts[0] == 'top' && parts[2] == 'bottom') ||
+                            (parts[0] == 'bottom' && parts[2] == 'top') ||
+                            (parts[0] == 'left' && parts[2] == 'right') ||
+                            (parts[0] == 'right' && parts[2] == 'left')) {
                             pos1 = 'center';
                             pos2 = 'undefined';
                         }
@@ -3265,154 +3282,80 @@ var EZGUI;
         var ColorParser;
         (function (ColorParser) {
             var kCSSColorTable = {
-                "transparent": [0, 0, 0, 0],
-                "aliceblue": [240, 248, 255, 1],
-                "antiquewhite": [250, 235, 215, 1],
-                "aqua": [0, 255, 255, 1],
-                "aquamarine": [127, 255, 212, 1],
-                "azure": [240, 255, 255, 1],
-                "beige": [245, 245, 220, 1],
-                "bisque": [255, 228, 196, 1],
-                "black": [0, 0, 0, 1],
-                "blanchedalmond": [255, 235, 205, 1],
-                "blue": [0, 0, 255, 1],
-                "blueviolet": [138, 43, 226, 1],
-                "brown": [165, 42, 42, 1],
-                "burlywood": [222, 184, 135, 1],
-                "cadetblue": [95, 158, 160, 1],
-                "chartreuse": [127, 255, 0, 1],
-                "chocolate": [210, 105, 30, 1],
-                "coral": [255, 127, 80, 1],
-                "cornflowerblue": [100, 149, 237, 1],
-                "cornsilk": [255, 248, 220, 1],
-                "crimson": [220, 20, 60, 1],
-                "cyan": [0, 255, 255, 1],
-                "darkblue": [0, 0, 139, 1],
-                "darkcyan": [0, 139, 139, 1],
-                "darkgoldenrod": [184, 134, 11, 1],
-                "darkgray": [169, 169, 169, 1],
-                "darkgreen": [0, 100, 0, 1],
-                "darkgrey": [169, 169, 169, 1],
-                "darkkhaki": [189, 183, 107, 1],
-                "darkmagenta": [139, 0, 139, 1],
-                "darkolivegreen": [85, 107, 47, 1],
-                "darkorange": [255, 140, 0, 1],
-                "darkorchid": [153, 50, 204, 1],
-                "darkred": [139, 0, 0, 1],
-                "darksalmon": [233, 150, 122, 1],
-                "darkseagreen": [143, 188, 143, 1],
-                "darkslateblue": [72, 61, 139, 1],
-                "darkslategray": [47, 79, 79, 1],
-                "darkslategrey": [47, 79, 79, 1],
-                "darkturquoise": [0, 206, 209, 1],
-                "darkviolet": [148, 0, 211, 1],
-                "deeppink": [255, 20, 147, 1],
-                "deepskyblue": [0, 191, 255, 1],
-                "dimgray": [105, 105, 105, 1],
-                "dimgrey": [105, 105, 105, 1],
-                "dodgerblue": [30, 144, 255, 1],
-                "firebrick": [178, 34, 34, 1],
-                "floralwhite": [255, 250, 240, 1],
-                "forestgreen": [34, 139, 34, 1],
-                "fuchsia": [255, 0, 255, 1],
-                "gainsboro": [220, 220, 220, 1],
-                "ghostwhite": [248, 248, 255, 1],
-                "gold": [255, 215, 0, 1],
-                "goldenrod": [218, 165, 32, 1],
-                "gray": [128, 128, 128, 1],
-                "green": [0, 128, 0, 1],
-                "greenyellow": [173, 255, 47, 1],
-                "grey": [128, 128, 128, 1],
-                "honeydew": [240, 255, 240, 1],
-                "hotpink": [255, 105, 180, 1],
-                "indianred": [205, 92, 92, 1],
-                "indigo": [75, 0, 130, 1],
-                "ivory": [255, 255, 240, 1],
-                "khaki": [240, 230, 140, 1],
-                "lavender": [230, 230, 250, 1],
-                "lavenderblush": [255, 240, 245, 1],
-                "lawngreen": [124, 252, 0, 1],
-                "lemonchiffon": [255, 250, 205, 1],
-                "lightblue": [173, 216, 230, 1],
-                "lightcoral": [240, 128, 128, 1],
-                "lightcyan": [224, 255, 255, 1],
-                "lightgoldenrodyellow": [250, 250, 210, 1],
-                "lightgray": [211, 211, 211, 1],
-                "lightgreen": [144, 238, 144, 1],
-                "lightgrey": [211, 211, 211, 1],
-                "lightpink": [255, 182, 193, 1],
-                "lightsalmon": [255, 160, 122, 1],
-                "lightseagreen": [32, 178, 170, 1],
-                "lightskyblue": [135, 206, 250, 1],
-                "lightslategray": [119, 136, 153, 1],
-                "lightslategrey": [119, 136, 153, 1],
-                "lightsteelblue": [176, 196, 222, 1],
-                "lightyellow": [255, 255, 224, 1],
-                "lime": [0, 255, 0, 1],
-                "limegreen": [50, 205, 50, 1],
-                "linen": [250, 240, 230, 1],
-                "magenta": [255, 0, 255, 1],
-                "maroon": [128, 0, 0, 1],
-                "mediumaquamarine": [102, 205, 170, 1],
-                "mediumblue": [0, 0, 205, 1],
-                "mediumorchid": [186, 85, 211, 1],
-                "mediumpurple": [147, 112, 219, 1],
-                "mediumseagreen": [60, 179, 113, 1],
-                "mediumslateblue": [123, 104, 238, 1],
-                "mediumspringgreen": [0, 250, 154, 1],
-                "mediumturquoise": [72, 209, 204, 1],
-                "mediumvioletred": [199, 21, 133, 1],
-                "midnightblue": [25, 25, 112, 1],
-                "mintcream": [245, 255, 250, 1],
-                "mistyrose": [255, 228, 225, 1],
-                "moccasin": [255, 228, 181, 1],
-                "navajowhite": [255, 222, 173, 1],
-                "navy": [0, 0, 128, 1],
-                "oldlace": [253, 245, 230, 1],
-                "olive": [128, 128, 0, 1],
-                "olivedrab": [107, 142, 35, 1],
-                "orange": [255, 165, 0, 1],
-                "orangered": [255, 69, 0, 1],
-                "orchid": [218, 112, 214, 1],
-                "palegoldenrod": [238, 232, 170, 1],
-                "palegreen": [152, 251, 152, 1],
-                "paleturquoise": [175, 238, 238, 1],
-                "palevioletred": [219, 112, 147, 1],
-                "papayawhip": [255, 239, 213, 1],
-                "peachpuff": [255, 218, 185, 1],
-                "peru": [205, 133, 63, 1],
-                "pink": [255, 192, 203, 1],
-                "plum": [221, 160, 221, 1],
-                "powderblue": [176, 224, 230, 1],
-                "purple": [128, 0, 128, 1],
-                "red": [255, 0, 0, 1],
-                "rosybrown": [188, 143, 143, 1],
-                "royalblue": [65, 105, 225, 1],
-                "saddlebrown": [139, 69, 19, 1],
-                "salmon": [250, 128, 114, 1],
-                "sandybrown": [244, 164, 96, 1],
-                "seagreen": [46, 139, 87, 1],
-                "seashell": [255, 245, 238, 1],
-                "sienna": [160, 82, 45, 1],
-                "silver": [192, 192, 192, 1],
-                "skyblue": [135, 206, 235, 1],
-                "slateblue": [106, 90, 205, 1],
-                "slategray": [112, 128, 144, 1],
-                "slategrey": [112, 128, 144, 1],
-                "snow": [255, 250, 250, 1],
-                "springgreen": [0, 255, 127, 1],
-                "steelblue": [70, 130, 180, 1],
-                "tan": [210, 180, 140, 1],
-                "teal": [0, 128, 128, 1],
-                "thistle": [216, 191, 216, 1],
-                "tomato": [255, 99, 71, 1],
-                "turquoise": [64, 224, 208, 1],
-                "violet": [238, 130, 238, 1],
-                "wheat": [245, 222, 179, 1],
-                "white": [255, 255, 255, 1],
-                "whitesmoke": [245, 245, 245, 1],
-                "yellow": [255, 255, 0, 1],
-                "yellowgreen": [154, 205, 50, 1]
+                "transparent": [0, 0, 0, 0], "aliceblue": [240, 248, 255, 1],
+                "antiquewhite": [250, 235, 215, 1], "aqua": [0, 255, 255, 1],
+                "aquamarine": [127, 255, 212, 1], "azure": [240, 255, 255, 1],
+                "beige": [245, 245, 220, 1], "bisque": [255, 228, 196, 1],
+                "black": [0, 0, 0, 1], "blanchedalmond": [255, 235, 205, 1],
+                "blue": [0, 0, 255, 1], "blueviolet": [138, 43, 226, 1],
+                "brown": [165, 42, 42, 1], "burlywood": [222, 184, 135, 1],
+                "cadetblue": [95, 158, 160, 1], "chartreuse": [127, 255, 0, 1],
+                "chocolate": [210, 105, 30, 1], "coral": [255, 127, 80, 1],
+                "cornflowerblue": [100, 149, 237, 1], "cornsilk": [255, 248, 220, 1],
+                "crimson": [220, 20, 60, 1], "cyan": [0, 255, 255, 1],
+                "darkblue": [0, 0, 139, 1], "darkcyan": [0, 139, 139, 1],
+                "darkgoldenrod": [184, 134, 11, 1], "darkgray": [169, 169, 169, 1],
+                "darkgreen": [0, 100, 0, 1], "darkgrey": [169, 169, 169, 1],
+                "darkkhaki": [189, 183, 107, 1], "darkmagenta": [139, 0, 139, 1],
+                "darkolivegreen": [85, 107, 47, 1], "darkorange": [255, 140, 0, 1],
+                "darkorchid": [153, 50, 204, 1], "darkred": [139, 0, 0, 1],
+                "darksalmon": [233, 150, 122, 1], "darkseagreen": [143, 188, 143, 1],
+                "darkslateblue": [72, 61, 139, 1], "darkslategray": [47, 79, 79, 1],
+                "darkslategrey": [47, 79, 79, 1], "darkturquoise": [0, 206, 209, 1],
+                "darkviolet": [148, 0, 211, 1], "deeppink": [255, 20, 147, 1],
+                "deepskyblue": [0, 191, 255, 1], "dimgray": [105, 105, 105, 1],
+                "dimgrey": [105, 105, 105, 1], "dodgerblue": [30, 144, 255, 1],
+                "firebrick": [178, 34, 34, 1], "floralwhite": [255, 250, 240, 1],
+                "forestgreen": [34, 139, 34, 1], "fuchsia": [255, 0, 255, 1],
+                "gainsboro": [220, 220, 220, 1], "ghostwhite": [248, 248, 255, 1],
+                "gold": [255, 215, 0, 1], "goldenrod": [218, 165, 32, 1],
+                "gray": [128, 128, 128, 1], "green": [0, 128, 0, 1],
+                "greenyellow": [173, 255, 47, 1], "grey": [128, 128, 128, 1],
+                "honeydew": [240, 255, 240, 1], "hotpink": [255, 105, 180, 1],
+                "indianred": [205, 92, 92, 1], "indigo": [75, 0, 130, 1],
+                "ivory": [255, 255, 240, 1], "khaki": [240, 230, 140, 1],
+                "lavender": [230, 230, 250, 1], "lavenderblush": [255, 240, 245, 1],
+                "lawngreen": [124, 252, 0, 1], "lemonchiffon": [255, 250, 205, 1],
+                "lightblue": [173, 216, 230, 1], "lightcoral": [240, 128, 128, 1],
+                "lightcyan": [224, 255, 255, 1], "lightgoldenrodyellow": [250, 250, 210, 1],
+                "lightgray": [211, 211, 211, 1], "lightgreen": [144, 238, 144, 1],
+                "lightgrey": [211, 211, 211, 1], "lightpink": [255, 182, 193, 1],
+                "lightsalmon": [255, 160, 122, 1], "lightseagreen": [32, 178, 170, 1],
+                "lightskyblue": [135, 206, 250, 1], "lightslategray": [119, 136, 153, 1],
+                "lightslategrey": [119, 136, 153, 1], "lightsteelblue": [176, 196, 222, 1],
+                "lightyellow": [255, 255, 224, 1], "lime": [0, 255, 0, 1],
+                "limegreen": [50, 205, 50, 1], "linen": [250, 240, 230, 1],
+                "magenta": [255, 0, 255, 1], "maroon": [128, 0, 0, 1],
+                "mediumaquamarine": [102, 205, 170, 1], "mediumblue": [0, 0, 205, 1],
+                "mediumorchid": [186, 85, 211, 1], "mediumpurple": [147, 112, 219, 1],
+                "mediumseagreen": [60, 179, 113, 1], "mediumslateblue": [123, 104, 238, 1],
+                "mediumspringgreen": [0, 250, 154, 1], "mediumturquoise": [72, 209, 204, 1],
+                "mediumvioletred": [199, 21, 133, 1], "midnightblue": [25, 25, 112, 1],
+                "mintcream": [245, 255, 250, 1], "mistyrose": [255, 228, 225, 1],
+                "moccasin": [255, 228, 181, 1], "navajowhite": [255, 222, 173, 1],
+                "navy": [0, 0, 128, 1], "oldlace": [253, 245, 230, 1],
+                "olive": [128, 128, 0, 1], "olivedrab": [107, 142, 35, 1],
+                "orange": [255, 165, 0, 1], "orangered": [255, 69, 0, 1],
+                "orchid": [218, 112, 214, 1], "palegoldenrod": [238, 232, 170, 1],
+                "palegreen": [152, 251, 152, 1], "paleturquoise": [175, 238, 238, 1],
+                "palevioletred": [219, 112, 147, 1], "papayawhip": [255, 239, 213, 1],
+                "peachpuff": [255, 218, 185, 1], "peru": [205, 133, 63, 1],
+                "pink": [255, 192, 203, 1], "plum": [221, 160, 221, 1],
+                "powderblue": [176, 224, 230, 1], "purple": [128, 0, 128, 1],
+                "red": [255, 0, 0, 1], "rosybrown": [188, 143, 143, 1],
+                "royalblue": [65, 105, 225, 1], "saddlebrown": [139, 69, 19, 1],
+                "salmon": [250, 128, 114, 1], "sandybrown": [244, 164, 96, 1],
+                "seagreen": [46, 139, 87, 1], "seashell": [255, 245, 238, 1],
+                "sienna": [160, 82, 45, 1], "silver": [192, 192, 192, 1],
+                "skyblue": [135, 206, 235, 1], "slateblue": [106, 90, 205, 1],
+                "slategray": [112, 128, 144, 1], "slategrey": [112, 128, 144, 1],
+                "snow": [255, 250, 250, 1], "springgreen": [0, 255, 127, 1],
+                "steelblue": [70, 130, 180, 1], "tan": [210, 180, 140, 1],
+                "teal": [0, 128, 128, 1], "thistle": [216, 191, 216, 1],
+                "tomato": [255, 99, 71, 1], "turquoise": [64, 224, 208, 1],
+                "violet": [238, 130, 238, 1], "wheat": [245, 222, 179, 1],
+                "white": [255, 255, 255, 1], "whitesmoke": [245, 245, 245, 1],
+                "yellow": [255, 255, 0, 1], "yellowgreen": [154, 205, 50, 1]
             };
             function clamp_css_byte(i) {
                 i = Math.round(i); // Seems to be what Chrome does (vs truncation).
@@ -3466,13 +3409,19 @@ var EZGUI;
                         var iv = parseInt(str.substr(1), 16); // TODO(deanm): Stricter parsing.
                         if (!(iv >= 0 && iv <= 0xfff))
                             return null; // Covers NaN.
-                        return [((iv & 0xf00) >> 4) | ((iv & 0xf00) >> 8), (iv & 0xf0) | ((iv & 0xf0) >> 4), (iv & 0xf) | ((iv & 0xf) << 4), 1];
+                        return [((iv & 0xf00) >> 4) | ((iv & 0xf00) >> 8),
+                            (iv & 0xf0) | ((iv & 0xf0) >> 4),
+                            (iv & 0xf) | ((iv & 0xf) << 4),
+                            1];
                     }
                     else if (str.length === 7) {
                         var iv = parseInt(str.substr(1), 16); // TODO(deanm): Stricter parsing.
                         if (!(iv >= 0 && iv <= 0xffffff))
                             return null; // Covers NaN.
-                        return [(iv & 0xff0000) >> 16, (iv & 0xff00) >> 8, iv & 0xff, 1];
+                        return [(iv & 0xff0000) >> 16,
+                            (iv & 0xff00) >> 8,
+                            iv & 0xff,
+                            1];
                     }
                     return null;
                 }
@@ -3486,14 +3435,19 @@ var EZGUI;
                             if (params.length !== 4)
                                 return null;
                             alpha = parse_css_float(params.pop());
+                        // Fall through.
                         case 'rgb':
                             if (params.length !== 3)
                                 return null;
-                            return [parse_css_int(params[0]), parse_css_int(params[1]), parse_css_int(params[2]), alpha];
+                            return [parse_css_int(params[0]),
+                                parse_css_int(params[1]),
+                                parse_css_int(params[2]),
+                                alpha];
                         case 'hsla':
                             if (params.length !== 4)
                                 return null;
                             alpha = parse_css_float(params.pop());
+                        // Fall through.
                         case 'hsl':
                             if (params.length !== 3)
                                 return null;
@@ -3504,7 +3458,10 @@ var EZGUI;
                             var l = parse_css_float(params[2]);
                             var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
                             var m1 = l * 2 - m2;
-                            return [clamp_css_byte(css_hue_to_rgb(m1, m2, h + 1 / 3) * 255), clamp_css_byte(css_hue_to_rgb(m1, m2, h) * 255), clamp_css_byte(css_hue_to_rgb(m1, m2, h - 1 / 3) * 255), alpha];
+                            return [clamp_css_byte(css_hue_to_rgb(m1, m2, h + 1 / 3) * 255),
+                                clamp_css_byte(css_hue_to_rgb(m1, m2, h) * 255),
+                                clamp_css_byte(css_hue_to_rgb(m1, m2, h - 1 / 3) * 255),
+                                alpha];
                         default:
                             return null;
                     }
@@ -3901,7 +3858,9 @@ var EZGUI;
                     nextPos = Math.min(nextPos, _this.dragXInterval[1]);
                     if (_this.tween)
                         _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position).to({ x: nextPos }, delay).easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ x: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
                     _this.tween.start();
                 }
                 if (_this.dragConstraint != 'x') {
@@ -3910,7 +3869,9 @@ var EZGUI;
                     nextPos = Math.min(nextPos, _this.dragYInterval[1]);
                     if (_this.tween)
                         _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position).to({ y: nextPos }, delay).easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ y: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
                     _this.tween.start();
                 }
             };
@@ -3923,7 +3884,9 @@ var EZGUI;
                     nextPos = Math.min(nextPos, _this.dragXInterval[1]);
                     if (_this.tween)
                         _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position).to({ x: nextPos }, delay).easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ x: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
                     _this.tween.start();
                 }
                 if (_this.dragConstraint != 'x') {
@@ -3933,7 +3896,9 @@ var EZGUI;
                     nextPos = Math.min(nextPos, _this.dragYInterval[1]);
                     if (_this.tween)
                         _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position).to({ y: nextPos }, delay).easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ y: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
                     _this.tween.start();
                 }
             };
@@ -3997,7 +3962,8 @@ var EZGUI;
         return new Date().getTime();
     });
     if ('now' in root.performance === false) {
-        var offset = root.performance.timing && root.performance.timing.navigationStart ? performance.timing.navigationStart : Date.now();
+        var offset = root.performance.timing && root.performance.timing.navigationStart ? performance.timing.navigationStart
+            : Date.now();
         root.performance.now = function () {
             return Date.now() - offset;
         };

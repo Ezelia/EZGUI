@@ -1,5 +1,13 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.3.11 beta
+==========
+ * partial compatibility fix for Phaser 2.4.4 
+   Canvas renderer is OK
+   WebGL have strange behaviour
+   
+ 
+
 0.3.1 beta
 ==========
  * small fixes

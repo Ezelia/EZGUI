@@ -12,6 +12,12 @@ If you use Phaser 2.4.x, please include phaser-compat-2.4.js file *after* phaser
 
 If you load custom resources to be used in your GUI templates and you are loading them with phaser default loader, you'll need to add an event listener for onLoadComplete and pass EZGUI.Compatibility.fixCache (see [examples/game/phaser-2.4.html line ~193](examples/game/phaser-2.4.html#L193))
 
+Phaser 2.4.4 known issues
+===========================
+WebGL renderer seem to have a strange behaviour, investigation is made to identify/isolate the bug since it don't seems to be an EZGUI issue.
+
+
+
 
 Important 
 =========

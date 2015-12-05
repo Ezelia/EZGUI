@@ -423,7 +423,7 @@ module EZGUI {
          * shared by all components
          */
         protected drawText() {
-
+            
             if (this._settings && this._settings.text!=undefined && this.rootSprite) {
                 //var settings = this.theme.applySkin(this._settings);
                 var settings = this._settings;
