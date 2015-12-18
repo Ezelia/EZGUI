@@ -107,13 +107,20 @@
         }
         
     }
+    
+    export function getStatusCodeForUrl(url) {
+        if(url.search('file://') !== -1) {
+                return 0;
+        }
+        return 200;
+    }
 
     export function loadJSON(url, cb, crossOrigin=true) {
         var xmlhttp = new XMLHttpRequest();
-        
+    
 
         xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            if (xmlhttp.readyState == 4 && xmlhttp.status === getStatusCodeForUrl(xmlhttp.responseURL)) {
                 var jsonContent = JSON.parse(xmlhttp.responseText);
                 cb(jsonContent);
             }
@@ -127,7 +134,7 @@
 
 
         xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            if (xmlhttp.readyState == 4 && xmlhttp.status === getStatusCodeForUrl(xmlhttp.responseURL)) {
                 var xmlDoc;
                 if (window['DOMParser']) {
                     var parser = new DOMParser();
