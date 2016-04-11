@@ -2180,8 +2180,12 @@ var EZGUI;
                 if (settings.bgTiling == "x") {
                     bg.tileScale.y = (settings.height - cfg.bgPadding * 2) / cfg.texture.height;
                 }
-                if (settings.bgTiling == "y") {
+                else if (settings.bgTiling === "y") {
                     bg.tileScale.x = (settings.width - cfg.bgPadding * 2) / cfg.texture.width;
+                }
+                else if (settings.bgTiling === "xy") {
+                    bg.tileScale.x = (settings.width - cfg.bgPadding * 2) / cfg.texture.width;
+                    bg.tileScale.y = (settings.height - cfg.bgPadding * 2) / cfg.texture.height;
                 }
             }
             return bg;
