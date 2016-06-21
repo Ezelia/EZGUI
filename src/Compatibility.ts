@@ -7,7 +7,7 @@ module EZGUI.Compatibility {
     export var PIXIVersion =
         (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0) ? 3 : 2;
     export var isPhaser = (typeof Phaser != 'undefined');
-    export var isPhaser24 = isPhaser && Phaser.VERSION.indexOf('2.4') == 0;
+    export var isPhaser24 = isPhaser && Phaser.VERSION>='2.4';
 
     export var BitmapText = PIXIVersion >= 3 ? (<any>PIXI).extras.BitmapText : PIXI.BitmapText;
 
