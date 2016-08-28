@@ -462,7 +462,7 @@ module EZGUI {
 
             var Rectangle: any;
             var BitmapText: any;
-            if (Compatibility.PIXIVersion == 3) {
+            if (Compatibility.PIXIVersion >= 3) {
                 Rectangle = (<any>PIXI).math.Rectangle;
                 BitmapText = (<any>PIXI).extras.BitmapText;
             }

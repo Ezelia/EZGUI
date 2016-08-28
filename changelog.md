@@ -1,5 +1,12 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.3.2 beta
+==========
+ * phaser 2.4.9 to 2.6.2 compatibility fixes 
+ * pixi 4.0.0 compatibility fixes    
+ 
+
+
 0.3.11 beta
 ==========
  * partial compatibility fix for Phaser 2.4.4 

@@ -120,7 +120,7 @@
     
 
         xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status === getStatusCodeForUrl(xmlhttp.responseURL)) {
+            if (xmlhttp.readyState == 4 && xmlhttp.status === getStatusCodeForUrl((<any>xmlhttp).responseURL)) {
                 var jsonContent = JSON.parse(xmlhttp.responseText);
                 cb(jsonContent);
             }
@@ -134,7 +134,7 @@
 
 
         xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status === getStatusCodeForUrl(xmlhttp.responseURL)) {
+            if (xmlhttp.readyState == 4 && xmlhttp.status === getStatusCodeForUrl((<any>xmlhttp).responseURL)) {
                 var xmlDoc;
                 if (window['DOMParser']) {
                     var parser = new DOMParser();

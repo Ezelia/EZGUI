@@ -4,10 +4,17 @@
 //declare var __extends;
 module EZGUI.Compatibility {
     
-    export var PIXIVersion =
-        (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0) ? 3 : 2;
+    export var PIXIVersion = 2;
+
+    if (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0) PIXIVersion = 3;
+    if (PIXI.VERSION.indexOf('v4.') == 0 || PIXI.VERSION.indexOf('4.') == 0) PIXIVersion = 4;
+        
     export var isPhaser = (typeof Phaser != 'undefined');
     export var isPhaser24 = isPhaser && Phaser.VERSION.indexOf('2.4') == 0;
+    export var isPhaser25 = isPhaser && Phaser.VERSION.indexOf('2.5') == 0;
+    export var isPhaser26 = isPhaser && Phaser.VERSION.indexOf('2.6') == 0;
+    export var isPhaser24plus = isPhaser24 || isPhaser25 || isPhaser26;
+
 
     export var BitmapText = PIXIVersion >= 3 ? (<any>PIXI).extras.BitmapText : PIXI.BitmapText;
 
@@ -46,6 +53,8 @@ module EZGUI.Compatibility {
                 this.phaserGroup = GUIDisplayObjectContainer.globalPhaserGroup.create(0, 0);//new Phaser.Group(Phaser.GAMES[0]);
                 this.phaserGroup.addChild(this);
                 this.phaserGroup.guiSprite = this;
+
+                
             }
             
         }
@@ -66,7 +75,7 @@ module EZGUI.Compatibility {
     export function createRenderTexture(width, height) {
 
         if (!EZGUI.tilingRenderer) {
-            if (EZGUI.Compatibility.PIXIVersion == 3) {
+            if (EZGUI.Compatibility.PIXIVersion >= 3) {
                 EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
             }
             else {
@@ -76,7 +85,10 @@ module EZGUI.Compatibility {
         }
 
         var texture;
-        if (EZGUI.Compatibility.PIXIVersion == 3) {
+        if (EZGUI.Compatibility.PIXIVersion >= 4) {
+            texture = (<any>PIXI.RenderTexture).create(width, height);//new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
+        }
+        else if (EZGUI.Compatibility.PIXIVersion == 3) {
             texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
         }
         else {            
@@ -96,7 +108,7 @@ module EZGUI.Compatibility {
      */
     export function fixCache(resources) {
 
-        if (!EZGUI.Compatibility.isPhaser24 || !this._fileList) return;
+        if (!EZGUI.Compatibility.isPhaser24plus || !this._fileList) return;
         for (var i = 0; i < this._fileList.length; i++) {
             if (!resources || resources.length == 0 || resources.indexOf(this._fileList[i].key) >= 0) {
                 
@@ -110,7 +122,7 @@ module EZGUI.Compatibility {
 
 
 
-if (EZGUI.Compatibility.PIXIVersion == 3) {
+if (EZGUI.Compatibility.PIXIVersion >= 3) {
     PIXI['utils']._saidHello = true;
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
     //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
@@ -127,7 +139,7 @@ else {
 
 
 EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
-    if (EZGUI.Compatibility.isPhaser24) {
+    if (EZGUI.Compatibility.isPhaser24plus) {
         var ltexture = this.originalTexture || this.texture;
 
         var frame = ltexture.frame;
@@ -177,6 +189,9 @@ else {
             }
         }
         proto.emit = function (event, ...args: any[]) {
+            
+            
+
             this._listeners = this._listeners || {};
             if (event in this._listeners !== false) {
                 for (var i = 0; i < this._listeners[event].length; i++) {
@@ -189,6 +204,8 @@ else {
                     }
                 }
             }
+
+            
 
         }
     }

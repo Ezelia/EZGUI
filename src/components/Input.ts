@@ -30,7 +30,7 @@ module EZGUI.Component {
         private setTextWithCaret(val: string, event=null) {
             if (this.textObj) {
                 
-                if (Compatibility.PIXIVersion == 3) {
+                if (Compatibility.PIXIVersion >= 3) {
                     this.textObj.text = val;
                 }
                 else {

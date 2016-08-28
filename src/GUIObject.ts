@@ -41,6 +41,7 @@ module EZGUI {
         protected setupEvents() {
             var _this: any = this;
             //var _this:any = this;
+            
 
             _this.interactive = true;
 
@@ -138,10 +139,23 @@ module EZGUI {
 
                 //if (guiObj.canTrigger(event, guiObj)) guiObj.emit('ezgui:click', event);
             }
-
+            
             if (_this.phaserGroup) {
                 _this.phaserGroup.inputEnabled = true;
 
+
+                //Fix priorityID otherwise, events will not trigger on children
+                if (EZGUI.Compatibility.isPhaser24plus) {
+                    for (var c in EZGUI.components) {
+                        var _this = EZGUI.components[c];
+                        if (_this.phaserGroup && _this.phaserGroup.input && _this.guiParent && _this.guiParent.phaserGroup && _this.guiParent.phaserGroup.input) {
+
+                            _this.phaserGroup.input.priorityID = _this.guiParent.phaserGroup.input.priorityID + 1;
+
+                        }
+                    }
+                }
+    
                 _this.phaserGroup.events.onInputOver.add(function (target, event) {
 
 
@@ -168,6 +182,7 @@ module EZGUI {
                     EZGUI.startDrag.y = pos.y;
                     EZGUI.startDrag.t = Date.now();
 
+                    
                     _this.emit('ezgui:mousedown', event, _this);
 
                     if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
@@ -229,6 +244,10 @@ module EZGUI {
                     _this.emit('ezgui:mousemove', event, _this);
                 }
 
+
+
+
+                
             }
 
 

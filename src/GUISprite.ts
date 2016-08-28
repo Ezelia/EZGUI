@@ -33,7 +33,7 @@ module EZGUI {
         }
         set text(val: string) {
             if (this.textObj) {
-                if (Compatibility.PIXIVersion == 3) {
+                if (Compatibility.PIXIVersion >= 3) {
                     this.textObj.text = val;
                 }
                 else {
@@ -326,7 +326,12 @@ module EZGUI {
                     }
 
                     var texture = EZGUI.Compatibility.createRenderTexture(settings.width, settings.height);
-                    texture.render(container);
+                    //texture.render(container);
+
+                    if (Compatibility.PIXIVersion >= 4) EZGUI.tilingRenderer.render(container, texture);
+                    else texture.render(container);
+
+                    //RenderTexture.render is now deprecated, please use renderer.render(displayObject, renderTexture)
                     if (!this.rootSprite) {
                         this.rootSprite = new MultistateSprite(texture);
                         this.addChild(this.rootSprite);
