@@ -2,6 +2,8 @@
 
 
 //declare var __extends;
+
+
 module EZGUI.Compatibility {
     
     export var PIXIVersion = 2;
@@ -123,6 +125,18 @@ module EZGUI.Compatibility {
 
 
 if (EZGUI.Compatibility.PIXIVersion >= 3) {
+
+    //register EZGUI to the plugin Interface to get reference to the main renderer     
+    function EZGUIPluginInterface(renderer) {
+        
+        EZGUI.renderer = renderer;
+        EZGUI.tilingRenderer = renderer;
+        
+    }
+    
+    (<any>PIXI.CanvasRenderer).registerPlugin('EZGUI', EZGUIPluginInterface);
+    (<any>PIXI.WebGLRenderer).registerPlugin('EZGUI', EZGUIPluginInterface);
+
     PIXI['utils']._saidHello = true;
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
     //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();

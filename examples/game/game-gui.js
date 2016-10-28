@@ -5,7 +5,6 @@ var mainScreenJSON = {
 	position: { x: 0, y: 0 },
 	width: 600,
 	height: 500,
-
 	layout: [1, 4],
 	children: [
         {

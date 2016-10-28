@@ -6,7 +6,7 @@
 /// <reference path="theme.ts" />
 
 module EZGUI {
-    export var VERSION = '0.3.2 beta';
+    export var VERSION = '0.3.3 beta';
     //export var states = ['default', 'hover', 'down', 'checked'];
     export var tilingRenderer;
     
@@ -23,6 +23,7 @@ module EZGUI {
 
     export var EventsHelper = new utils.EventHandler();
 
+    export var renderer;
     /**
      * generic settings object
      * accepted parameters

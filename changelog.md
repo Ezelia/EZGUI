@@ -1,5 +1,10 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.3.3 beta
+==========
+ * using official PixiJS Plugin interface to register EZGUI and get reference to the main renderer .   
+ * fixed Pixi v4 compatibility issues with WebGL renderer.
+
 0.3.2 beta
 ==========
  * phaser 2.4.9 to 2.6.2 compatibility fixes 

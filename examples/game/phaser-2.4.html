@@ -12,7 +12,7 @@
     </style>
 
 
-    <script src="../../js/phaser-2.6.2.js"></script>
+    <script src="../../js/phaser-2.4.2.js"></script>
     <!-- don't forget to add compatibility js -->
     <script src="../../js/phaser-compat-2.4.js"></script>
     <script src="../../dist/EZGUI.js"></script>
@@ -163,6 +163,34 @@
 			
 			
 			setupGUI();
+
+            /*
+			mainScreen.destroy();
+			avatarSelectScreen.destroy();
+			levelSelectScreen.destroy();
+			fakeGameScreen.destroy();
+			dlg1.destroy();
+			dlg2.destroy();
+
+			mainScreen = EZGUI.create(mainScreenJSON, 'metalworks');
+
+
+			avatarSelectScreen = EZGUI.create(avatarSelectScreenJSON, 'metalworks');
+			avatarSelectScreen.visible = false;
+
+			levelSelectScreen = EZGUI.create(levelSelectScreenJSON, 'metalworks');
+			levelSelectScreen.visible = false;
+
+			fakeGameScreen = EZGUI.create(fakeGameScreenJSON, 'metalworks');
+			fakeGameScreen.visible = false;
+
+			var dlg1 = EZGUI.create(dialog1JSON, 'metalworks');
+			dlg1.visible = false;
+			var dlg2 = EZGUI.create(dialog2JSON, 'metalworks');
+			dlg2.visible = false;
+            
+			setupGUI();
+            */
 		});
 
 		var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', { preload: preload, create: create });

@@ -3,193 +3,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-/**
-* Hack in support for Function.name for browsers that don't support it.
-* IE, I'm looking at you.
-**/
-if (Function.prototype['name'] === undefined && Object.defineProperty !== undefined) {
-    Object.defineProperty(Function.prototype, 'name', {
-        get: function () {
-            var funcNameRegex = /function\s([^(]{1,})\(/;
-            var results = (funcNameRegex).exec((this).toString());
-            return (results && results.length > 1) ? results[1].trim() : "";
-        },
-        set: function (value) { }
-    });
-}
-/// <reference path="polyfills/ie.ts" />
-//declare var __extends;
-var EZGUI;
-(function (EZGUI) {
-    var Compatibility;
-    (function (Compatibility) {
-        Compatibility.PIXIVersion = 2;
-        if (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0)
-            Compatibility.PIXIVersion = 3;
-        if (PIXI.VERSION.indexOf('v4.') == 0 || PIXI.VERSION.indexOf('4.') == 0)
-            Compatibility.PIXIVersion = 4;
-        Compatibility.isPhaser = (typeof Phaser != 'undefined');
-        Compatibility.isPhaser24 = Compatibility.isPhaser && Phaser.VERSION.indexOf('2.4') == 0;
-        Compatibility.isPhaser25 = Compatibility.isPhaser && Phaser.VERSION.indexOf('2.5') == 0;
-        Compatibility.isPhaser26 = Compatibility.isPhaser && Phaser.VERSION.indexOf('2.6') == 0;
-        Compatibility.isPhaser24plus = Compatibility.isPhaser24 || Compatibility.isPhaser25 || Compatibility.isPhaser26;
-        Compatibility.BitmapText = Compatibility.PIXIVersion >= 3 ? PIXI.extras.BitmapText : PIXI.BitmapText;
-        var TilingSprite = (function () {
-            function TilingSprite(texture, width, height) {
-            }
-            return TilingSprite;
-        }());
-        Compatibility.TilingSprite = TilingSprite;
-        var GUIContainer = (function (_super) {
-            __extends(GUIContainer, _super);
-            function GUIContainer() {
-                _super.apply(this, arguments);
-            }
-            return GUIContainer;
-        }(PIXI.DisplayObjectContainer));
-        Compatibility.GUIContainer = GUIContainer;
-        if (Compatibility.PIXIVersion == 3) {
-            Compatibility['GUIContainer'] = PIXI['Container'];
-        }
-        else {
-            Compatibility['GUIContainer'] = PIXI['DisplayObjectContainer'];
-        }
-        var GUIDisplayObjectContainer = (function (_super) {
-            __extends(GUIDisplayObjectContainer, _super);
-            function GUIDisplayObjectContainer() {
-                _super.call(this);
-                if (typeof Phaser != 'undefined') {
-                    var game = Phaser.GAMES[0];
-                    if (!GUIDisplayObjectContainer.globalPhaserGroup)
-                        GUIDisplayObjectContainer.globalPhaserGroup = new Phaser.Group(game, game.stage, 'guigroup');
-                    this.phaserGroup = GUIDisplayObjectContainer.globalPhaserGroup.create(0, 0); //new Phaser.Group(Phaser.GAMES[0]);
-                    this.phaserGroup.addChild(this);
-                    this.phaserGroup.guiSprite = this;
-                }
-            }
-            return GUIDisplayObjectContainer;
-        }(GUIContainer));
-        Compatibility.GUIDisplayObjectContainer = GUIDisplayObjectContainer;
-        //var dummy:any = (function (_super) {
-        //    __extends(GUIDisplayObjectContainer, _super);
-        //    function GUIDisplayObjectContainer() {
-        //        _super.call(this, [Phaser.GAMES[0]]);
-        //    }
-        //    return GUIDisplayObjectContainer;
-        //})(Phaser.Group);
-        //Compatibility['GUIDisplayObjectContainer'] = dummy;
-        function createRenderTexture(width, height) {
-            if (!EZGUI.tilingRenderer) {
-                if (EZGUI.Compatibility.PIXIVersion >= 3) {
-                    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
-                }
-                else {
-                    if (!Compatibility.isPhaser)
-                        EZGUI.tilingRenderer = new PIXI.CanvasRenderer(EZGUI.game);
-                }
-            }
-            var texture;
-            if (EZGUI.Compatibility.PIXIVersion >= 4) {
-                texture = PIXI.RenderTexture.create(width, height); //new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
-            }
-            else if (EZGUI.Compatibility.PIXIVersion == 3) {
-                texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
-            }
-            else {
-                texture = new PIXI.RenderTexture(width, height, EZGUI.tilingRenderer);
-            }
-            return texture;
-        }
-        Compatibility.createRenderTexture = createRenderTexture;
-        /*
-         *
-         * this function is used to fix Phaser 2.4 compatibility
-         * it need to be attached to onLoadComplete of phaser's loader to copy loaded resources to PIXI.TextureCache
-         */
-        function fixCache(resources) {
-            if (!EZGUI.Compatibility.isPhaser24plus || !this._fileList)
-                return;
-            for (var i = 0; i < this._fileList.length; i++) {
-                if (!resources || resources.length == 0 || resources.indexOf(this._fileList[i].key) >= 0) {
-                    var tx = new PIXI.Texture(new PIXI.BaseTexture(this._fileList[i].data));
-                    PIXI.TextureCache[this._fileList[i].key] = tx;
-                }
-            }
-        }
-        Compatibility.fixCache = fixCache;
-    })(Compatibility = EZGUI.Compatibility || (EZGUI.Compatibility = {}));
-})(EZGUI || (EZGUI = {}));
-if (EZGUI.Compatibility.PIXIVersion >= 3) {
-    PIXI['utils']._saidHello = true;
-    //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
-    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
-    EZGUI.Compatibility.TilingSprite = (PIXI.extras).TilingSprite;
-    PIXI['utils']._saidHello = false;
-}
-else {
-    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
-    EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
-}
-EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
-    if (EZGUI.Compatibility.isPhaser24plus) {
-        var ltexture = this.originalTexture || this.texture;
-        var frame = ltexture.frame;
-        var targetWidth, targetHeight;
-        //  Check that the frame is the same size as the base texture.
-        var isFrame = frame.width !== ltexture.baseTexture.width || frame.height !== ltexture.baseTexture.height;
-        this._frame = {};
-        if (ltexture.trim) {
-            this._frame.spriteSourceSizeX = ltexture.trim.width;
-            this._frame.spriteSourceSizeY = ltexture.trim.height;
-        }
-        else {
-            this._frame.sourceSizeW = frame.width;
-            this._frame.sourceSizeH = frame.height;
-        }
-    }
-};
-if (PIXI.EventTarget) {
-    PIXI.EventTarget.mixin(EZGUI.Compatibility.GUIDisplayObjectContainer.prototype);
-}
-else {
-    if (EZGUI.Compatibility.isPhaser) {
-        var proto = EZGUI.Compatibility.GUIDisplayObjectContainer.prototype;
-        proto.on = function (event, fct) {
-            this._listeners = this._listeners || {};
-            this._listeners[event] = this._listeners[event] || [];
-            this._listeners[event].push(fct);
-        };
-        proto.off = function (event, fct) {
-            this._listeners = this._listeners || {};
-            if (!fct) {
-                this._listeners[event] = [];
-            }
-            else {
-                if (event in this._listeners === false || typeof this._listeners[event] != 'array')
-                    return;
-                this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
-            }
-        };
-        proto.emit = function (event) {
-            var args = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                args[_i - 1] = arguments[_i];
-            }
-            this._listeners = this._listeners || {};
-            if (event in this._listeners !== false) {
-                for (var i = 0; i < this._listeners[event].length; i++) {
-                    var fct = this._listeners[event][i];
-                    fct.apply(this, args);
-                    if (fct.__nbcalls__) {
-                        fct.__nbcalls__--;
-                        if (fct.__nbcalls__ <= 0)
-                            this.unbind(event, fct);
-                    }
-                }
-            }
-        };
-    }
-}
 var EZGUI;
 (function (EZGUI) {
     EZGUI.Easing = {
@@ -731,67 +544,200 @@ var EZGUI;
         utils.EventHandler = EventHandler;
     })(utils = EZGUI.utils || (EZGUI.utils = {}));
 })(EZGUI || (EZGUI = {}));
-/// <reference path="tween/tween.ts" />
-/// <reference path="utils/eventhandler.ts" />
-/// <reference path="compatibility.ts" />
-/// <reference path="theme.ts" />
+/**
+* Hack in support for Function.name for browsers that don't support it.
+* IE, I'm looking at you.
+**/
+if (Function.prototype['name'] === undefined && Object.defineProperty !== undefined) {
+    Object.defineProperty(Function.prototype, 'name', {
+        get: function () {
+            var funcNameRegex = /function\s([^(]{1,})\(/;
+            var results = (funcNameRegex).exec((this).toString());
+            return (results && results.length > 1) ? results[1].trim() : "";
+        },
+        set: function (value) { }
+    });
+}
+/// <reference path="polyfills/ie.ts" />
+//declare var __extends;
 var EZGUI;
 (function (EZGUI) {
-    EZGUI.VERSION = '0.3.2 beta';
-    EZGUI.startDrag = { x: null, y: null, t: null };
-    EZGUI.themes = {};
-    EZGUI.components = {};
-    EZGUI.radioGroups = [];
-    EZGUI.EventsHelper = new EZGUI.utils.EventHandler();
-    /**
-     * generic settings object
-     * accepted parameters
-     * crossOrigin : true/false
-     */
-    EZGUI.settings = {
-        crossOrigin: false
-    };
-    var _components = {};
-    function registerComponents(cpt, id) {
-        id = id || cpt.name;
-        _components[id] = cpt;
-    }
-    EZGUI.registerComponents = registerComponents;
-    function create(settings, theme) {
-        var t = settings.component || 'default';
-        var cptConstructor = _components[settings.component] || _components['default'];
-        var component;
-        if (cptConstructor) {
-            component = new cptConstructor(settings, theme);
+    var Compatibility;
+    (function (Compatibility) {
+        Compatibility.PIXIVersion = 2;
+        if (PIXI.VERSION.indexOf('v3.') == 0 || PIXI.VERSION.indexOf('3.') == 0)
+            Compatibility.PIXIVersion = 3;
+        if (PIXI.VERSION.indexOf('v4.') == 0 || PIXI.VERSION.indexOf('4.') == 0)
+            Compatibility.PIXIVersion = 4;
+        Compatibility.isPhaser = (typeof Phaser != 'undefined');
+        Compatibility.isPhaser24 = Compatibility.isPhaser && Phaser.VERSION.indexOf('2.4') == 0;
+        Compatibility.isPhaser25 = Compatibility.isPhaser && Phaser.VERSION.indexOf('2.5') == 0;
+        Compatibility.isPhaser26 = Compatibility.isPhaser && Phaser.VERSION.indexOf('2.6') == 0;
+        Compatibility.isPhaser24plus = Compatibility.isPhaser24 || Compatibility.isPhaser25 || Compatibility.isPhaser26;
+        Compatibility.BitmapText = Compatibility.PIXIVersion >= 3 ? PIXI.extras.BitmapText : PIXI.BitmapText;
+        var TilingSprite = (function () {
+            function TilingSprite(texture, width, height) {
+            }
+            return TilingSprite;
+        }());
+        Compatibility.TilingSprite = TilingSprite;
+        var GUIContainer = (function (_super) {
+            __extends(GUIContainer, _super);
+            function GUIContainer() {
+                _super.apply(this, arguments);
+            }
+            return GUIContainer;
+        }(PIXI.DisplayObjectContainer));
+        Compatibility.GUIContainer = GUIContainer;
+        if (Compatibility.PIXIVersion == 3) {
+            Compatibility['GUIContainer'] = PIXI['Container'];
         }
-        return component;
-    }
-    EZGUI.create = create;
-    function tween_animate() {
-        requestAnimationFrame(tween_animate);
-        EZGUI.Tween.update();
-    }
-    tween_animate();
-    function showHeader() {
-        //use https://github.com/daniellmb/console.style ?
-        var isChrome = (navigator.userAgent.indexOf("Chrome") != -1);
-        var isFirefox = (navigator.userAgent.indexOf("Firefox") != -1);
-        var isIE = (navigator.userAgent.indexOf("MSIE") != -1);
-        if (isChrome) {
-            //console.log('%cEZGUI', 'font-size:60px;color:#fff;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);');﻿
-            console.log('%cEZ%cGUI%c v' + EZGUI.VERSION + '%c | http://ezgui.ezelia.com  %c[We %c❤%c HTML5]', 'font-weight:bold;font-size:20px;color:#b33;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb', 'font-weight:bold;font-size:20px;color:#000;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb', 'font-size:12px;font-weight:bold; color: #b33;', 'font-size:12px;font-weight:bold; color: #000;', 'font-size:12px;font-weight:bold; color: #fff;background:#f18050', 'font-size:12px;font-weight:bold; color: #f00;background:#f18050', 'font-size:12px;font-weight:bold; color: #fff;background:#f18050');
-            return;
+        else {
+            Compatibility['GUIContainer'] = PIXI['DisplayObjectContainer'];
         }
-        if (isFirefox) {
-            console.log('%cEZGUI%c v' + EZGUI.VERSION + '%c | http://ezgui.ezelia.com  %c[We ❤ HTML5]', 'font-weight:bold;font-size:20px;color:#b33;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb', 'font-size:12px;font-weight:bold; color: #b33;', 'font-size:12px;font-weight:bold; color: #000;', 'font-size:12px;font-weight:bold; color: #fff;background:#f18050');
-            return;
+        var GUIDisplayObjectContainer = (function (_super) {
+            __extends(GUIDisplayObjectContainer, _super);
+            function GUIDisplayObjectContainer() {
+                _super.call(this);
+                if (typeof Phaser != 'undefined') {
+                    var game = Phaser.GAMES[0];
+                    if (!GUIDisplayObjectContainer.globalPhaserGroup)
+                        GUIDisplayObjectContainer.globalPhaserGroup = new Phaser.Group(game, game.stage, 'guigroup');
+                    this.phaserGroup = GUIDisplayObjectContainer.globalPhaserGroup.create(0, 0); //new Phaser.Group(Phaser.GAMES[0]);
+                    this.phaserGroup.addChild(this);
+                    this.phaserGroup.guiSprite = this;
+                }
+            }
+            return GUIDisplayObjectContainer;
+        }(GUIContainer));
+        Compatibility.GUIDisplayObjectContainer = GUIDisplayObjectContainer;
+        //var dummy:any = (function (_super) {
+        //    __extends(GUIDisplayObjectContainer, _super);
+        //    function GUIDisplayObjectContainer() {
+        //        _super.call(this, [Phaser.GAMES[0]]);
+        //    }
+        //    return GUIDisplayObjectContainer;
+        //})(Phaser.Group);
+        //Compatibility['GUIDisplayObjectContainer'] = dummy;
+        function createRenderTexture(width, height) {
+            if (!EZGUI.tilingRenderer) {
+                if (EZGUI.Compatibility.PIXIVersion >= 3) {
+                    EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+                }
+                else {
+                    if (!Compatibility.isPhaser)
+                        EZGUI.tilingRenderer = new PIXI.CanvasRenderer(EZGUI.game);
+                }
+            }
+            var texture;
+            if (EZGUI.Compatibility.PIXIVersion >= 4) {
+                texture = PIXI.RenderTexture.create(width, height); //new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
+            }
+            else if (EZGUI.Compatibility.PIXIVersion == 3) {
+                texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
+            }
+            else {
+                texture = new PIXI.RenderTexture(width, height, EZGUI.tilingRenderer);
+            }
+            return texture;
         }
-        if (window['console']) {
-            console.log(' EZGUI v' + EZGUI.VERSION + '   [We <3 HTML5] | http://ezgui.ezelia.com');
+        Compatibility.createRenderTexture = createRenderTexture;
+        /*
+         *
+         * this function is used to fix Phaser 2.4 compatibility
+         * it need to be attached to onLoadComplete of phaser's loader to copy loaded resources to PIXI.TextureCache
+         */
+        function fixCache(resources) {
+            if (!EZGUI.Compatibility.isPhaser24plus || !this._fileList)
+                return;
+            for (var i = 0; i < this._fileList.length; i++) {
+                if (!resources || resources.length == 0 || resources.indexOf(this._fileList[i].key) >= 0) {
+                    var tx = new PIXI.Texture(new PIXI.BaseTexture(this._fileList[i].data));
+                    PIXI.TextureCache[this._fileList[i].key] = tx;
+                }
+            }
         }
-    }
-    showHeader();
+        Compatibility.fixCache = fixCache;
+    })(Compatibility = EZGUI.Compatibility || (EZGUI.Compatibility = {}));
 })(EZGUI || (EZGUI = {}));
+if (EZGUI.Compatibility.PIXIVersion >= 3) {
+    //register EZGUI to the plugin Interface to get reference to the main renderer     
+    function EZGUIPluginInterface(renderer) {
+        EZGUI.renderer = renderer;
+        EZGUI.tilingRenderer = renderer;
+    }
+    PIXI.CanvasRenderer.registerPlugin('EZGUI', EZGUIPluginInterface);
+    PIXI.WebGLRenderer.registerPlugin('EZGUI', EZGUIPluginInterface);
+    PIXI['utils']._saidHello = true;
+    //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
+    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+    EZGUI.Compatibility.TilingSprite = (PIXI.extras).TilingSprite;
+    PIXI['utils']._saidHello = false;
+}
+else {
+    //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
+    EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
+}
+EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
+    if (EZGUI.Compatibility.isPhaser24plus) {
+        var ltexture = this.originalTexture || this.texture;
+        var frame = ltexture.frame;
+        var targetWidth, targetHeight;
+        //  Check that the frame is the same size as the base texture.
+        var isFrame = frame.width !== ltexture.baseTexture.width || frame.height !== ltexture.baseTexture.height;
+        this._frame = {};
+        if (ltexture.trim) {
+            this._frame.spriteSourceSizeX = ltexture.trim.width;
+            this._frame.spriteSourceSizeY = ltexture.trim.height;
+        }
+        else {
+            this._frame.sourceSizeW = frame.width;
+            this._frame.sourceSizeH = frame.height;
+        }
+    }
+};
+if (PIXI.EventTarget) {
+    PIXI.EventTarget.mixin(EZGUI.Compatibility.GUIDisplayObjectContainer.prototype);
+}
+else {
+    if (EZGUI.Compatibility.isPhaser) {
+        var proto = EZGUI.Compatibility.GUIDisplayObjectContainer.prototype;
+        proto.on = function (event, fct) {
+            this._listeners = this._listeners || {};
+            this._listeners[event] = this._listeners[event] || [];
+            this._listeners[event].push(fct);
+        };
+        proto.off = function (event, fct) {
+            this._listeners = this._listeners || {};
+            if (!fct) {
+                this._listeners[event] = [];
+            }
+            else {
+                if (event in this._listeners === false || typeof this._listeners[event] != 'array')
+                    return;
+                this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
+            }
+        };
+        proto.emit = function (event) {
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            this._listeners = this._listeners || {};
+            if (event in this._listeners !== false) {
+                for (var i = 0; i < this._listeners[event].length; i++) {
+                    var fct = this._listeners[event][i];
+                    fct.apply(this, args);
+                    if (fct.__nbcalls__) {
+                        fct.__nbcalls__--;
+                        if (fct.__nbcalls__ <= 0)
+                            this.unbind(event, fct);
+                    }
+                }
+            }
+        };
+    }
+}
 /// <reference path="ezgui.ts" />
 var EZGUI;
 (function (EZGUI) {
@@ -1162,6 +1108,67 @@ var EZGUI;
         return Theme;
     }());
     EZGUI.Theme = Theme;
+})(EZGUI || (EZGUI = {}));
+/// <reference path="tween/tween.ts" />
+/// <reference path="utils/eventhandler.ts" />
+/// <reference path="compatibility.ts" />
+/// <reference path="theme.ts" />
+var EZGUI;
+(function (EZGUI) {
+    EZGUI.VERSION = '0.3.3 beta';
+    EZGUI.startDrag = { x: null, y: null, t: null };
+    EZGUI.themes = {};
+    EZGUI.components = {};
+    EZGUI.radioGroups = [];
+    EZGUI.EventsHelper = new EZGUI.utils.EventHandler();
+    /**
+     * generic settings object
+     * accepted parameters
+     * crossOrigin : true/false
+     */
+    EZGUI.settings = {
+        crossOrigin: false
+    };
+    var _components = {};
+    function registerComponents(cpt, id) {
+        id = id || cpt.name;
+        _components[id] = cpt;
+    }
+    EZGUI.registerComponents = registerComponents;
+    function create(settings, theme) {
+        var t = settings.component || 'default';
+        var cptConstructor = _components[settings.component] || _components['default'];
+        var component;
+        if (cptConstructor) {
+            component = new cptConstructor(settings, theme);
+        }
+        return component;
+    }
+    EZGUI.create = create;
+    function tween_animate() {
+        requestAnimationFrame(tween_animate);
+        EZGUI.Tween.update();
+    }
+    tween_animate();
+    function showHeader() {
+        //use https://github.com/daniellmb/console.style ?
+        var isChrome = (navigator.userAgent.indexOf("Chrome") != -1);
+        var isFirefox = (navigator.userAgent.indexOf("Firefox") != -1);
+        var isIE = (navigator.userAgent.indexOf("MSIE") != -1);
+        if (isChrome) {
+            //console.log('%cEZGUI', 'font-size:60px;color:#fff;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);');﻿
+            console.log('%cEZ%cGUI%c v' + EZGUI.VERSION + '%c | http://ezgui.ezelia.com  %c[We %c❤%c HTML5]', 'font-weight:bold;font-size:20px;color:#b33;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb', 'font-weight:bold;font-size:20px;color:#000;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb', 'font-size:12px;font-weight:bold; color: #b33;', 'font-size:12px;font-weight:bold; color: #000;', 'font-size:12px;font-weight:bold; color: #fff;background:#f18050', 'font-size:12px;font-weight:bold; color: #f00;background:#f18050', 'font-size:12px;font-weight:bold; color: #fff;background:#f18050');
+            return;
+        }
+        if (isFirefox) {
+            console.log('%cEZGUI%c v' + EZGUI.VERSION + '%c | http://ezgui.ezelia.com  %c[We ❤ HTML5]', 'font-weight:bold;font-size:20px;color:#b33;text-shadow:0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb', 'font-size:12px;font-weight:bold; color: #b33;', 'font-size:12px;font-weight:bold; color: #000;', 'font-size:12px;font-weight:bold; color: #fff;background:#f18050');
+            return;
+        }
+        if (window['console']) {
+            console.log(' EZGUI v' + EZGUI.VERSION + '   [We <3 HTML5] | http://ezgui.ezelia.com');
+        }
+    }
+    showHeader();
 })(EZGUI || (EZGUI = {}));
 /// <reference path="ezgui.ts" />
 var EZGUI;
@@ -2314,166 +2321,6 @@ var EZGUI;
 (function (EZGUI) {
     var Component;
     (function (Component) {
-        var Button = (function (_super) {
-            __extends(Button, _super);
-            function Button(settings, themeId) {
-                _super.call(this, settings, themeId);
-                this.settings = settings;
-                this.themeId = themeId;
-                if (settings.text)
-                    this.text = settings.text;
-            }
-            Button.prototype.handleEvents = function () {
-                _super.prototype.handleEvents.call(this);
-                var guiObj = this;
-                var _this = this;
-                var isDown = false;
-                //guiObj.on('mousemove', function () {
-                //});
-                guiObj.on('mousedown', function () {
-                    isDown = true;
-                    //console.log('down', _this.guiID);
-                    guiObj.setState('down');
-                });
-                guiObj.on('mouseup', function () {
-                    isDown = false;
-                    //console.log('up', _this.guiID);
-                    guiObj.setState('default');
-                });
-                guiObj.on('mouseover', function () {
-                    //console.log('hover', _this.guiID);
-                    if (!isDown)
-                        guiObj.setState('hover');
-                });
-                guiObj.on('mouseout', function () {
-                    //console.log('out', _this.guiID);
-                    //EZGUI.dragging = null;
-                    //temporary workaround for phaser
-                    if (!EZGUI.Compatibility.isPhaser) {
-                        isDown = false;
-                        guiObj.setState('default');
-                    }
-                });
-            };
-            return Button;
-        }(EZGUI.GUISprite));
-        Component.Button = Button;
-        EZGUI.registerComponents(Button, 'Button');
-    })(Component = EZGUI.Component || (EZGUI.Component = {}));
-})(EZGUI || (EZGUI = {}));
-/// <reference path="../guisprite.ts" />
-var EZGUI;
-(function (EZGUI) {
-    var Component;
-    (function (Component) {
-        var Checkbox = (function (_super) {
-            __extends(Checkbox, _super);
-            function Checkbox(settings, themeId) {
-                _super.call(this, settings, themeId);
-                this.settings = settings;
-                this.themeId = themeId;
-            }
-            Object.defineProperty(Checkbox.prototype, "checked", {
-                //Getter & setter for check state
-                get: function () {
-                    return this._checked;
-                },
-                set: function (chk) {
-                    if (chk) {
-                        this.setState('checked');
-                        if (this._checkmark)
-                            this._checkmark.visible = true;
-                    }
-                    else {
-                        this.setState('default');
-                        if (this._checkmark)
-                            this._checkmark.visible = false;
-                    }
-                    this._checked = chk;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Checkbox.prototype, "text", {
-                //Getter & setter for text vakue which need to be placed on the right
-                get: function () {
-                    if (this.textObj)
-                        return this.textObj.text;
-                },
-                set: function (val) {
-                    if (this.textObj) {
-                        this.textObj.text = val;
-                        if (this._settings.anchor) {
-                            this.textObj.position.x = 0;
-                            this.textObj.position.y = 0;
-                            this.textObj.anchor.x = this._settings.anchor.x;
-                            this.textObj.anchor.y = this._settings.anchor.y;
-                        }
-                        else {
-                            this.textObj.position.x = this._settings.width;
-                            this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
-                            this.textObj.anchor.x = 0;
-                            this.textObj.anchor.y = 0;
-                        }
-                    }
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Checkbox.prototype.handleEvents = function () {
-                _super.prototype.handleEvents.call(this);
-                var guiObj = this;
-                var _this = this;
-                var _this = this;
-                var guiObj = this;
-                guiObj.on('mouseover', function (event) {
-                    //guiObj.alpha = 0.7;
-                });
-                //clear parent event
-                guiObj.off('mouseout');
-                guiObj.on('mouseout', function () {
-                    //prevent state clear
-                    //if (_this.checked) {
-                    //    _this.setState('checked');
-                    //}
-                    //guiObj.alpha = 1;
-                });
-                guiObj.on('click', function () {
-                    _this.checked = !_this.checked;
-                });
-            };
-            Checkbox.prototype.draw = function () {
-                _super.prototype.draw.call(this);
-                this._checkmark = this.createThemeImage(this._settings, 'default', 'checkmark');
-                if (this._checkmark != null) {
-                    this.addChild(this._checkmark);
-                    this._checkmark.visible = false;
-                    this._checkmark.width = this._settings.width;
-                    this._checkmark.height = this._settings.height;
-                    if (this._settings.anchor) {
-                        this._checkmark.anchor.x = this._settings.anchor.x;
-                        this._checkmark.anchor.y = this._settings.anchor.y;
-                    }
-                }
-            };
-            Checkbox.prototype.drawText = function () {
-                _super.prototype.drawText.call(this);
-                if (this.textObj) {
-                    this.textObj.position.x = this._settings.width;
-                    this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
-                }
-            };
-            return Checkbox;
-        }(Component.Button));
-        Component.Checkbox = Checkbox;
-        EZGUI.registerComponents(Checkbox, 'Checkbox');
-    })(Component = EZGUI.Component || (EZGUI.Component = {}));
-})(EZGUI || (EZGUI = {}));
-/// <reference path="../guisprite.ts" />
-var EZGUI;
-(function (EZGUI) {
-    var Component;
-    (function (Component) {
         var Input = (function (_super) {
             __extends(Input, _super);
             function Input(settings, themeId) {
@@ -2714,6 +2561,354 @@ var EZGUI;
         Component.Label = Label;
         EZGUI.registerComponents(Label, 'Label');
     })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+/// <reference path="../guisprite.ts" />
+var EZGUI;
+(function (EZGUI) {
+    var Component;
+    (function (Component) {
+        var Slider = (function (_super) {
+            __extends(Slider, _super);
+            function Slider(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+            }
+            Object.defineProperty(Slider.prototype, "value", {
+                get: function () {
+                    if (this.horizontalSlide) {
+                        return this.slide.position.x / (this.width - this.slide.width);
+                    }
+                    else {
+                        return 1 + this.slide.position.y / (this.slide.height - this.height);
+                    }
+                },
+                set: function (val) {
+                    val = Math.max(0, val);
+                    val = Math.min(val, 1);
+                    if (this.horizontalSlide) {
+                        this.slide.position.x = val * (this.width - this.slide.width);
+                    }
+                    else {
+                        this.slide.position.y = (val - 1) * (this.slide.height - this.height);
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Slider.prototype.setupEvents = function () {
+                _super.prototype.setupEvents.call(this);
+                var guiObj = this;
+                var _this = this;
+            };
+            Slider.prototype.drawText = function () {
+                //prevent text drawing
+            };
+            Slider.prototype.handleEvents = function () {
+                _super.prototype.handleEvents.call(this);
+                var guiObj = this;
+                var _this = this;
+                if (EZGUI.Compatibility.isPhaser) {
+                    guiObj.on('mousemove', function () {
+                    });
+                    guiObj.on('mousedown', function (event, any) {
+                        if (_this.canTrigger(event, _this.slide)) {
+                            _this.slide.emit('ezgui:mousedown', event);
+                        }
+                    });
+                    guiObj.on('mouseup', function () {
+                        if (_this.canTrigger(event, _this.slide)) {
+                            _this.slide.emit('ezgui:mouseup', event);
+                        }
+                    });
+                    guiObj.on('mouseover', function () {
+                    });
+                    guiObj.on('mouseout', function () {
+                    });
+                }
+                this.slide.on('mousemove', function () {
+                    if (EZGUI.dragging == _this.slide) {
+                        _this.emit('ezgui:value', _this.value);
+                    }
+                });
+            };
+            Slider.prototype.draw = function () {
+                _super.prototype.draw.call(this);
+                var cfg = this._settings.slide;
+                cfg.component = 'Button';
+                cfg.skin = 'Slide';
+                cfg.position = { x: 0, y: 0 };
+                cfg.draggable = true;
+                //{ id: 'slide1', component: 'Button', position: { x: 0, y: 0 }, width: 30, height: this.height, draggable: true };
+                var dir = this._settings.dir;
+                if (this._settings.height > this._settings.width)
+                    this._settings.dir = 'v';
+                else
+                    this._settings.dir = 'h';
+                if (this._settings.dir == 'v') {
+                    cfg.dragX = false;
+                    this.horizontalSlide = false;
+                }
+                else {
+                    cfg.dragY = false;
+                    this.horizontalSlide = true;
+                }
+                this.slide = EZGUI.create(cfg, this.theme);
+                this.slide.dragXInterval = [0, this.width - this.slide.width];
+                this.slide.dragYInterval = [0, this.height - this.slide.height];
+                this.value = 0;
+                this.container.addChild(this.slide);
+            };
+            return Slider;
+        }(EZGUI.GUISprite));
+        Component.Slider = Slider;
+        EZGUI.registerComponents(Slider, 'Slider');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+/// <reference path="../guisprite.ts" />
+var EZGUI;
+(function (EZGUI) {
+    var Component;
+    (function (Component) {
+        var Tabs = (function (_super) {
+            __extends(Tabs, _super);
+            function Tabs(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+            }
+            Tabs.prototype.handleEvents = function () {
+                _super.prototype.handleEvents.call(this);
+                var _this = this;
+                if (this.tabsBar) {
+                    for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
+                        //remove default buttons events
+                        _this.tabsBar.container.children[i]._events = {};
+                    }
+                    this.tabsBar.bindChildren('click', function (e, tab) {
+                        //console.log('clicked ', tab);
+                        _this.activate(tab.userData.id);
+                        for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
+                            _this.setTaskbarChildState(i, 'default');
+                        }
+                        tab.setState('down');
+                    });
+                }
+            };
+            Tabs.prototype.draw = function () {
+                //tabs should not have layout positionning
+                delete this._settings.layout;
+                var tabsH = this._settings.tabHeight || 50;
+                this._settings['padding-top'] = tabsH;
+                var tabsCfg = {
+                    component: 'Window',
+                    transparent: true,
+                    padding: 0,
+                    position: { x: 0, y: 0 },
+                    width: this._settings.width,
+                    height: tabsH,
+                    layout: [this._settings.children.length, 1],
+                    children: []
+                };
+                for (var i = 0; i < this._settings.children.length; i++) {
+                    var child = { text: this._settings.children[i].title || '', userData: { id: i }, component: 'Sprite', skin: 'Button', position: { x: 0, y: 0 }, width: ~~(this._settings.width / this._settings.children.length), height: tabsH };
+                    tabsCfg.children.push(child);
+                }
+                this.tabsBar = EZGUI.create(tabsCfg, this.themeId);
+                //this._settings.children.unshift(tabs);
+                _super.prototype.draw.call(this);
+                this.addChild(this.tabsBar);
+            };
+            //Phaser container children are not instances of EZGUI MultistateSprite but they are parents of EZGUI MultistateSprite
+            //we need this function to check the the type before setting state
+            Tabs.prototype.setTaskbarChildState = function (idx, state) {
+                var child = this.tabsBar.container.children[idx];
+                if (typeof child.setState == 'function') {
+                    child.setState(state);
+                }
+                else {
+                    var parent = child;
+                    if (!parent.children || parent.children.length <= 0)
+                        return;
+                    for (var i = 0; i < parent.children.length; i++) {
+                        var child = parent.children[i];
+                        if (typeof child.setState == 'function') {
+                            child.setState(state);
+                        }
+                    }
+                }
+            };
+            Tabs.prototype.createChild = function (childSettings, order) {
+                var child = _super.prototype.createChild.call(this, childSettings, order);
+                if (!this.activeChild)
+                    this.activeChild = child;
+                if (childSettings.active) {
+                    this.activeChild.visible = false;
+                    this.activeChild = child;
+                    this.activeChild.visible = true;
+                    if (this.tabsBar)
+                        this.setTaskbarChildState(order, 'down'); // this.tabsBar.container.children[order].setState('down');
+                }
+                else {
+                    child.visible = false;
+                    if (this.tabsBar)
+                        this.setTaskbarChildState(order, 'default'); // this.tabsBar.container.children[order].setState('default');
+                }
+                return child;
+            };
+            Tabs.prototype.activate = function (idx) {
+                if (this.container.children[idx]) {
+                    var child = EZGUI.Compatibility.isPhaser ? this.container.children[idx]['children'][0] : this.container.children[idx];
+                    this.activeChild.visible = false;
+                    this.activeChild = child;
+                    this.activeChild.visible = true;
+                    if (this.tabsBar) {
+                        for (var i = 0; i < this.tabsBar.container.children.length; i++) {
+                            this.setTaskbarChildState(i, 'default');
+                        }
+                        this.setTaskbarChildState(idx, 'down');
+                    }
+                }
+            };
+            return Tabs;
+        }(EZGUI.GUISprite));
+        Component.Tabs = Tabs;
+        EZGUI.registerComponents(Tabs, 'Tabs');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+var EZGUI;
+(function (EZGUI) {
+    var Device;
+    (function (Device) {
+        //Code taken from https://github.com/g13n/ua.js 
+        var userAgent = (window.navigator && navigator.userAgent) || "";
+        function detect(pattern) {
+            return (pattern).test(userAgent);
+        }
+        /**
+         * Return true if the browser is Chrome or compatible.
+         *
+         * @method isChrome
+         */
+        Device.isChrome = detect(/webkit\W.*(chrome|chromium)\W/i);
+        /**
+         * Return true if the browser is Firefox.
+         *
+         * @method isFirefox
+         */
+        Device.isFirefox = detect(/mozilla.*\Wfirefox\W/i);
+        /**
+         * Return true if the browser is using the Gecko engine.
+         *
+         * This is probably a better way to identify Firefox and other browsers
+         * that use XulRunner.
+         *
+         * @method isGecko
+         */
+        Device.isGecko = detect(/mozilla(?!.*webkit).*\Wgecko\W/i);
+        /**
+         * Return true if the browser is Internet Explorer.
+         *
+         * @method isIE
+         */
+        Device.isIE = function () {
+            if (navigator.appName === "Microsoft Internet Explorer") {
+                return true;
+            }
+            else if (detect(/\bTrident\b/)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        /**
+         * Return true if the browser is running on Kindle.
+         *
+         * @method isKindle
+         */
+        Device.isKindle = detect(/\W(kindle|silk)\W/i);
+        /**
+         * Return true if the browser is running on a mobile device.
+         *
+         * @method isMobile
+         */
+        Device.isMobile = detect(/(iphone|ipod|((?:android)?.*?mobile)|blackberry|nokia)/i);
+        /**
+         * Return true if we are running on Opera.
+         *
+         * @method isOpera
+         */
+        Device.isOpera = detect(/opera.*\Wpresto\W|OPR/i);
+        /**
+         * Return true if the browser is Safari.
+         *
+         * @method isSafari
+         */
+        Device.isSafari = detect(/webkit\W(?!.*chrome).*safari\W/i);
+        /**
+         * Return true if the browser is running on a tablet.
+         *
+         * One way to distinguish Android mobiles from tablets is that the
+         * mobiles contain the string "mobile" in their UserAgent string.
+         * If the word "Android" isn't followed by "mobile" then its a
+         * tablet.
+         *
+         * @method isTablet
+         */
+        Device.isTablet = detect(/(ipad|android(?!.*mobile)|tablet)/i);
+        /**
+         * Return true if the browser is running on a TV!
+         *
+         * @method isTV
+         */
+        Device.isTV = detect(/googletv|sonydtv/i);
+        /**
+         * Return true if the browser is running on a WebKit browser.
+         *
+         * @method isWebKit
+         */
+        Device.isWebKit = detect(/webkit\W/i);
+        /**
+         * Return true if the browser is running on an Android browser.
+         *
+         * @method isAndroid
+         */
+        Device.isAndroid = detect(/android/i);
+        /**
+         * Return true if the browser is running on any iOS device.
+         *
+         * @method isIOS
+         */
+        Device.isIOS = detect(/(ipad|iphone|ipod)/i);
+        /**
+         * Return true if the browser is running on an iPad.
+         *
+         * @method isIPad
+         */
+        Device.isIPad = detect(/ipad/i);
+        /**
+         * Return true if the browser is running on an iPhone.
+         *
+         * @method isIPhone
+         */
+        Device.isIPhone = detect(/iphone/i);
+        /**
+         * Return true if the browser is running on an iPod touch.
+         *
+         * @method isIPod
+         */
+        Device.isIPod = detect(/ipod/i);
+        Device.isMobile = detect(/mobile/i) || Device.isAndroid || Device.isIOS;
+        /**
+         * Return the complete UserAgent string verbatim.
+         *
+         * @method whoami
+         */
+        Device.whoami = function () {
+            return userAgent;
+        };
+    })(Device = EZGUI.Device || (EZGUI.Device = {}));
 })(EZGUI || (EZGUI = {}));
 /// <reference path="../guisprite.ts" />
 var EZGUI;
@@ -2967,496 +3162,6 @@ var EZGUI;
         EZGUI.registerComponents(Layout, 'Layout');
     })(Component = EZGUI.Component || (EZGUI.Component = {}));
 })(EZGUI || (EZGUI = {}));
-var EZGUI;
-(function (EZGUI) {
-    var Component;
-    (function (Component) {
-        var List = (function (_super) {
-            __extends(List, _super);
-            function List(settings, themeId) {
-                _super.call(this, settings, themeId);
-                this.settings = settings;
-                this.themeId = themeId;
-                //this.draghandle = this.uichildren['sbtn1'];
-            }
-            List.prototype.handleEvents = function () {
-                var _this = this;
-                var ssize;
-                this.draggable = this.container;
-                if (_this._settings.dragY === false || (this._settings.layout && this._settings.layout[1] == null)) {
-                    this.dragConstraint = 'x';
-                    this.horizontalSlide = true;
-                    this.slotSize = (this._settings.width / this._settings.layout[0]);
-                }
-                if (_this._settings.dragX === false || (this._settings.layout && this._settings.layout[0] == null)) {
-                    this.dragConstraint = 'y';
-                    this.horizontalSlide = false;
-                    this.slotSize = (this._settings.height / this._settings.layout[1]);
-                }
-                if (this._settings.layout && this._settings.layout[0] != null && this._settings.layout[1] != null) {
-                    if (_this._settings.dragY === false) {
-                        this.slotSize = this.slotSize / this._settings.layout[1];
-                    }
-                    if (_this._settings.dragX === false) {
-                        this.slotSize = this.slotSize / this._settings.layout[0];
-                    }
-                }
-                //console.log(' >>>> ', this.draggable.width, this._settings.width);
-                ssize = this.slotSize * this.container.children.length;
-                this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
-                this.dragXInterval[1] = this._settings.width * 0.2;
-                this.dragYInterval[0] = -ssize + this._settings.height * 0.5;
-                this.dragYInterval[1] = this._settings.height * 0.2;
-                _super.prototype.handleEvents.call(this);
-                _this.on('mousedown', function (event) {
-                    if (_this.decelerationItv) {
-                        clearInterval(_this.decelerationItv);
-                        _this.decelerationItv = null;
-                    }
-                    for (var i = 0; i < _this.container.children.length; i++) {
-                        var child = _this.container.children[i];
-                        if (!(child instanceof EZGUI.GUISprite))
-                            continue;
-                        if (!child.mouseInObj(event, child))
-                            continue;
-                        if (!child.canTrigger(event, child))
-                            continue;
-                        child.emit('ezgui:mousedown', event);
-                    }
-                });
-                _this.on('mouseup', function (event) {
-                    if (_this.decelerationItv)
-                        return;
-                    var endPos = EZGUI.utils.getRealPos(event);
-                    //console.log('slide end ', EZGUI.startDrag.x, EZGUI.startDrag.x, endPos);
-                    _this.decelerateScroll(endPos);
-                });
-            };
-            List.prototype.decelerateScroll = function (endPos) {
-                var _this = this;
-                var sign = 0;
-                if (_this.dragConstraint != 'y') {
-                    sign = Math.sign(endPos.x - EZGUI.startDrag.x);
-                }
-                if (_this.dragConstraint != 'x') {
-                    sign = Math.sign(endPos.y - EZGUI.startDrag.y);
-                }
-                var x1 = EZGUI.startDrag.x;
-                var y1 = EZGUI.startDrag.y;
-                var x2 = endPos.x;
-                var y2 = endPos.y;
-                var distance = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
-                var time = Date.now() - EZGUI.startDrag.t;
-                var speed = distance / time;
-                var timeConstant = 10;
-                var amplitude = sign * speed * 150;
-                var step = 0;
-                var initialPosX = _this.draggable.position.x;
-                var initialPosY = _this.draggable.position.y;
-                var posX = 0;
-                var posY = 0;
-                if (_this.decelerationItv)
-                    clearInterval(_this.decelerationItv);
-                _this.decelerationItv = setInterval(function () {
-                    //console.log('.');
-                    var delta = amplitude / timeConstant;
-                    if (_this.dragConstraint != 'y') {
-                        posX += delta;
-                        var nextPos = initialPosX + posX;
-                        if (nextPos >= _this.dragXInterval[0] && nextPos <= _this.dragXInterval[1])
-                            _this.draggable.position.x = nextPos;
-                        else
-                            clearInterval(_this.decelerationItv);
-                    }
-                    if (_this.dragConstraint != 'x') {
-                        posY += delta;
-                        var nextPos = initialPosY + posY;
-                        if (nextPos >= _this.dragYInterval[0] && nextPos <= _this.dragYInterval[1])
-                            _this.draggable.position.y = nextPos;
-                        else
-                            clearInterval(_this.decelerationItv);
-                    }
-                    amplitude -= delta;
-                    step += 1;
-                    if (step > 6 * timeConstant) {
-                        clearInterval(_this.decelerationItv);
-                        _this.decelerationItv = null;
-                    }
-                }, 16);
-            };
-            List.prototype.addChildAt = function (child, index) {
-                var result = _super.prototype.addChildAt.call(this, child, index);
-                if (result instanceof EZGUI.GUISprite) {
-                    var ssize = this.slotSize * this.container.children.length;
-                    this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
-                    this.dragXInterval[1] = this._settings.width * 0.2;
-                    this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
-                    this.dragYInterval[1] = this._settings.height * 0.1;
-                }
-                return result;
-            };
-            List.prototype.removeChild = function (child) {
-                var result = _super.prototype.removeChild.call(this, child);
-                if (child instanceof EZGUI.GUISprite) {
-                    var ssize = this.slotSize * this.container.children.length;
-                    this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
-                    this.dragXInterval[1] = this._settings.width * 0.2;
-                    this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
-                    this.dragYInterval[1] = this._settings.height * 0.1;
-                    this.draggable.position.x = 0;
-                    this.draggable.position.y = 0;
-                }
-                return result;
-            };
-            List.prototype.slideBy = function (value, delay) {
-                delay = delay || Math.abs(value) * 5;
-                var _this = this;
-                if (_this.dragConstraint != 'y') {
-                    var nextPos = _this.draggable.position.x + value;
-                    nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                    nextPos = Math.min(nextPos, _this.dragXInterval[1]);
-                    if (_this.tween)
-                        _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position)
-                        .to({ x: nextPos }, delay)
-                        .easing(EZGUI.Easing.Cubic.Out);
-                    _this.tween.start();
-                }
-                if (_this.dragConstraint != 'x') {
-                    var nextPos = _this.draggable.position.y + value;
-                    nextPos = Math.max(nextPos, _this.dragYInterval[0]);
-                    nextPos = Math.min(nextPos, _this.dragYInterval[1]);
-                    if (_this.tween)
-                        _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position)
-                        .to({ y: nextPos }, delay)
-                        .easing(EZGUI.Easing.Cubic.Out);
-                    _this.tween.start();
-                }
-            };
-            List.prototype.slideTo = function (value, delay) {
-                var _this = this;
-                if (_this.dragConstraint != 'y') {
-                    var nextPos = value;
-                    delay = delay || Math.abs(value - _this.draggable.position.x) * 5;
-                    nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                    nextPos = Math.min(nextPos, _this.dragXInterval[1]);
-                    if (_this.tween)
-                        _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position)
-                        .to({ x: nextPos }, delay)
-                        .easing(EZGUI.Easing.Cubic.Out);
-                    _this.tween.start();
-                }
-                if (_this.dragConstraint != 'x') {
-                    var nextPos = value;
-                    delay = delay || Math.abs(value - _this.draggable.position.y) * 5;
-                    nextPos = Math.max(nextPos, _this.dragYInterval[0]);
-                    nextPos = Math.min(nextPos, _this.dragYInterval[1]);
-                    if (_this.tween)
-                        _this.tween.stop();
-                    _this.tween = new EZGUI.Tween(_this.container.position)
-                        .to({ y: nextPos }, delay)
-                        .easing(EZGUI.Easing.Cubic.Out);
-                    _this.tween.start();
-                }
-            };
-            return List;
-        }(Component.Layout));
-        Component.List = List;
-        EZGUI.registerComponents(List, 'List');
-    })(Component = EZGUI.Component || (EZGUI.Component = {}));
-})(EZGUI || (EZGUI = {}));
-/// <reference path="checkbox.ts" />
-var EZGUI;
-(function (EZGUI) {
-    var Component;
-    (function (Component) {
-        var Radio = (function (_super) {
-            __extends(Radio, _super);
-            function Radio(settings, themeId) {
-                _super.call(this, settings, themeId);
-                this.settings = settings;
-                this.themeId = themeId;
-                this.group = null;
-                this.group = settings.group;
-                if (!EZGUI.radioGroups[this.group])
-                    EZGUI.radioGroups[this.group] = [];
-                EZGUI.radioGroups[this.group].push(this);
-                if (this._settings.checked === true)
-                    this.checked = true;
-            }
-            Object.defineProperty(Radio, "groups", {
-                //static groups: any = {};
-                //static selectedFrom: any = {};
-                get: function () {
-                    return EZGUI.radioGroups;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(Radio.prototype, "checked", {
-                get: function () {
-                    return this._checked;
-                },
-                set: function (chk) {
-                    if (chk) {
-                        this.clearGroup();
-                        this.setState('checked');
-                        if (this._checkmark)
-                            this._checkmark.visible = true;
-                    }
-                    else {
-                        this.setState('default');
-                        if (this._checkmark)
-                            this._checkmark.visible = false;
-                    }
-                    this._checked = chk;
-                    EZGUI.radioGroups[this.group].selected = this;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Radio.prototype.clearGroup = function () {
-                if (!EZGUI.radioGroups[this.group])
-                    return;
-                for (var i = 0; i < EZGUI.radioGroups[this.group].length; i++) {
-                    EZGUI.radioGroups[this.group][i].checked = false;
-                }
-            };
-            Radio.prototype.handleEvents = function () {
-                _super.prototype.handleEvents.call(this);
-                var _this = this;
-                //clear default action
-                _this.off('click');
-                _this.on('click', function (event) {
-                    _this.checked = true;
-                    _this.emit('ezgui:checked', event, _this);
-                });
-            };
-            Radio.prototype.draw = function () {
-                _super.prototype.draw.call(this);
-            };
-            return Radio;
-        }(Component.Checkbox));
-        Component.Radio = Radio;
-        EZGUI.registerComponents(Radio, 'Radio');
-    })(Component = EZGUI.Component || (EZGUI.Component = {}));
-})(EZGUI || (EZGUI = {}));
-/// <reference path="../guisprite.ts" />
-var EZGUI;
-(function (EZGUI) {
-    var Component;
-    (function (Component) {
-        var Slider = (function (_super) {
-            __extends(Slider, _super);
-            function Slider(settings, themeId) {
-                _super.call(this, settings, themeId);
-                this.settings = settings;
-                this.themeId = themeId;
-            }
-            Object.defineProperty(Slider.prototype, "value", {
-                get: function () {
-                    if (this.horizontalSlide) {
-                        return this.slide.position.x / (this.width - this.slide.width);
-                    }
-                    else {
-                        return 1 + this.slide.position.y / (this.slide.height - this.height);
-                    }
-                },
-                set: function (val) {
-                    val = Math.max(0, val);
-                    val = Math.min(val, 1);
-                    if (this.horizontalSlide) {
-                        this.slide.position.x = val * (this.width - this.slide.width);
-                    }
-                    else {
-                        this.slide.position.y = (val - 1) * (this.slide.height - this.height);
-                    }
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Slider.prototype.setupEvents = function () {
-                _super.prototype.setupEvents.call(this);
-                var guiObj = this;
-                var _this = this;
-            };
-            Slider.prototype.drawText = function () {
-                //prevent text drawing
-            };
-            Slider.prototype.handleEvents = function () {
-                _super.prototype.handleEvents.call(this);
-                var guiObj = this;
-                var _this = this;
-                if (EZGUI.Compatibility.isPhaser) {
-                    guiObj.on('mousemove', function () {
-                    });
-                    guiObj.on('mousedown', function (event, any) {
-                        if (_this.canTrigger(event, _this.slide)) {
-                            _this.slide.emit('ezgui:mousedown', event);
-                        }
-                    });
-                    guiObj.on('mouseup', function () {
-                        if (_this.canTrigger(event, _this.slide)) {
-                            _this.slide.emit('ezgui:mouseup', event);
-                        }
-                    });
-                    guiObj.on('mouseover', function () {
-                    });
-                    guiObj.on('mouseout', function () {
-                    });
-                }
-                this.slide.on('mousemove', function () {
-                    if (EZGUI.dragging == _this.slide) {
-                        _this.emit('ezgui:value', _this.value);
-                    }
-                });
-            };
-            Slider.prototype.draw = function () {
-                _super.prototype.draw.call(this);
-                var cfg = this._settings.slide;
-                cfg.component = 'Button';
-                cfg.skin = 'Slide';
-                cfg.position = { x: 0, y: 0 };
-                cfg.draggable = true;
-                //{ id: 'slide1', component: 'Button', position: { x: 0, y: 0 }, width: 30, height: this.height, draggable: true };
-                var dir = this._settings.dir;
-                if (this._settings.height > this._settings.width)
-                    this._settings.dir = 'v';
-                else
-                    this._settings.dir = 'h';
-                if (this._settings.dir == 'v') {
-                    cfg.dragX = false;
-                    this.horizontalSlide = false;
-                }
-                else {
-                    cfg.dragY = false;
-                    this.horizontalSlide = true;
-                }
-                this.slide = EZGUI.create(cfg, this.theme);
-                this.slide.dragXInterval = [0, this.width - this.slide.width];
-                this.slide.dragYInterval = [0, this.height - this.slide.height];
-                this.value = 0;
-                this.container.addChild(this.slide);
-            };
-            return Slider;
-        }(EZGUI.GUISprite));
-        Component.Slider = Slider;
-        EZGUI.registerComponents(Slider, 'Slider');
-    })(Component = EZGUI.Component || (EZGUI.Component = {}));
-})(EZGUI || (EZGUI = {}));
-/// <reference path="../guisprite.ts" />
-var EZGUI;
-(function (EZGUI) {
-    var Component;
-    (function (Component) {
-        var Tabs = (function (_super) {
-            __extends(Tabs, _super);
-            function Tabs(settings, themeId) {
-                _super.call(this, settings, themeId);
-                this.settings = settings;
-                this.themeId = themeId;
-            }
-            Tabs.prototype.handleEvents = function () {
-                _super.prototype.handleEvents.call(this);
-                var _this = this;
-                if (this.tabsBar) {
-                    for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
-                        //remove default buttons events
-                        _this.tabsBar.container.children[i]._events = {};
-                    }
-                    this.tabsBar.bindChildren('click', function (e, tab) {
-                        //console.log('clicked ', tab);
-                        _this.activate(tab.userData.id);
-                        for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
-                            _this.setTaskbarChildState(i, 'default');
-                        }
-                        tab.setState('down');
-                    });
-                }
-            };
-            Tabs.prototype.draw = function () {
-                //tabs should not have layout positionning
-                delete this._settings.layout;
-                var tabsH = this._settings.tabHeight || 50;
-                this._settings['padding-top'] = tabsH;
-                var tabsCfg = {
-                    component: 'Window',
-                    transparent: true,
-                    padding: 0,
-                    position: { x: 0, y: 0 },
-                    width: this._settings.width,
-                    height: tabsH,
-                    layout: [this._settings.children.length, 1],
-                    children: []
-                };
-                for (var i = 0; i < this._settings.children.length; i++) {
-                    var child = { text: this._settings.children[i].title || '', userData: { id: i }, component: 'Sprite', skin: 'Button', position: { x: 0, y: 0 }, width: ~~(this._settings.width / this._settings.children.length), height: tabsH };
-                    tabsCfg.children.push(child);
-                }
-                this.tabsBar = EZGUI.create(tabsCfg, this.themeId);
-                //this._settings.children.unshift(tabs);
-                _super.prototype.draw.call(this);
-                this.addChild(this.tabsBar);
-            };
-            //Phaser container children are not instances of EZGUI MultistateSprite but they are parents of EZGUI MultistateSprite
-            //we need this function to check the the type before setting state
-            Tabs.prototype.setTaskbarChildState = function (idx, state) {
-                var child = this.tabsBar.container.children[idx];
-                if (typeof child.setState == 'function') {
-                    child.setState(state);
-                }
-                else {
-                    var parent = child;
-                    if (!parent.children || parent.children.length <= 0)
-                        return;
-                    for (var i = 0; i < parent.children.length; i++) {
-                        var child = parent.children[i];
-                        if (typeof child.setState == 'function') {
-                            child.setState(state);
-                        }
-                    }
-                }
-            };
-            Tabs.prototype.createChild = function (childSettings, order) {
-                var child = _super.prototype.createChild.call(this, childSettings, order);
-                if (!this.activeChild)
-                    this.activeChild = child;
-                if (childSettings.active) {
-                    this.activeChild.visible = false;
-                    this.activeChild = child;
-                    this.activeChild.visible = true;
-                    if (this.tabsBar)
-                        this.setTaskbarChildState(order, 'down'); // this.tabsBar.container.children[order].setState('down');
-                }
-                else {
-                    child.visible = false;
-                    if (this.tabsBar)
-                        this.setTaskbarChildState(order, 'default'); // this.tabsBar.container.children[order].setState('default');
-                }
-                return child;
-            };
-            Tabs.prototype.activate = function (idx) {
-                if (this.container.children[idx]) {
-                    var child = EZGUI.Compatibility.isPhaser ? this.container.children[idx]['children'][0] : this.container.children[idx];
-                    this.activeChild.visible = false;
-                    this.activeChild = child;
-                    this.activeChild.visible = true;
-                    if (this.tabsBar) {
-                        for (var i = 0; i < this.tabsBar.container.children.length; i++) {
-                            this.setTaskbarChildState(i, 'default');
-                        }
-                        this.setTaskbarChildState(idx, 'down');
-                    }
-                }
-            };
-            return Tabs;
-        }(EZGUI.GUISprite));
-        Component.Tabs = Tabs;
-        EZGUI.registerComponents(Tabs, 'Tabs');
-    })(Component = EZGUI.Component || (EZGUI.Component = {}));
-})(EZGUI || (EZGUI = {}));
 /// <reference path="layout.ts" />
 var EZGUI;
 (function (EZGUI) {
@@ -3583,67 +3288,6 @@ var EZGUI;
         EZGUI.registerComponents(MainScreen, 'MainScreen');
     })(Kit = EZGUI.Kit || (EZGUI.Kit = {}));
 })(EZGUI || (EZGUI = {}));
-var EZGUI;
-(function (EZGUI) {
-    var MultistateTilingSprite = (function (_super) {
-        __extends(MultistateTilingSprite, _super);
-        function MultistateTilingSprite(texture, width, height, states) {
-            _super.call(this, texture, width, height);
-            this.stateTextures = {};
-            this.currentState = 'default';
-            this.stateTextures['default'] = texture;
-            var _this = this;
-            if (states) {
-                for (var s in states) {
-                    var tx = states[s];
-                    if (tx instanceof PIXI.Texture && !this.stateTextures[s]) {
-                        //var mtx:any = new MultistateTilingSprite(tx, width, height);
-                        this.stateTextures[s] = tx;
-                    }
-                }
-            }
-        }
-        MultistateTilingSprite.prototype.setState = function (state) {
-            if (state === void 0) { state = 'default'; }
-            var sprite = this;
-            if (!sprite.stateTextures[state] || state == this.currentState)
-                return;
-            if (sprite.texture == sprite.stateTextures[state])
-                return;
-            if (sprite.texture) {
-                sprite.texture = sprite.stateTextures[state];
-            }
-            else {
-                if (sprite._texture)
-                    sprite._texture = sprite.stateTextures[state];
-            }
-            if (sprite.tilingTexture)
-                sprite.tilingTexture = sprite.stateTextures[state];
-            if (sprite._tilingTexture)
-                sprite._tilingTexture = sprite.stateTextures[state];
-            if (EZGUI.Compatibility.PIXIVersion == 2) {
-            }
-        };
-        return MultistateTilingSprite;
-    }(EZGUI.Compatibility.TilingSprite));
-    EZGUI.MultistateTilingSprite = MultistateTilingSprite;
-})(EZGUI || (EZGUI = {}));
-(function (root) {
-    if ('performance' in root === false) {
-        root.performance = {};
-    }
-    // IE 8
-    Date.now = (Date.now || function () {
-        return new Date().getTime();
-    });
-    if ('now' in root.performance === false) {
-        var offset = root.performance.timing && root.performance.timing.navigationStart ? performance.timing.navigationStart
-            : Date.now();
-        root.performance.now = function () {
-            return Date.now() - offset;
-        };
-    }
-})(this);
 // (c) Dean McNamee <dean@gmail.com>, 2012.
 //
 // https://github.com/deanm/css-color-parser-js
@@ -3863,140 +3507,503 @@ var EZGUI;
         })(ColorParser = utils.ColorParser || (utils.ColorParser = {}));
     })(utils = EZGUI.utils || (EZGUI.utils = {}));
 })(EZGUI || (EZGUI = {}));
+/// <reference path="../guisprite.ts" />
 var EZGUI;
 (function (EZGUI) {
-    var Device;
-    (function (Device) {
-        //Code taken from https://github.com/g13n/ua.js 
-        var userAgent = (window.navigator && navigator.userAgent) || "";
-        function detect(pattern) {
-            return (pattern).test(userAgent);
-        }
-        /**
-         * Return true if the browser is Chrome or compatible.
-         *
-         * @method isChrome
-         */
-        Device.isChrome = detect(/webkit\W.*(chrome|chromium)\W/i);
-        /**
-         * Return true if the browser is Firefox.
-         *
-         * @method isFirefox
-         */
-        Device.isFirefox = detect(/mozilla.*\Wfirefox\W/i);
-        /**
-         * Return true if the browser is using the Gecko engine.
-         *
-         * This is probably a better way to identify Firefox and other browsers
-         * that use XulRunner.
-         *
-         * @method isGecko
-         */
-        Device.isGecko = detect(/mozilla(?!.*webkit).*\Wgecko\W/i);
-        /**
-         * Return true if the browser is Internet Explorer.
-         *
-         * @method isIE
-         */
-        Device.isIE = function () {
-            if (navigator.appName === "Microsoft Internet Explorer") {
-                return true;
+    var Component;
+    (function (Component) {
+        var Button = (function (_super) {
+            __extends(Button, _super);
+            function Button(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+                if (settings.text)
+                    this.text = settings.text;
             }
-            else if (detect(/\bTrident\b/)) {
-                return true;
+            Button.prototype.handleEvents = function () {
+                _super.prototype.handleEvents.call(this);
+                var guiObj = this;
+                var _this = this;
+                var isDown = false;
+                //guiObj.on('mousemove', function () {
+                //});
+                guiObj.on('mousedown', function () {
+                    isDown = true;
+                    //console.log('down', _this.guiID);
+                    guiObj.setState('down');
+                });
+                guiObj.on('mouseup', function () {
+                    isDown = false;
+                    //console.log('up', _this.guiID);
+                    guiObj.setState('default');
+                });
+                guiObj.on('mouseover', function () {
+                    //console.log('hover', _this.guiID);
+                    if (!isDown)
+                        guiObj.setState('hover');
+                });
+                guiObj.on('mouseout', function () {
+                    //console.log('out', _this.guiID);
+                    //EZGUI.dragging = null;
+                    //temporary workaround for phaser
+                    if (!EZGUI.Compatibility.isPhaser) {
+                        isDown = false;
+                        guiObj.setState('default');
+                    }
+                });
+            };
+            return Button;
+        }(EZGUI.GUISprite));
+        Component.Button = Button;
+        EZGUI.registerComponents(Button, 'Button');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+/// <reference path="../guisprite.ts" />
+var EZGUI;
+(function (EZGUI) {
+    var Component;
+    (function (Component) {
+        var Checkbox = (function (_super) {
+            __extends(Checkbox, _super);
+            function Checkbox(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+            }
+            Object.defineProperty(Checkbox.prototype, "checked", {
+                //Getter & setter for check state
+                get: function () {
+                    return this._checked;
+                },
+                set: function (chk) {
+                    if (chk) {
+                        this.setState('checked');
+                        if (this._checkmark)
+                            this._checkmark.visible = true;
+                    }
+                    else {
+                        this.setState('default');
+                        if (this._checkmark)
+                            this._checkmark.visible = false;
+                    }
+                    this._checked = chk;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Checkbox.prototype, "text", {
+                //Getter & setter for text vakue which need to be placed on the right
+                get: function () {
+                    if (this.textObj)
+                        return this.textObj.text;
+                },
+                set: function (val) {
+                    if (this.textObj) {
+                        this.textObj.text = val;
+                        if (this._settings.anchor) {
+                            this.textObj.position.x = 0;
+                            this.textObj.position.y = 0;
+                            this.textObj.anchor.x = this._settings.anchor.x;
+                            this.textObj.anchor.y = this._settings.anchor.y;
+                        }
+                        else {
+                            this.textObj.position.x = this._settings.width;
+                            this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
+                            this.textObj.anchor.x = 0;
+                            this.textObj.anchor.y = 0;
+                        }
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Checkbox.prototype.handleEvents = function () {
+                _super.prototype.handleEvents.call(this);
+                var guiObj = this;
+                var _this = this;
+                var _this = this;
+                var guiObj = this;
+                guiObj.on('mouseover', function (event) {
+                    //guiObj.alpha = 0.7;
+                });
+                //clear parent event
+                guiObj.off('mouseout');
+                guiObj.on('mouseout', function () {
+                    //prevent state clear
+                    //if (_this.checked) {
+                    //    _this.setState('checked');
+                    //}
+                    //guiObj.alpha = 1;
+                });
+                guiObj.on('click', function () {
+                    _this.checked = !_this.checked;
+                });
+            };
+            Checkbox.prototype.draw = function () {
+                _super.prototype.draw.call(this);
+                this._checkmark = this.createThemeImage(this._settings, 'default', 'checkmark');
+                if (this._checkmark != null) {
+                    this.addChild(this._checkmark);
+                    this._checkmark.visible = false;
+                    this._checkmark.width = this._settings.width;
+                    this._checkmark.height = this._settings.height;
+                    if (this._settings.anchor) {
+                        this._checkmark.anchor.x = this._settings.anchor.x;
+                        this._checkmark.anchor.y = this._settings.anchor.y;
+                    }
+                }
+            };
+            Checkbox.prototype.drawText = function () {
+                _super.prototype.drawText.call(this);
+                if (this.textObj) {
+                    this.textObj.position.x = this._settings.width;
+                    this.textObj.position.y = (this._settings.height) / 2 - this.textObj.height / 2.5;
+                }
+            };
+            return Checkbox;
+        }(Component.Button));
+        Component.Checkbox = Checkbox;
+        EZGUI.registerComponents(Checkbox, 'Checkbox');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+/// <reference path="checkbox.ts" />
+var EZGUI;
+(function (EZGUI) {
+    var Component;
+    (function (Component) {
+        var Radio = (function (_super) {
+            __extends(Radio, _super);
+            function Radio(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+                this.group = null;
+                this.group = settings.group;
+                if (!EZGUI.radioGroups[this.group])
+                    EZGUI.radioGroups[this.group] = [];
+                EZGUI.radioGroups[this.group].push(this);
+                if (this._settings.checked === true)
+                    this.checked = true;
+            }
+            Object.defineProperty(Radio, "groups", {
+                //static groups: any = {};
+                //static selectedFrom: any = {};
+                get: function () {
+                    return EZGUI.radioGroups;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Radio.prototype, "checked", {
+                get: function () {
+                    return this._checked;
+                },
+                set: function (chk) {
+                    if (chk) {
+                        this.clearGroup();
+                        this.setState('checked');
+                        if (this._checkmark)
+                            this._checkmark.visible = true;
+                    }
+                    else {
+                        this.setState('default');
+                        if (this._checkmark)
+                            this._checkmark.visible = false;
+                    }
+                    this._checked = chk;
+                    EZGUI.radioGroups[this.group].selected = this;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Radio.prototype.clearGroup = function () {
+                if (!EZGUI.radioGroups[this.group])
+                    return;
+                for (var i = 0; i < EZGUI.radioGroups[this.group].length; i++) {
+                    EZGUI.radioGroups[this.group][i].checked = false;
+                }
+            };
+            Radio.prototype.handleEvents = function () {
+                _super.prototype.handleEvents.call(this);
+                var _this = this;
+                //clear default action
+                _this.off('click');
+                _this.on('click', function (event) {
+                    _this.checked = true;
+                    _this.emit('ezgui:checked', event, _this);
+                });
+            };
+            Radio.prototype.draw = function () {
+                _super.prototype.draw.call(this);
+            };
+            return Radio;
+        }(Component.Checkbox));
+        Component.Radio = Radio;
+        EZGUI.registerComponents(Radio, 'Radio');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+var EZGUI;
+(function (EZGUI) {
+    var Component;
+    (function (Component) {
+        var List = (function (_super) {
+            __extends(List, _super);
+            function List(settings, themeId) {
+                _super.call(this, settings, themeId);
+                this.settings = settings;
+                this.themeId = themeId;
+                //this.draghandle = this.uichildren['sbtn1'];
+            }
+            List.prototype.handleEvents = function () {
+                var _this = this;
+                var ssize;
+                this.draggable = this.container;
+                if (_this._settings.dragY === false || (this._settings.layout && this._settings.layout[1] == null)) {
+                    this.dragConstraint = 'x';
+                    this.horizontalSlide = true;
+                    this.slotSize = (this._settings.width / this._settings.layout[0]);
+                }
+                if (_this._settings.dragX === false || (this._settings.layout && this._settings.layout[0] == null)) {
+                    this.dragConstraint = 'y';
+                    this.horizontalSlide = false;
+                    this.slotSize = (this._settings.height / this._settings.layout[1]);
+                }
+                if (this._settings.layout && this._settings.layout[0] != null && this._settings.layout[1] != null) {
+                    if (_this._settings.dragY === false) {
+                        this.slotSize = this.slotSize / this._settings.layout[1];
+                    }
+                    if (_this._settings.dragX === false) {
+                        this.slotSize = this.slotSize / this._settings.layout[0];
+                    }
+                }
+                //console.log(' >>>> ', this.draggable.width, this._settings.width);
+                ssize = this.slotSize * this.container.children.length;
+                this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
+                this.dragXInterval[1] = this._settings.width * 0.2;
+                this.dragYInterval[0] = -ssize + this._settings.height * 0.5;
+                this.dragYInterval[1] = this._settings.height * 0.2;
+                _super.prototype.handleEvents.call(this);
+                _this.on('mousedown', function (event) {
+                    if (_this.decelerationItv) {
+                        clearInterval(_this.decelerationItv);
+                        _this.decelerationItv = null;
+                    }
+                    for (var i = 0; i < _this.container.children.length; i++) {
+                        var child = _this.container.children[i];
+                        if (!(child instanceof EZGUI.GUISprite))
+                            continue;
+                        if (!child.mouseInObj(event, child))
+                            continue;
+                        if (!child.canTrigger(event, child))
+                            continue;
+                        child.emit('ezgui:mousedown', event);
+                    }
+                });
+                _this.on('mouseup', function (event) {
+                    if (_this.decelerationItv)
+                        return;
+                    var endPos = EZGUI.utils.getRealPos(event);
+                    //console.log('slide end ', EZGUI.startDrag.x, EZGUI.startDrag.x, endPos);
+                    _this.decelerateScroll(endPos);
+                });
+            };
+            List.prototype.decelerateScroll = function (endPos) {
+                var _this = this;
+                var sign = 0;
+                if (_this.dragConstraint != 'y') {
+                    sign = Math.sign(endPos.x - EZGUI.startDrag.x);
+                }
+                if (_this.dragConstraint != 'x') {
+                    sign = Math.sign(endPos.y - EZGUI.startDrag.y);
+                }
+                var x1 = EZGUI.startDrag.x;
+                var y1 = EZGUI.startDrag.y;
+                var x2 = endPos.x;
+                var y2 = endPos.y;
+                var distance = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+                var time = Date.now() - EZGUI.startDrag.t;
+                var speed = distance / time;
+                var timeConstant = 10;
+                var amplitude = sign * speed * 150;
+                var step = 0;
+                var initialPosX = _this.draggable.position.x;
+                var initialPosY = _this.draggable.position.y;
+                var posX = 0;
+                var posY = 0;
+                if (_this.decelerationItv)
+                    clearInterval(_this.decelerationItv);
+                _this.decelerationItv = setInterval(function () {
+                    //console.log('.');
+                    var delta = amplitude / timeConstant;
+                    if (_this.dragConstraint != 'y') {
+                        posX += delta;
+                        var nextPos = initialPosX + posX;
+                        if (nextPos >= _this.dragXInterval[0] && nextPos <= _this.dragXInterval[1])
+                            _this.draggable.position.x = nextPos;
+                        else
+                            clearInterval(_this.decelerationItv);
+                    }
+                    if (_this.dragConstraint != 'x') {
+                        posY += delta;
+                        var nextPos = initialPosY + posY;
+                        if (nextPos >= _this.dragYInterval[0] && nextPos <= _this.dragYInterval[1])
+                            _this.draggable.position.y = nextPos;
+                        else
+                            clearInterval(_this.decelerationItv);
+                    }
+                    amplitude -= delta;
+                    step += 1;
+                    if (step > 6 * timeConstant) {
+                        clearInterval(_this.decelerationItv);
+                        _this.decelerationItv = null;
+                    }
+                }, 16);
+            };
+            List.prototype.addChildAt = function (child, index) {
+                var result = _super.prototype.addChildAt.call(this, child, index);
+                if (result instanceof EZGUI.GUISprite) {
+                    var ssize = this.slotSize * this.container.children.length;
+                    this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
+                    this.dragXInterval[1] = this._settings.width * 0.2;
+                    this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
+                    this.dragYInterval[1] = this._settings.height * 0.1;
+                }
+                return result;
+            };
+            List.prototype.removeChild = function (child) {
+                var result = _super.prototype.removeChild.call(this, child);
+                if (child instanceof EZGUI.GUISprite) {
+                    var ssize = this.slotSize * this.container.children.length;
+                    this.dragXInterval[0] = -ssize + this._settings.width * 0.5;
+                    this.dragXInterval[1] = this._settings.width * 0.2;
+                    this.dragYInterval[0] = -ssize + this._settings.height * 0.9;
+                    this.dragYInterval[1] = this._settings.height * 0.1;
+                    this.draggable.position.x = 0;
+                    this.draggable.position.y = 0;
+                }
+                return result;
+            };
+            List.prototype.slideBy = function (value, delay) {
+                delay = delay || Math.abs(value) * 5;
+                var _this = this;
+                if (_this.dragConstraint != 'y') {
+                    var nextPos = _this.draggable.position.x + value;
+                    nextPos = Math.max(nextPos, _this.dragXInterval[0]);
+                    nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                    if (_this.tween)
+                        _this.tween.stop();
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ x: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween.start();
+                }
+                if (_this.dragConstraint != 'x') {
+                    var nextPos = _this.draggable.position.y + value;
+                    nextPos = Math.max(nextPos, _this.dragYInterval[0]);
+                    nextPos = Math.min(nextPos, _this.dragYInterval[1]);
+                    if (_this.tween)
+                        _this.tween.stop();
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ y: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween.start();
+                }
+            };
+            List.prototype.slideTo = function (value, delay) {
+                var _this = this;
+                if (_this.dragConstraint != 'y') {
+                    var nextPos = value;
+                    delay = delay || Math.abs(value - _this.draggable.position.x) * 5;
+                    nextPos = Math.max(nextPos, _this.dragXInterval[0]);
+                    nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                    if (_this.tween)
+                        _this.tween.stop();
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ x: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween.start();
+                }
+                if (_this.dragConstraint != 'x') {
+                    var nextPos = value;
+                    delay = delay || Math.abs(value - _this.draggable.position.y) * 5;
+                    nextPos = Math.max(nextPos, _this.dragYInterval[0]);
+                    nextPos = Math.min(nextPos, _this.dragYInterval[1]);
+                    if (_this.tween)
+                        _this.tween.stop();
+                    _this.tween = new EZGUI.Tween(_this.container.position)
+                        .to({ y: nextPos }, delay)
+                        .easing(EZGUI.Easing.Cubic.Out);
+                    _this.tween.start();
+                }
+            };
+            return List;
+        }(Component.Layout));
+        Component.List = List;
+        EZGUI.registerComponents(List, 'List');
+    })(Component = EZGUI.Component || (EZGUI.Component = {}));
+})(EZGUI || (EZGUI = {}));
+var EZGUI;
+(function (EZGUI) {
+    var MultistateTilingSprite = (function (_super) {
+        __extends(MultistateTilingSprite, _super);
+        function MultistateTilingSprite(texture, width, height, states) {
+            _super.call(this, texture, width, height);
+            this.stateTextures = {};
+            this.currentState = 'default';
+            this.stateTextures['default'] = texture;
+            var _this = this;
+            if (states) {
+                for (var s in states) {
+                    var tx = states[s];
+                    if (tx instanceof PIXI.Texture && !this.stateTextures[s]) {
+                        //var mtx:any = new MultistateTilingSprite(tx, width, height);
+                        this.stateTextures[s] = tx;
+                    }
+                }
+            }
+        }
+        MultistateTilingSprite.prototype.setState = function (state) {
+            if (state === void 0) { state = 'default'; }
+            var sprite = this;
+            if (!sprite.stateTextures[state] || state == this.currentState)
+                return;
+            if (sprite.texture == sprite.stateTextures[state])
+                return;
+            if (sprite.texture) {
+                sprite.texture = sprite.stateTextures[state];
             }
             else {
-                return false;
+                if (sprite._texture)
+                    sprite._texture = sprite.stateTextures[state];
+            }
+            if (sprite.tilingTexture)
+                sprite.tilingTexture = sprite.stateTextures[state];
+            if (sprite._tilingTexture)
+                sprite._tilingTexture = sprite.stateTextures[state];
+            if (EZGUI.Compatibility.PIXIVersion == 2) {
             }
         };
-        /**
-         * Return true if the browser is running on Kindle.
-         *
-         * @method isKindle
-         */
-        Device.isKindle = detect(/\W(kindle|silk)\W/i);
-        /**
-         * Return true if the browser is running on a mobile device.
-         *
-         * @method isMobile
-         */
-        Device.isMobile = detect(/(iphone|ipod|((?:android)?.*?mobile)|blackberry|nokia)/i);
-        /**
-         * Return true if we are running on Opera.
-         *
-         * @method isOpera
-         */
-        Device.isOpera = detect(/opera.*\Wpresto\W|OPR/i);
-        /**
-         * Return true if the browser is Safari.
-         *
-         * @method isSafari
-         */
-        Device.isSafari = detect(/webkit\W(?!.*chrome).*safari\W/i);
-        /**
-         * Return true if the browser is running on a tablet.
-         *
-         * One way to distinguish Android mobiles from tablets is that the
-         * mobiles contain the string "mobile" in their UserAgent string.
-         * If the word "Android" isn't followed by "mobile" then its a
-         * tablet.
-         *
-         * @method isTablet
-         */
-        Device.isTablet = detect(/(ipad|android(?!.*mobile)|tablet)/i);
-        /**
-         * Return true if the browser is running on a TV!
-         *
-         * @method isTV
-         */
-        Device.isTV = detect(/googletv|sonydtv/i);
-        /**
-         * Return true if the browser is running on a WebKit browser.
-         *
-         * @method isWebKit
-         */
-        Device.isWebKit = detect(/webkit\W/i);
-        /**
-         * Return true if the browser is running on an Android browser.
-         *
-         * @method isAndroid
-         */
-        Device.isAndroid = detect(/android/i);
-        /**
-         * Return true if the browser is running on any iOS device.
-         *
-         * @method isIOS
-         */
-        Device.isIOS = detect(/(ipad|iphone|ipod)/i);
-        /**
-         * Return true if the browser is running on an iPad.
-         *
-         * @method isIPad
-         */
-        Device.isIPad = detect(/ipad/i);
-        /**
-         * Return true if the browser is running on an iPhone.
-         *
-         * @method isIPhone
-         */
-        Device.isIPhone = detect(/iphone/i);
-        /**
-         * Return true if the browser is running on an iPod touch.
-         *
-         * @method isIPod
-         */
-        Device.isIPod = detect(/ipod/i);
-        Device.isMobile = detect(/mobile/i) || Device.isAndroid || Device.isIOS;
-        /**
-         * Return the complete UserAgent string verbatim.
-         *
-         * @method whoami
-         */
-        Device.whoami = function () {
-            return userAgent;
-        };
-    })(Device = EZGUI.Device || (EZGUI.Device = {}));
+        return MultistateTilingSprite;
+    }(EZGUI.Compatibility.TilingSprite));
+    EZGUI.MultistateTilingSprite = MultistateTilingSprite;
 })(EZGUI || (EZGUI = {}));
+(function (root) {
+    if ('performance' in root === false) {
+        root.performance = {};
+    }
+    // IE 8
+    Date.now = (Date.now || function () {
+        return new Date().getTime();
+    });
+    if ('now' in root.performance === false) {
+        var offset = root.performance.timing && root.performance.timing.navigationStart ? performance.timing.navigationStart
+            : Date.now();
+        root.performance.now = function () {
+            return Date.now() - offset;
+        };
+    }
+})(this);
 var EZGUI;
 (function (EZGUI) {
     var utils;
