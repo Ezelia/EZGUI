@@ -725,3 +725,19 @@ PIXI.InteractionData = function () {
      */
     this.originalEvent = null;
 };
+
+
+if (!PIXI.TextureCache) {
+    PIXI.TextureCache = {};
+    PIXI.Texture.fromFrame = function (frameId)
+    {
+        var texture = PIXI.TextureCache[frameId];
+
+        if (!texture)
+        {
+            throw new Error('The frameId "' + frameId + '" does not exist in the texture cache');
+        }
+
+        return texture;
+    };
+}
