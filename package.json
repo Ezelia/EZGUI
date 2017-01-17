@@ -1,0 +1,12 @@
+{
+  "name": "ezgui",
+  "version": "0.3.3",
+  "description": "EZGUI - The missing GUI for Pixi.js and Phaser.io",
+  "main": "dist/EZGUI.js",
+  "repository": {
+    "url": "https://Ezelia@github.com/Ezelia/EZGUI.git",
+    "type": "git"
+  },
+  "author": "Ezelia <contact@ezelia.com> (http://ezelia.com)",
+  "license": "MIT"
+}
