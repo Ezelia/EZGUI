@@ -35,7 +35,7 @@ module EZGUI.Component {
             super.setupEvents();
 
             var guiObj: any = this;
-            var _this = this;
+            
 
         }
 
@@ -47,20 +47,20 @@ module EZGUI.Component {
         protected handleEvents() {
             super.handleEvents();
             var guiObj: any = this;
-            var _this:any = this;
+            var __this:any = this;
 
 
             if (Compatibility.isPhaser) {
                 guiObj.on('mousemove', function () {
                 });
                 guiObj.on('mousedown', function (event, any) {
-                    if (_this.canTrigger(event, _this.slide)) {
-                        _this.slide.emit('ezgui:mousedown', event);
+                    if (__this.canTrigger(event, __this.slide)) {
+                        __this.slide.emit('ezgui:mousedown', event);
                     }
                 });
                 guiObj.on('mouseup', function () {
-                    if (_this.canTrigger(event, _this.slide)) {
-                        _this.slide.emit('ezgui:mouseup', event);
+                    if (__this.canTrigger(event, __this.slide)) {
+                        __this.slide.emit('ezgui:mouseup', event);
                     }
                 });
 
@@ -71,8 +71,8 @@ module EZGUI.Component {
                 });
             }
             this.slide.on('mousemove', function () {
-                if (EZGUI.dragging == _this.slide) {
-                    _this.emit('ezgui:value', _this.value);
+                if (EZGUI.dragging == __this.slide) {
+                    __this.emit('ezgui:value', __this.value);
                 }
             });
         }

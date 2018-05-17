@@ -1,5 +1,11 @@
 ﻿*(Note. this changelog do not contain all versions information, will be updated)* 
 
+0.4.2 beta
+==========
+ * Fixed Pixi v4.6+ compatibility issues
+ * Droping Pixi v2 compatibility
+ * added tsconfig.json file
+
 0.3.3 beta
 ==========
  * using official PixiJS Plugin interface to register EZGUI and get reference to the main renderer .   

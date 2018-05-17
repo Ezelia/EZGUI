@@ -62,16 +62,16 @@ module EZGUI.Component {
 
         protected handleEvents() {
             super.handleEvents();
-            var _this: any = this;
+            var __this: any = this;
 
 
             //clear default action
-            _this.off('click');
+            __this.off('click');
 
 
-            _this.on('click', function (event) {
-                _this.checked = true;
-                _this.emit('ezgui:checked', event, _this);
+            __this.on('click', function (event) {
+                __this.checked = true;
+                __this.emit('ezgui:checked', event, __this);
             });
         }
         protected draw() {

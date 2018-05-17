@@ -142,7 +142,7 @@ declare module EZGUI.Compatibility {
     class TilingSprite {
         constructor(texture: PIXI.Texture, width: number, height: number);
     }
-    class GUIContainer extends PIXI.DisplayObjectContainer {
+    class GUIContainer extends PIXI.Container {
     }
     class GUIDisplayObjectContainer extends GUIContainer {
         phaserGroup: any;
@@ -152,6 +152,7 @@ declare module EZGUI.Compatibility {
     }
     function createRenderTexture(width: any, height: any): any;
     function fixCache(resources: any): void;
+    function copyPointerEvents(obj: any): void;
 }
 declare var Phaser: any;
 declare module EZGUI {
@@ -223,13 +224,15 @@ declare module EZGUI {
         guiID: string;
         Id: string;
         userData: any;
-        container: PIXI.DisplayObjectContainer;
+        name: string;
+        container: PIXI.Container;
         guiParent: GUISprite;
         constructor();
         protected setupEvents(): void;
-        originalAddChildAt(child: any, index: any): PIXI.DisplayObject;
-        originalAddChild(child: any): PIXI.DisplayObject;
-        addChild(child: any): PIXI.DisplayObject;
+        originalAddChildAt(child: any, index: any): any;
+        originalAddChild(child: any): any;
+        getChildByName(name: any): PIXI.DisplayObject;
+        addChild(child: any): any;
         removeChild(child: any): PIXI.DisplayObject;
         mouseInObj(event: any, guiSprite: any): boolean;
         canTrigger(event: any, guiSprite: any): boolean;
@@ -251,7 +254,7 @@ declare module EZGUI {
         themeId: any;
         guiID: string;
         userData: any;
-        draggable: PIXI.DisplayObjectContainer;
+        draggable: PIXI.Container;
         draghandle: any;
         dragConstraint: string;
         dragXInterval: number[];
@@ -260,7 +263,7 @@ declare module EZGUI {
         protected textObj: any;
         protected rootSprite: any;
         text: string;
-        protected _settings: any;
+        _settings: any;
         constructor(settings: any, themeId: any);
         erase(): void;
         rebuild(): void;
@@ -479,8 +482,8 @@ declare module EZGUI.Component {
         protected handleEvents(): void;
         protected draw(): void;
         createChild(childSettings: any, order?: any): any;
-        addChild(child: any): PIXI.DisplayObject;
-        addChildAt(child: any, index: any): PIXI.DisplayObject;
+        addChild(child: any): any;
+        addChildAt(child: any, index: any): any;
     }
 }
 declare module EZGUI.Component {
@@ -488,7 +491,7 @@ declare module EZGUI.Component {
         settings: any;
         themeId: any;
         guiMask: any;
-        private titleBar;
+        titleBar: any;
         constructor(settings: any, themeId: any);
         protected draw(): void;
         protected handleEvents(): void;
@@ -536,7 +539,7 @@ declare module EZGUI.Component {
         settings: any;
         themeId: any;
         group: any;
-        static groups: any;
+        static readonly groups: any;
         checked: boolean;
         constructor(settings: any, themeId: any);
         private clearGroup();
@@ -556,7 +559,7 @@ declare module EZGUI.Component {
         constructor(settings: any, themeId: any);
         protected handleEvents(): void;
         private decelerateScroll(endPos);
-        addChildAt(child: any, index: any): PIXI.DisplayObject;
+        addChildAt(child: any, index: any): any;
         removeChild(child: any): PIXI.DisplayObject;
         slideBy(value: any, delay?: any): void;
         slideTo(value: any, delay?: any): void;
@@ -587,7 +590,7 @@ declare module EZGUI.utils {
     };
     function distance(x: any, y: any, x0: any, y0: any): number;
     function extendJSON(target: any, source: any): void;
-    function getStatusCodeForUrl(url: any): number;
+    function getStatusCodeForUrl(url: any): 0 | 200;
     function loadJSON(url: any, cb: any, crossOrigin?: boolean): void;
     function loadXML(url: any, cb: any, crossOrigin?: boolean): void;
 }

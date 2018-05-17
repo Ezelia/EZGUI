@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "declaration": true,
+    "target": "ES6",
+    "outFile": "./dist/EZGUI.js",
+    "outDir": "./dist/",
+    "module": "amd"    
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

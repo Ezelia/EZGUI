@@ -18,8 +18,9 @@ module EZGUI {
         }
 
         public userData: any;
+        public name: string;
 
-        public container: PIXI.DisplayObjectContainer;
+        public container: PIXI.Container;
         public guiParent: GUISprite;
 
 
@@ -39,41 +40,46 @@ module EZGUI {
 
 
         protected setupEvents() {
-            var _this: any = this;
+            var __this: any = this;
             //var _this:any = this;
             
 
-            _this.interactive = true;
+            __this.interactive = true;
 
-            _this.mouseover = function (event) {
+
+            __this.pointerover = function (event) {
+            //__this.mouseover = function (event) {
                 //console.log('mouseover ', _this.guiID);
                 //if PIXI 2 use event else use event.data
                 var data = event.data || event;
 
-                if (!_this.canTrigger(event, _this)) {
+                if (!__this.canTrigger(event, __this)) {
                     return;
                 }
                 //console.log('hover ', guiObj.guiID);
 
-                _this._over = true;
+                __this._over = true;
                 //guiObj.setState('hover');
-                _this.emit('ezgui:mouseover', event, _this);
+                __this.emit('ezgui:mouseover', event, __this);
             }
-            _this.mouseout = function (event) {
+
+            //__this.mouseout = function (event) {
+            __this.pointerout = function (event) {
                 //console.log('mouseout ', _this.guiID);
                 //if PIXI 2 use event else use event.data
                 var data = event.data || event;
 
-                _this._over = false;
+                __this._over = false;
                 //guiObj.setState('out');
-                _this.emit('ezgui:mouseout', event, _this);
+                __this.emit('ezgui:mouseout', event, __this);
 
             }
 
             //handle drag stuff
-            _this.mousedown = _this.touchstart = function (event: any) {
+            //__this.mousedown = __this.touchstart = function (event: any) {
+            __this.pointerdown = function (event: any) {
                 //console.log('mousedown ', _this.guiID);
-                if (!_this.canTrigger(event, _this)) {
+                if (!__this.canTrigger(event, __this)) {
                     return;
                 }
 
@@ -83,24 +89,27 @@ module EZGUI {
                 EZGUI.startDrag.t = Date.now();
 
                 var data = event.data || event;
-                _this.emit('ezgui:mousedown', event, _this);
+                __this.emit('ezgui:mousedown', event, __this);
                 //event.stopped = true;
+
+                
             }
 
 
-            _this.mouseup = _this.mouseupoutside = _this.touchend = _this.touchendoutside = function (event: any) {
-                if (!_this.canTrigger(event, _this)) {
+            //__this.mouseup = __this.mouseupoutside = __this.touchend = __this.touchendoutside = function (event: any) {
+            __this.pointerup = function (event: any) {
+                if (!__this.canTrigger(event, __this)) {
                     return;
                 }
                 var data = event.data || event;
-                _this.emit('ezgui:mouseup', event, _this);
+                __this.emit('ezgui:mouseup', event, __this);
 
                 var pos = utils.getRealPos(event);
                 if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
-                    _this.emit('ezgui:click', event, _this);
+                    __this.emit('ezgui:click', event, __this);
 
-                    if (EZGUI.focused && _this != EZGUI.focused && EZGUI.focused.emit) EZGUI.focused.emit('ezgui:blur');
-                    EZGUI.focused = _this;
+                    if (EZGUI.focused && __this != EZGUI.focused && EZGUI.focused.emit) EZGUI.focused.emit('ezgui:blur');
+                    EZGUI.focused = __this;
                     EZGUI.focused.emit('ezgui:focus');
                     
                     event.stopped = true;
@@ -108,30 +117,32 @@ module EZGUI {
 
             };
 
-            _this.mousemove = _this.touchmove = function (event) {
+            __this.pointermove = function (event) {
+            //__this.mousemove = __this.touchmove = function (event) {
 
-                if (_this._over) {
-                    if (_this.canTrigger(event, _this)) {
-                        _this._over = false;
-                        _this.mouseover(event);
+                if (__this._over) {
+                    if (__this.canTrigger(event, __this)) {
+                        __this._over = false;
+                        __this.pointerover(event);
                     }
                     else {
 
-                        _this.mouseout(event);
+                        __this.pointereout(event);
 
                     }
                 }
 
 
-                if (!_this.canTrigger(event, _this)) {
+                if (!__this.canTrigger(event, __this)) {
                     return;
                 }
                 var data = event.data || event;
-                _this.emit('ezgui:mousemove', event, _this);
+                __this.emit('ezgui:mousemove', event, __this);
             }
 
+            EZGUI.Compatibility.copyPointerEvents(__this);
 
-            _this.click = _this.tap = function (event) {
+            __this.click = __this.tap = function (event) {
                 //console.log('click', _this.guiID);
                 //var pos = utils.getRealPos(event);
 
@@ -140,40 +151,40 @@ module EZGUI {
                 //if (guiObj.canTrigger(event, guiObj)) guiObj.emit('ezgui:click', event);
             }
             
-            if (_this.phaserGroup) {
-                _this.phaserGroup.inputEnabled = true;
+            if (__this.phaserGroup) {
+                __this.phaserGroup.inputEnabled = true;
 
 
                 //Fix priorityID otherwise, events will not trigger on children
                 if (EZGUI.Compatibility.isPhaser24plus) {
                     for (var c in EZGUI.components) {
-                        var _this = EZGUI.components[c];
-                        if (_this.phaserGroup && _this.phaserGroup.input && _this.guiParent && _this.guiParent.phaserGroup && _this.guiParent.phaserGroup.input) {
+                        var __this = EZGUI.components[c];
+                        if (__this.phaserGroup && __this.phaserGroup.input && __this.guiParent && __this.guiParent.phaserGroup && __this.guiParent.phaserGroup.input) {
 
-                            _this.phaserGroup.input.priorityID = _this.guiParent.phaserGroup.input.priorityID + 1;
+                            __this.phaserGroup.input.priorityID = __this.guiParent.phaserGroup.input.priorityID + 1;
 
                         }
                     }
                 }
     
-                _this.phaserGroup.events.onInputOver.add(function (target, event) {
+                __this.phaserGroup.events.onInputOver.add(function (target, event) {
 
 
-                    _this._over = true;
+                    __this._over = true;
                     //console.log('ezgui:mouseover', event);
-                    _this.emit('ezgui:mouseover', event, _this);
+                    __this.emit('ezgui:mouseover', event, __this);
 
                 }, this);
 
-                _this.phaserGroup.events.onInputOut.add(function (target, event) {
+                __this.phaserGroup.events.onInputOut.add(function (target, event) {
 
-                    _this._over = false;
-                    _this.emit('ezgui:mouseout', event, _this);
+                    __this._over = false;
+                    __this.emit('ezgui:mouseout', event, __this);
                     //console.log('ezgui:mouseout', event);
                 }, this);
 
-                _this.phaserGroup.events.onInputDown.add(function (target, event) {
-                    if (!_this.canTrigger(event, _this)) {
+                __this.phaserGroup.events.onInputDown.add(function (target, event) {
+                    if (!__this.canTrigger(event, __this)) {
                         return;
                     }
 
@@ -183,37 +194,37 @@ module EZGUI {
                     EZGUI.startDrag.t = Date.now();
 
                     
-                    _this.emit('ezgui:mousedown', event, _this);
+                    __this.emit('ezgui:mousedown', event, __this);
 
-                    if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
-                        _this.guiParent.emit('ezgui:mousedown', event, _this);
+                    if (!__this.draggable && __this.guiParent && __this.guiParent.draggable) {
+                        __this.guiParent.emit('ezgui:mousedown', event, __this);
                     }
                     //    
 
                     //console.log('ezgui:mousedown', event);
                 }, this);
 
-                _this.phaserGroup.events.onInputUp.add(function (target, event) {
+                __this.phaserGroup.events.onInputUp.add(function (target, event) {
                     //if (!_this.canTrigger(event, _this)) {
                     //    return;
                     //}
 
                     //_this.emit('ezgui:mouseup', event);
-                    _this.emit('ezgui:mouseup', event, _this);
+                    __this.emit('ezgui:mouseup', event, __this);
 
                     var pos = utils.getRealPos(event);
                     if (utils.distance(pos.x, pos.y, EZGUI.startDrag.x, EZGUI.startDrag.y) <= 4) {
-                        _this.emit('ezgui:click', event, _this);
+                        __this.emit('ezgui:click', event, __this);
 
-                        if (EZGUI.focused && _this != EZGUI.focused && EZGUI.focused.emit) EZGUI.focused.emit('ezgui:blur');
-                        EZGUI.focused = _this;
+                        if (EZGUI.focused && __this != EZGUI.focused && EZGUI.focused.emit) EZGUI.focused.emit('ezgui:blur');
+                        EZGUI.focused = __this;
                         EZGUI.focused.emit('ezgui:focus');
 
                         //console.log('ezgui:click', event);
                     }
 
-                    if (!_this.draggable && _this.guiParent && _this.guiParent.draggable) {
-                        _this.guiParent.emit('ezgui:mouseup', event, _this);
+                    if (!__this.draggable && __this.guiParent && __this.guiParent.draggable) {
+                        __this.guiParent.emit('ezgui:mouseup', event, __this);
                     }
 
 
@@ -223,25 +234,25 @@ module EZGUI {
                 //    console.log(pointer, x, y);
                 //}
                 Phaser.GAMES[0].input.mouse.mouseMoveCallback = function (event) {
-                    if (_this._over) {
-                        if (_this.canTrigger(event, _this)) {
+                    if (__this._over) {
+                        if (__this.canTrigger(event, __this)) {
 
-                            _this._over = true;
-                            _this.emit('ezgui:mouseover', event, _this);
+                            __this._over = true;
+                            __this.emit('ezgui:mouseover', event, __this);
                         }
                         else {
 
-                            _this._over = false;
-                            _this.emit('ezgui:mouseout', event, _this);
+                            __this._over = false;
+                            __this.emit('ezgui:mouseout', event, __this);
                         }
                     }
 
 
-                    if (!_this.canTrigger(event, _this)) {
+                    if (!__this.canTrigger(event, __this)) {
                         return;
                     }
                     var data = event.data || event;
-                    _this.emit('ezgui:mousemove', event, _this);
+                    __this.emit('ezgui:mousemove', event, __this);
                 }
 
 
@@ -262,10 +273,15 @@ module EZGUI {
         }
 
 
+        public getChildByName(name) {
+            return this.container.getChildByName(name);
+        };
+
+
         public addChild(child) {
             if (child instanceof GUISprite) {
                 //return this.container.addChild(child);
-                child.guiParent = this;
+                (<any>child).guiParent = this;
 
                 if (child.phaserGroup) return this.container.addChild(child.phaserGroup);
                 else return this.container.addChild(child);
@@ -428,5 +444,5 @@ module EZGUI {
 
 
     }
-    EZGUI.registerComponents(GUISprite, 'default');
+    //EZGUI.registerComponents(GUISprite, 'default');
 }

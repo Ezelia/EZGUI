@@ -21,29 +21,29 @@
 
         protected handleEvents() {
             
-            var _this: any = this;
+            var __this: any = this;
             
 
             var ssize;
             this.draggable = this.container;
-            if (_this._settings.dragY === false || ( this._settings.layout && this._settings.layout[1] == null)) {
+            if (__this._settings.dragY === false || ( this._settings.layout && this._settings.layout[1] == null)) {
                 this.dragConstraint = 'x';
                 this.horizontalSlide = true;
                 this.slotSize = (this._settings.width / this._settings.layout[0]);
                 
             }
 
-            if (_this._settings.dragX === false || (this._settings.layout && this._settings.layout[0] == null)) {
+            if (__this._settings.dragX === false || (this._settings.layout && this._settings.layout[0] == null)) {
                 this.dragConstraint = 'y';
                 this.horizontalSlide = false;
                 this.slotSize = (this._settings.height / this._settings.layout[1]);
             }
 
             if (this._settings.layout && this._settings.layout[0] != null && this._settings.layout[1] != null) {
-                if (_this._settings.dragY === false) {
+                if (__this._settings.dragY === false) {
                     this.slotSize = this.slotSize / this._settings.layout[1];
                 }
-                if (_this._settings.dragX === false) {
+                if (__this._settings.dragX === false) {
                     this.slotSize = this.slotSize / this._settings.layout[0];
                 }
             }
@@ -61,14 +61,14 @@
             super.handleEvents();
 
 
-            _this.on('mousedown', function (event: any) {
-                if (_this.decelerationItv) {
-                    clearInterval(_this.decelerationItv);
-                    _this.decelerationItv = null
+            __this.on('mousedown', function (event: any) {
+                if (__this.decelerationItv) {
+                    clearInterval(__this.decelerationItv);
+                    __this.decelerationItv = null
                 }
 
-                for (var i = 0; i < _this.container.children.length; i++) {
-                    var child:any = _this.container.children[i];
+                for (var i = 0; i < __this.container.children.length; i++) {
+                    var child:any = __this.container.children[i];
                     if (!(child instanceof GUISprite)) continue;
                     if (!child.mouseInObj(event, child)) continue;
                     if (!child.canTrigger(event, child)) continue;
@@ -80,14 +80,14 @@
                 }
             });
 
-            _this.on('mouseup', function (event: any) {
-                if (_this.decelerationItv) return;
+            __this.on('mouseup', function (event: any) {
+                if (__this.decelerationItv) return;
 
 
                 var endPos = utils.getRealPos(event);
                 //console.log('slide end ', EZGUI.startDrag.x, EZGUI.startDrag.x, endPos);
 
-                _this.decelerateScroll(endPos);
+                __this.decelerateScroll(endPos);
 
 
 
@@ -98,13 +98,13 @@
         }
 
         private decelerateScroll(endPos) {
-            var _this = this;
+            var __this = this;
 
             var sign = 0;
-            if (_this.dragConstraint != 'y') {
+            if (__this.dragConstraint != 'y') {
                 sign = (<any>Math).sign(endPos.x - EZGUI.startDrag.x);
             }
-            if (_this.dragConstraint != 'x') {
+            if (__this.dragConstraint != 'x') {
                 sign = (<any>Math).sign(endPos.y - EZGUI.startDrag.y);
             }
 
@@ -122,40 +122,40 @@
             var amplitude = sign * speed * 150;
             var step = 0;
 
-            var initialPosX = _this.draggable.position.x;
-            var initialPosY = _this.draggable.position.y;
+            var initialPosX = __this.draggable.position.x;
+            var initialPosY = __this.draggable.position.y;
             var posX = 0;
             var posY = 0;
 
-            if (_this.decelerationItv) clearInterval(_this.decelerationItv);
+            if (__this.decelerationItv) clearInterval(__this.decelerationItv);
 
-            _this.decelerationItv = setInterval(function () {
+            __this.decelerationItv = setInterval(function () {
                 //console.log('.');
                 var delta = amplitude / timeConstant;
 
-                if (_this.dragConstraint != 'y') {
+                if (__this.dragConstraint != 'y') {
                     posX += delta;
 
                     var nextPos = initialPosX + posX;
-                    if (nextPos >= _this.dragXInterval[0] && nextPos <= _this.dragXInterval[1])
-                        _this.draggable.position.x = nextPos;
-                    else clearInterval(_this.decelerationItv);
+                    if (nextPos >= __this.dragXInterval[0] && nextPos <= __this.dragXInterval[1])
+                        __this.draggable.position.x = nextPos;
+                    else clearInterval(__this.decelerationItv);
                 }
-                if (_this.dragConstraint != 'x') {
+                if (__this.dragConstraint != 'x') {
                     posY += delta;
 
                     var nextPos = initialPosY + posY;
-                    if (nextPos >= _this.dragYInterval[0] && nextPos <= _this.dragYInterval[1])
-                        _this.draggable.position.y = nextPos;
-                    else clearInterval(_this.decelerationItv);
+                    if (nextPos >= __this.dragYInterval[0] && nextPos <= __this.dragYInterval[1])
+                        __this.draggable.position.y = nextPos;
+                    else clearInterval(__this.decelerationItv);
                 }
 
 
                 amplitude -= delta;
                 step += 1;
                 if (step > 6 * timeConstant) {
-                    clearInterval(_this.decelerationItv);
-                    _this.decelerationItv = null;
+                    clearInterval(__this.decelerationItv);
+                    __this.decelerationItv = null;
                 }
             }, 16);
 
@@ -203,36 +203,36 @@
         public slideBy(value, delay?) {
 
             delay = delay || Math.abs(value) * 5;
-            var _this = this;
-            if (_this.dragConstraint != 'y') {
-                var nextPos = _this.draggable.position.x + value;
+            var __this = this;
+            if (__this.dragConstraint != 'y') {
+                var nextPos = __this.draggable.position.x + value;
 
-                nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                nextPos = Math.max(nextPos, __this.dragXInterval[0]);
+                nextPos = Math.min(nextPos, __this.dragXInterval[1]);
 
-                if (_this.tween) _this.tween.stop();
+                if (__this.tween) __this.tween.stop();
 
-                _this.tween = new EZGUI.Tween(_this.container.position)
+                __this.tween = new EZGUI.Tween(__this.container.position)
                     .to({ x: nextPos }, delay)
                     .easing(EZGUI.Easing.Cubic.Out)
 
-                _this.tween.start();
+                __this.tween.start();
 
             }
-            if (_this.dragConstraint != 'x') {
-                var nextPos = _this.draggable.position.y + value;
-                nextPos = Math.max(nextPos, _this.dragYInterval[0]);
-                nextPos = Math.min(nextPos, _this.dragYInterval[1]);
+            if (__this.dragConstraint != 'x') {
+                var nextPos = __this.draggable.position.y + value;
+                nextPos = Math.max(nextPos, __this.dragYInterval[0]);
+                nextPos = Math.min(nextPos, __this.dragYInterval[1]);
 
 
-                if (_this.tween) _this.tween.stop();
+                if (__this.tween) __this.tween.stop();
 
-                _this.tween = new EZGUI.Tween(_this.container.position)
+                __this.tween = new EZGUI.Tween(__this.container.position)
                     .to({ y: nextPos }, delay)
                     .easing(EZGUI.Easing.Cubic.Out)
                     
 
-                _this.tween.start();
+                __this.tween.start();
             }
 
 
@@ -242,42 +242,42 @@
 
             
 
-            var _this = this;
-            if (_this.dragConstraint != 'y') {
+            var __this = this;
+            if (__this.dragConstraint != 'y') {
                 var nextPos = value;
 
-                delay = delay || Math.abs(value - _this.draggable.position.x) * 5;
+                delay = delay || Math.abs(value - __this.draggable.position.x) * 5;
 
 
-                nextPos = Math.max(nextPos, _this.dragXInterval[0]);
-                nextPos = Math.min(nextPos, _this.dragXInterval[1]);
+                nextPos = Math.max(nextPos, __this.dragXInterval[0]);
+                nextPos = Math.min(nextPos, __this.dragXInterval[1]);
 
-                if (_this.tween) _this.tween.stop();
+                if (__this.tween) __this.tween.stop();
 
-                _this.tween = new EZGUI.Tween(_this.container.position)
+                __this.tween = new EZGUI.Tween(__this.container.position)
                     .to({ x: nextPos }, delay)
                     .easing(EZGUI.Easing.Cubic.Out)
 
-                _this.tween.start();
+                __this.tween.start();
 
             }
-            if (_this.dragConstraint != 'x') {
+            if (__this.dragConstraint != 'x') {
                 var nextPos = value;
 
-                delay = delay || Math.abs(value - _this.draggable.position.y) * 5;
+                delay = delay || Math.abs(value - __this.draggable.position.y) * 5;
 
-                nextPos = Math.max(nextPos, _this.dragYInterval[0]);
-                nextPos = Math.min(nextPos, _this.dragYInterval[1]);
+                nextPos = Math.max(nextPos, __this.dragYInterval[0]);
+                nextPos = Math.min(nextPos, __this.dragYInterval[1]);
 
 
-                if (_this.tween) _this.tween.stop();
+                if (__this.tween) __this.tween.stop();
 
-                _this.tween = new EZGUI.Tween(_this.container.position)
+                __this.tween = new EZGUI.Tween(__this.container.position)
                     .to({ y: nextPos }, delay)
                     .easing(EZGUI.Easing.Cubic.Out)
 
 
-                _this.tween.start();
+                __this.tween.start();
             }
 
 

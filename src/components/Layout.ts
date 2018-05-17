@@ -34,7 +34,7 @@ module EZGUI.Component {
 
                 if (this._settings.mask !== false) {
 
-                    var myMask = new PIXI.Graphics();
+                    var myMask = new (<any>PIXI).Graphics();
                     myMask.beginFill();
                     myMask.drawRect(padding, padding, settings.width - padding * 2, settings.height - padding * 2);
                     myMask.endFill();

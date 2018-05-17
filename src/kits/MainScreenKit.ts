@@ -11,7 +11,7 @@ module EZGUI.Kit {
         }
 
         protected parseSettings() {
-            var txCache = EZGUI.Compatibility.PIXIVersion >= 3 ? (<any>PIXI).utils.TextureCache : PIXI.TextureCache;
+            var txCache = EZGUI.Compatibility.PIXIVersion >= 3 ? (<any>PIXI).utils.TextureCache : (<any>PIXI).TextureCache;
             
 
             //parse logo
@@ -65,10 +65,10 @@ module EZGUI.Kit {
         protected handleEvents() {
             super.handleEvents();
 
-            var _this = this;
+            var __this = this;
             this.bindChildren('click', function (event, btn) {
-                if (_this.buttonsEvents && _this.buttonsEvents[btn.Id]) {
-                    (<any>_this).emit('ezgui:' + _this.buttonsEvents[btn.Id], event, btn);
+                if (__this.buttonsEvents && __this.buttonsEvents[btn.Id]) {
+                    (<any>__this).emit('ezgui:' + __this.buttonsEvents[btn.Id], event, btn);
                 }
             });
 

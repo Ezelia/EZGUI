@@ -14,7 +14,7 @@
             
 
 
-            var _this: any = this;
+            
             if (states) {
                 for (var s in states) {
                     var tx = states[s];

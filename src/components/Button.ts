@@ -19,7 +19,7 @@ module EZGUI.Component {
         protected handleEvents() {
             super.handleEvents();
             var guiObj: any = this;
-            var _this = this;
+            //var _this = this;
             var isDown = false;
 
             

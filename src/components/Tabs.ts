@@ -14,13 +14,13 @@ module EZGUI.Component {
 
         protected handleEvents() {
             super.handleEvents();
-            var _this = this;
+            var __this = this;
 
 
             if (this.tabsBar) {
-                for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
+                for (var i = 0; i < __this.tabsBar.container.children.length; i++) {
                     //remove default buttons events
-                    _this.tabsBar.container.children[i]._events = {};
+                    __this.tabsBar.container.children[i]._events = {};
 
                     //console.log(_this.tabsBar.container.children[i]);
                 }
@@ -29,11 +29,11 @@ module EZGUI.Component {
                 this.tabsBar.bindChildren('click', function (e, tab: Button) {
                     //console.log('clicked ', tab);
 
-                    _this.activate(tab.userData.id);
+                    __this.activate(tab.userData.id);
 
 
-                    for (var i = 0; i < _this.tabsBar.container.children.length; i++) {
-                        _this.setTaskbarChildState(i, 'default');
+                    for (var i = 0; i < __this.tabsBar.container.children.length; i++) {
+                        __this.setTaskbarChildState(i, 'default');
                         //_this.tabsBar.container.children[i].setState('default');
                     }
 

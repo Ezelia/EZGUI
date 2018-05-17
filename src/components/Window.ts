@@ -5,7 +5,7 @@ module EZGUI.Component {
     export class Window extends Layout {
         public guiMask;
 
-        private titleBar;
+        public titleBar;
         constructor(public settings, public themeId) {
             super(settings, themeId);
 

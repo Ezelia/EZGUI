@@ -64,9 +64,9 @@ module EZGUI.Component {
         protected handleEvents() {
             super.handleEvents();
             var guiObj: any = this;
-            var _this = this;
+            
 
-            var _this = this;
+            var __this = this;
             var guiObj: any = this;
             
             
@@ -90,7 +90,7 @@ module EZGUI.Component {
                 //guiObj.alpha = 1;
             })
             guiObj.on('click', function () {
-                _this.checked = !_this.checked;
+                __this.checked = !__this.checked;
             })
         }
 

@@ -10,7 +10,7 @@ module EZGUI {
 
         public userData: any;
 
-        public draggable: PIXI.DisplayObjectContainer;
+        public draggable: PIXI.Container;
         public draghandle: any;
         public dragConstraint: string;
         public dragXInterval: number[] = [-Infinity, +Infinity];
@@ -68,7 +68,7 @@ module EZGUI {
         }        
   
 
-        protected _settings;
+        public _settings;
         //private savedSettings;
 
         constructor(public settings, public themeId:any) {
@@ -79,6 +79,7 @@ module EZGUI {
             
 
             this.userData = settings.userData;
+            this.name = settings.name;
 
             if (themeId instanceof Theme) this.theme = themeId;
             else this.theme = EZGUI.themes[themeId];
@@ -192,23 +193,23 @@ module EZGUI {
         }
 
         protected handleEvents() {
-            var _this = this;
+            var __this = this;
             //var _this = this;
             
-            this.draghandle = _this;
-            if (_this._settings.draggable == true) {
-                this.draggable = _this;
+            this.draghandle = __this;
+            if (__this._settings.draggable == true) {
+                this.draggable = __this;
             }
 
-            if (_this._settings.draggable == 'container') {
-                this.draggable = _this.container;
+            if (__this._settings.draggable == 'container') {
+                this.draggable = __this.container;
             }
 
-            if (_this._settings.dragX === false) {
+            if (__this._settings.dragX === false) {
                 this.dragConstraint = 'y';
             }
 
-            if (_this._settings.dragY === false) {
+            if (__this._settings.dragY === false) {
                 this.dragConstraint = 'x';
             }
 
@@ -221,17 +222,17 @@ module EZGUI {
             //});
 
             //handle drag stuff
-            _this.on('mousedown', function (event: any) {
+            __this.on('mousedown', function (event: any) {
 
-                if (_this.draggable) {
-                    if (_this.mouseInObj(event, _this.draghandle)) {
+                if (__this.draggable) {
+                    if (__this.mouseInObj(event, __this.draghandle)) {
                         
                     
                         //if PIXI 2 use event else use event.data
                         var data = event.data || event;
 
                         //guiObj.alpha = 0.9;
-                        EZGUI.dragging = _this;
+                        EZGUI.dragging = __this;
                         //console.log('set dragging', EZGUI.dragging.guiID);
 
                         var pos = utils.getRealPos(event);
@@ -257,25 +258,25 @@ module EZGUI {
             });
 
 
-            _this.on('mouseup', function (event: any) {
+            __this.on('mouseup', function (event: any) {
                 //guiObj.alpha = 1
                 EZGUI.dragging = null;
-                _this.setState('default');
+                __this.setState('default');
 
                 
 
             });
 
 
-            _this.on('mousemove', function (event) {
+            __this.on('mousemove', function (event) {
 
                 if (EZGUI.dragging) {
-                    var dg = (<any>_this.draggable) ? (<any>_this.draggable).guiID : ''
+                    var dg = (<any>__this.draggable) ? (<any>__this.draggable).guiID : ''
                     //console.log(' * dragging', dg, EZGUI.dragging.guiID, _this.guiID);
                 }
 
                 var PhaserDrag = typeof Phaser != 'undefined' && EZGUI.dragging;
-                if (_this.draggable && EZGUI.dragging == _this || PhaserDrag) {
+                if (__this.draggable && EZGUI.dragging == __this || PhaserDrag) {
                     var pos = utils.getRealPos(event);
 
                     var dragObg = EZGUI.dragging;
@@ -445,7 +446,7 @@ module EZGUI {
                     
                 }
                 else {
-                    var style = { font: settings.font.size + ' ' + settings.font.family, fill: settings.font.color };
+                    var style = { fontSize: settings.font.size, fontFamily: settings.font.family, fill: settings.font.color};
 
                     for (var s in settings.font) {
                         if (!style[s])
@@ -636,7 +637,9 @@ module EZGUI {
             var src = cfg[state] == null ? cfg['default'] : cfg[state];
             var texture;
 
-            if (src.trim() != '') texture = PIXI.Texture.fromFrame(src);
+            if (src.trim() != '') {
+                texture = PIXI.Texture.fromFrame(src);
+            }
 
             cfg.texture = texture;
 

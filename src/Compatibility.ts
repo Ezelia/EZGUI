@@ -18,7 +18,7 @@ module EZGUI.Compatibility {
     export var isPhaser24plus = isPhaser24 || isPhaser25 || isPhaser26;
 
 
-    export var BitmapText = PIXIVersion >= 3 ? (<any>PIXI).extras.BitmapText : PIXI.BitmapText;
+    export var BitmapText = PIXIVersion >= 3 ? (<any>PIXI).extras.BitmapText : (<any>PIXI).BitmapText;
 
 
 
@@ -29,11 +29,11 @@ module EZGUI.Compatibility {
     }
 
 
-    export class GUIContainer extends PIXI.DisplayObjectContainer {
+    export class GUIContainer extends PIXI.Container {
 
     }
 
-    if (PIXIVersion == 3) {
+    if (PIXIVersion >= 3) {
         Compatibility['GUIContainer'] = <any>PIXI['Container'];
     }
     else {
@@ -91,10 +91,10 @@ module EZGUI.Compatibility {
             texture = (<any>PIXI.RenderTexture).create(width, height);//new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
         }
         else if (EZGUI.Compatibility.PIXIVersion == 3) {
-            texture = new PIXI.RenderTexture(EZGUI.tilingRenderer, width, height);
+            texture = new (<any>PIXI).RenderTexture(EZGUI.tilingRenderer, width, height);
         }
         else {            
-            texture = new PIXI.RenderTexture(width, height, EZGUI.tilingRenderer);
+            texture = new (<any>PIXI).RenderTexture(width, height, EZGUI.tilingRenderer);
             
             
         }
@@ -115,11 +115,21 @@ module EZGUI.Compatibility {
             if (!resources || resources.length == 0 || resources.indexOf(this._fileList[i].key) >= 0) {
                 
                 var tx = new PIXI.Texture(new (<any>PIXI).BaseTexture(this._fileList[i].data));
-                PIXI.TextureCache[this._fileList[i].key] = tx;
+                (<any>PIXI).TextureCache[this._fileList[i].key] = tx;
             }
         }
     }
 
+
+    export function copyPointerEvents(obj) {
+        if (EZGUI.Compatibility.PIXIVersion <= 3) {
+            obj.mouseover = obj.pointerover;
+            obj.mouseout = obj.pointerout;
+            obj.mousedown = obj.pointerdown;
+            obj.mouseup = obj.pointerup;
+            obj.mousemove = obj.pointermove;
+        }
+    }
 }
 
 
@@ -137,17 +147,19 @@ if (EZGUI.Compatibility.PIXIVersion >= 3) {
     (<any>PIXI.CanvasRenderer).registerPlugin('EZGUI', EZGUIPluginInterface);
     (<any>PIXI.WebGLRenderer).registerPlugin('EZGUI', EZGUIPluginInterface);
 
-    PIXI['utils']._saidHello = true;
+    
+    //(<any>PIXI['utils'])._saidHello = true;
+    if (typeof PIXI.utils.skipHello === 'function') PIXI.utils.skipHello();
     //EZGUI.tilingRenderer = new PIXI.WebGLRenderer();
     //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
     EZGUI.Compatibility.TilingSprite = ((<any>PIXI).extras).TilingSprite;
-    PIXI['utils']._saidHello = false;
+    //(<any>PIXI['utils'])._saidHello = false;
 }
 else {
 
     //EZGUI.tilingRenderer = new PIXI.CanvasRenderer();
 
-    EZGUI.Compatibility.TilingSprite = PIXI.TilingSprite;
+    EZGUI.Compatibility.TilingSprite = (<any>PIXI).TilingSprite;
 }
 
 
@@ -180,8 +192,8 @@ EZGUI.Compatibility.TilingSprite.prototype['fixPhaser24'] = function () {
 
 
 
-if (PIXI.EventTarget) {
-    PIXI.EventTarget.mixin(EZGUI.Compatibility.GUIDisplayObjectContainer.prototype);
+if ((<any>PIXI).EventTarget) {
+    (<any>PIXI).EventTarget.mixin(EZGUI.Compatibility.GUIDisplayObjectContainer.prototype);
 }
 else {
     if (EZGUI.Compatibility.isPhaser) {
@@ -198,7 +210,8 @@ else {
                 this._listeners[event] = [];
             }
             else {
-                if (event in this._listeners === false || typeof this._listeners[event] != 'array') return;
+                //if (event in this._listeners === false || typeof this._listeners[event] != 'array') return;
+                if (event in this._listeners === false || !(this._listeners[event] instanceof Array)) return;
                 this._listeners[event].splice(this._listeners[event].indexOf(fct), 1);
             }
         }

@@ -20,12 +20,12 @@ module EZGUI {
 
      
         constructor(public themeConfig) {
-            var _this = this;
+            var __this = this;
             if (typeof themeConfig == 'string') { //is this an url ?
-                _this.url = themeConfig;
-                utils.loadJSON(_this.url, function (themeConfig) {
-                    _this.themeConfig = themeConfig;
-                    _this.initThemeConfig(themeConfig);
+                __this.url = themeConfig;
+                utils.loadJSON(__this.url, function (themeConfig) {
+                    __this.themeConfig = themeConfig;
+                    __this.initThemeConfig(themeConfig);
                 });
             }
             else {
@@ -150,7 +150,10 @@ module EZGUI {
 
 
 
-                        if (item[cc] == undefined) continue;
+                        if (item[cc] == undefined) {
+                            cc = Theme.imageComponents[c];
+                            continue;
+                        }
 
                         if (typeof item[cc] == 'string') {
                             var str = item[cc];
@@ -171,7 +174,7 @@ module EZGUI {
 
 
 
-
+                        cc = Theme.imageComponents[c];
 
                     }
                 }
@@ -218,14 +221,14 @@ module EZGUI {
             this._listeners.push(cb);
         }
         private preload() {
-            var _this = this;
+            var __this = this;
             var onAssetsLoaded = function () {
-                _this.ready = true;
+                __this.ready = true;
 
 
-                EZGUI.themes[_this.id] = _this;
+                EZGUI.themes[__this.id] = __this;
                 var cb;
-                while (cb = _this._listeners.pop()) cb();
+                while (cb = __this._listeners.pop()) cb();
                 
             }
             if (this._theme.__config__ && this._theme.__config__.resources) {
@@ -244,7 +247,7 @@ module EZGUI {
                     //    _this.themeConfig = themeConfig;
                     //    _this.initThemeConfig(themeConfig);
                     //});
-                    _this.loadResources(resources, onAssetsLoaded);
+                    __this.loadResources(resources, onAssetsLoaded);
                     //if ((<any>PIXI).loader) {
                     //    (<any>PIXI).loader.add(resources);
                     //    (<any>PIXI).loader.load(onAssetsLoaded);
@@ -284,7 +287,7 @@ module EZGUI {
 
                     for (var f in atlasJson.frames) {
                         var frame = atlasJson.frames[f].frame;
-                        var texture = new PIXI.Texture(baseTx, {
+                        var texture = new (<any>PIXI).Texture(baseTx, {
                             x: frame.x,
                             y: frame.y,
                             width: frame.w,
@@ -295,7 +298,7 @@ module EZGUI {
                             (<any>PIXI).utils.TextureCache[f] = texture;
                         }
                         else {
-                            PIXI.TextureCache[f] = texture;
+                            (<any>PIXI).TextureCache[f] = texture;
                         }
                     }
 
@@ -351,7 +354,7 @@ module EZGUI {
                 }
                 else {
 
-                    var loader: any = new PIXI.AssetLoader(images, crossOrigin);
+                    var loader: any = new (<any>PIXI).AssetLoader(images, crossOrigin);
                     loader.onComplete = cacheAtlas;
                     loader.load();
                 }
@@ -462,13 +465,16 @@ module EZGUI {
 
             var Rectangle: any;
             var BitmapText: any;
+
+
+            if (PIXI.Rectangle) Rectangle = PIXI.Rectangle;
+            else Rectangle = (<any>PIXI).math.Rectangle;
             if (Compatibility.PIXIVersion >= 3) {
-                Rectangle = (<any>PIXI).math.Rectangle;
                 BitmapText = (<any>PIXI).extras.BitmapText;
             }
             else {
-                Rectangle = PIXI.Rectangle;
-                BitmapText = PIXI.BitmapText;
+                
+                BitmapText = (<any>PIXI).BitmapText;
             }
 
             //parse letters
